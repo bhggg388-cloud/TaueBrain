@@ -1,0 +1,1631 @@
+<title>分子接近の物語</title>
+<style>
+  :root{ --page-bg:#f4f5f9; --card-bg:#ffffff; --text:#1c2033; --muted:#6b7290; --line:#e3e5ee; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --page-bg:#0d0f16; --card-bg:#161a26; --text:#e7e9f2; --muted:#9195b0; --line:#262c3d; }
+  }
+  :root[data-theme="dark"]{
+    --page-bg:#0d0f16; --card-bg:#161a26; --text:#e7e9f2; --muted:#9195b0; --line:#262c3d; }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--page-bg); color:var(--text);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo","Noto Sans JP",
+                system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    padding:24px 14px 44px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+  header.page-head{margin-bottom:16px;}
+  header.page-head h1{font-size:19px;font-weight:700;margin:0 0 4px;}
+  header.page-head p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.65;}
+
+  .player-card{background:#000;border-radius:14px;overflow:hidden;box-shadow:0 20px 44px -20px rgba(0,0,0,.55);}
+  .stage-frame{position:relative;width:100%;aspect-ratio:16/9;background:#02030a;overflow:hidden;}
+  svg#stage{position:absolute;inset:0;width:100%;height:100%;display:block;}
+
+  .flash-layer{position:absolute;inset:0;pointer-events:none;background:#fff;opacity:0;}
+  .vignette{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(128% 108% at 50% 46%, transparent 48%, rgba(0,0,0,.72) 100%);}
+
+  .scene-tag{position:absolute;top:14px;right:16px;font-size:10.5px;letter-spacing:.09em;
+    color:rgba(255,255,255,.45);pointer-events:none;text-align:right;transition:color .6s ease;}
+  .scene-tag.on-light{color:rgba(40,36,30,.55);}
+
+  .caption-zone{position:absolute;left:0;right:0;bottom:4.5%;display:flex;justify-content:center;
+    padding:0 3%;pointer-events:none;}
+  .caption-box{
+    background:rgba(2,4,12,.55); color:#fff;
+    font-size:clamp(15px,3.5vw,27px); font-weight:600; line-height:1.45;
+    white-space:nowrap; text-align:center; padding:9px 20px; border-radius:8px;
+    opacity:0; transform-origin:50% 50%; letter-spacing:.02em;
+    text-shadow:0 2px 12px rgba(0,0,0,.8);
+  }
+
+  .play-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:12px;border:none;background:rgba(2,4,12,.45);cursor:pointer;color:#fff;
+    font-family:inherit;transition:opacity .3s ease;}
+  .play-overlay.hide{opacity:0;pointer-events:none;}
+  .po-circle{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);
+    border:1.5px solid rgba(255,255,255,.62);display:flex;align-items:center;justify-content:center;}
+  .po-circle svg{width:23px;height:23px;fill:#fff;margin-left:3px;}
+  .po-label{font-size:12.5px;letter-spacing:.04em;color:rgba(255,255,255,.92);}
+
+  .controls{background:#0a0c14;padding:9px 12px 11px;display:flex;align-items:center;gap:8px;}
+  .ctrl-btn{position:relative;-webkit-appearance:none;appearance:none;border:none;
+    background:rgba(255,255,255,.08);color:#e7e9f2;width:33px;height:33px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;
+    transition:background .15s ease,opacity .15s ease;}
+  .ctrl-btn:hover{background:rgba(255,255,255,.16);}
+  .ctrl-btn svg{width:15px;height:15px;fill:currentColor;}
+  .ctrl-btn.is-off{opacity:.4;}
+  .ctrl-btn[disabled]{cursor:default;opacity:.32;}
+  .ctrl-btn .off-slash{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+    stroke:#ff8a8a;stroke-width:2;display:none;}
+  .ctrl-btn.is-off .off-slash{display:block;}
+
+  .scrub-wrap{flex:1;position:relative;height:20px;display:flex;align-items:center;min-width:50px;}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;
+    background:rgba(255,255,255,.18);outline:none;margin:0;cursor:pointer;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+    background:#fff;cursor:pointer;box-shadow:0 0 0 3px rgba(255,255,255,.15);}
+  input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;border:none;background:#fff;}
+  .scrub-ticks{position:absolute;inset:0;pointer-events:none;}
+  .scrub-ticks i{position:absolute;top:50%;width:2px;height:8px;margin-top:-4px;
+    background:rgba(255,255,255,.32);border-radius:1px;}
+  .time-label{font-variant-numeric:tabular-nums;font-size:11px;color:#a7abc4;flex:0 0 auto;
+    min-width:68px;text-align:right;}
+
+  .status-strip{background:#0a0c14;color:#8891b3;font-size:11px;text-align:center;line-height:1.6;
+    padding:0 14px;max-height:0;overflow:hidden;transition:max-height .25s ease,padding .25s ease;}
+  .status-strip.show{max-height:80px;padding:0 14px 10px;}
+
+  .info-card{margin-top:16px;background:var(--card-bg);border:1px solid var(--line);
+    border-radius:12px;padding:15px 17px;}
+  .info-card h2{font-size:12.5px;margin:0 0 11px;color:var(--muted);font-weight:600;}
+  .scene-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+  .scene-list li{display:flex;align-items:baseline;gap:11px;font-size:13.5px;line-height:1.45;}
+  .scene-list .tt{flex:0 0 auto;font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--muted);
+    min-width:62px;}
+  .scene-list .nm{font-weight:600;}
+  .scene-list .ds{color:var(--muted);font-size:12.5px;}
+  .scene-list .cite{color:#4a8fd6;font-size:11.5px;font-weight:600;}
+  .ref-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+  .ref-list li{font-size:11.5px;line-height:1.55;color:var(--muted);display:flex;gap:8px;}
+  .ref-list .n{flex:0 0 auto;color:#4a8fd6;font-weight:600;min-width:20px;}
+  .note{margin-top:12px;padding-top:11px;border-top:1px solid var(--line);
+    font-size:11.5px;color:var(--muted);line-height:1.7;}
+</style>
+
+<div class="wrap" lang="ja">
+  <header class="page-head">
+    <h1>分子接近の物語 ― プレビュー動画（全6シーン・1分40秒）</h1>
+    <p>出典論文が示した分子機構を、発光する細胞・タンパク質鎖・化学構造として描き直したプレビューです。学術ラベルはコントロールバーから抽象表現へ切り替えられます。</p>
+  </header>
+
+  <div class="player-card">
+    <div class="stage-frame" id="stageFrame">
+      <svg id="stage" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <filter id="gS" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="3" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="gM" x="-90%" y="-90%" width="280%" height="280%">
+            <feGaussianBlur stdDeviation="7" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="gL" x="-120%" y="-120%" width="340%" height="340%">
+            <feGaussianBlur stdDeviation="18" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+
+          <!-- organic, drifting cell membrane -->
+          <filter id="memA" x="-45%" y="-45%" width="190%" height="190%">
+            <feTurbulence id="turbA" type="fractalNoise" baseFrequency="0.013" numOctaves="3" seed="7" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="30" xChannelSelector="R" yChannelSelector="G" result="d"/>
+            <feGaussianBlur in="d" stdDeviation="3.5"/>
+          </filter>
+          <filter id="memB" x="-45%" y="-45%" width="190%" height="190%">
+            <feTurbulence id="turbB" type="fractalNoise" baseFrequency="0.017" numOctaves="3" seed="21" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G" result="d"/>
+            <feGaussianBlur in="d" stdDeviation="2.6"/>
+          </filter>
+          <!-- granular, lit cell surface -->
+          <filter id="grain" x="-25%" y="-25%" width="150%" height="150%">
+            <feTurbulence id="turbG" type="fractalNoise" baseFrequency="0.055" numOctaves="4" seed="3" result="n"/>
+            <feDiffuseLighting in="n" lighting-color="#a8f0ff" surfaceScale="2.6" diffuseConstant="1.1" result="lit">
+              <feDistantLight azimuth="130" elevation="58"/>
+            </feDiffuseLighting>
+            <feComposite in="lit" in2="SourceGraphic" operator="in" result="c"/>
+            <feBlend in="c" in2="SourceGraphic" mode="screen"/>
+          </filter>
+
+          <radialGradient id="bgGrad" cx="50%" cy="44%" r="84%">
+            <stop id="bgStop0" offset="0%" stop-color="#0a1230"/>
+            <stop id="bgStop1" offset="100%" stop-color="#02030a"/>
+          </radialGradient>
+          <radialGradient id="magentaCell" cx="42%" cy="38%" r="62%">
+            <stop offset="0%" stop-color="#7a2ea8" stop-opacity=".62"/>
+            <stop offset="58%" stop-color="#4a1470" stop-opacity=".45"/>
+            <stop offset="100%" stop-color="#2a0942" stop-opacity=".08"/>
+          </radialGradient>
+          <radialGradient id="magentaRim" cx="50%" cy="50%" r="50%">
+            <stop offset="72%" stop-color="#e05fd8" stop-opacity="0"/>
+            <stop offset="88%" stop-color="#e264d4" stop-opacity=".55"/>
+            <stop offset="100%" stop-color="#ff8ae8" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="cyanCell" cx="38%" cy="34%" r="66%">
+            <stop offset="0%" stop-color="#3fd8f0" stop-opacity=".55"/>
+            <stop offset="55%" stop-color="#1878b8" stop-opacity=".5"/>
+            <stop offset="100%" stop-color="#062a52" stop-opacity=".22"/>
+          </radialGradient>
+          <radialGradient id="cyanRim" cx="50%" cy="50%" r="50%">
+            <stop offset="74%" stop-color="#7fe8ff" stop-opacity="0"/>
+            <stop offset="90%" stop-color="#8ff0ff" stop-opacity=".5"/>
+            <stop offset="100%" stop-color="#c8faff" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="beadGold" cx="36%" cy="34%" r="64%">
+            <stop offset="0%" stop-color="#fff0c8"/>
+            <stop offset="45%" stop-color="#ffc25a"/>
+            <stop offset="100%" stop-color="#c46f10"/>
+          </radialGradient>
+          <radialGradient id="beadCyan" cx="36%" cy="34%" r="64%">
+            <stop offset="0%" stop-color="#eaffff"/>
+            <stop offset="45%" stop-color="#7fe4ff"/>
+            <stop offset="100%" stop-color="#1a7ba8"/>
+          </radialGradient>
+          <radialGradient id="spikeGold" cx="38%" cy="34%" r="66%">
+            <stop offset="0%" stop-color="#ffe9a8"/>
+            <stop offset="50%" stop-color="#e8a028"/>
+            <stop offset="100%" stop-color="#7a4406"/>
+          </radialGradient>
+          <radialGradient id="coreFade" cx="50%" cy="50%" r="50%">
+            <stop id="coreStop0" offset="0%" stop-color="#8fd8ff" stop-opacity=".5"/>
+            <stop id="coreStop1" offset="58%" stop-color="#5aa8ff" stop-opacity=".16"/>
+            <stop offset="100%" stop-color="#5aa8ff" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="goldFade" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffd782" stop-opacity=".8"/>
+            <stop offset="100%" stop-color="#ffb347" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="dawnFade" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fffdf6" stop-opacity=".98"/>
+            <stop offset="45%" stop-color="#ffe6ab" stop-opacity=".5"/>
+            <stop offset="100%" stop-color="#ffd48a" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="shaftGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#bfe4ff" stop-opacity=".3"/>
+            <stop offset="100%" stop-color="#bfe4ff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <rect x="-160" y="-160" width="1120" height="770" fill="url(#bgGrad)"/>
+
+        <g id="camera">
+          <g id="warpG"></g>
+          <g id="shaftG" opacity="0"></g>
+          <g id="hexG" stroke="#4fd6c8" fill="none" opacity="0"></g>
+          <g id="coreGlow"></g>
+          <g id="cellsG"></g>
+          <g id="ribbonG" opacity="0"></g>
+          <g id="chainsG"></g>
+          <g id="spikeG" opacity="0"></g>
+          <g id="chemG" opacity="0"></g>
+          <g id="mistG"></g>
+          <g id="sourcesG"></g>
+          <g id="pathsG" fill="none"></g>
+          <g id="cometsG"></g>
+          <g id="bridgeG" fill="none"></g>
+          <g id="fragG"></g>
+          <g id="ringsG" fill="none"></g>
+          <g id="sparksG"></g>
+          <g id="netLinesG" stroke="#8fc9ff" fill="none"></g>
+          <g id="netNodesG"></g>
+          <g id="labelsG"></g>
+          <g id="designG" opacity="0"></g>
+          <g id="signalG"></g>
+          <g id="streaksG" opacity="0"></g>
+          <g id="dawnG" opacity="0"></g>
+          <g id="roadG" opacity="0"></g>
+          <g id="endG" opacity="0"></g>
+        </g>
+      </svg>
+
+      <div class="flash-layer" id="flashLayer"></div>
+      <div class="vignette" id="vignette"></div>
+      <div class="scene-tag" id="sceneTag">シーン1・問い</div>
+      <div class="caption-zone" id="captionZone"><div class="caption-box" id="captionBox"></div></div>
+
+      <button class="play-overlay" id="playOverlay">
+        <span class="po-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="po-label">タップして再生（音声つき）</span>
+      </button>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl-btn" id="playBtn" aria-label="再生・一時停止">
+        <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+      </button>
+      <button class="ctrl-btn" id="replayBtn" aria-label="最初から再生">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+      </button>
+      <button class="ctrl-btn" id="narrationBtn" aria-pressed="true" aria-label="ナレーション オン・オフ">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <svg class="off-slash" viewBox="0 0 24 24"><line x1="3" y1="3" x2="21" y2="21"/></svg>
+      </button>
+      <button class="ctrl-btn" id="musicBtn" aria-pressed="true" aria-label="音楽 オン・オフ">
+        <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        <svg class="off-slash" viewBox="0 0 24 24"><line x1="3" y1="3" x2="21" y2="21"/></svg>
+      </button>
+      <button class="ctrl-btn" id="labelBtn" aria-pressed="true" aria-label="学術ラベル 実名・抽象">
+        <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm0 6h12v2H3v-2zm0 6h16v2H3v-2z"/></svg>
+        <svg class="off-slash" viewBox="0 0 24 24"><line x1="3" y1="3" x2="21" y2="21"/></svg>
+      </button>
+      <div class="scrub-wrap">
+        <input type="range" id="scrub" min="0" max="100" step="0.02" value="0">
+        <div class="scrub-ticks">
+          <i style="left:13%"></i><i style="left:29%"></i><i style="left:46%"></i>
+          <i style="left:63%"></i><i style="left:81%"></i>
+        </div>
+      </div>
+      <div class="time-label" id="timeLabel">0:00 / 1:40</div>
+    </div>
+    <div class="status-strip" id="statusStrip"></div>
+  </div>
+
+  <div class="info-card">
+    <h2>シーン構成と対応する出典</h2>
+    <ul class="scene-list">
+      <li><span class="tt">0:00-0:13</span><span><span class="nm">問い</span><br><span class="ds">星屑の中から、小分子の化学構造が一本ずつ描かれて現れる</span></span></li>
+      <li><span class="tt">0:13-0:29</span><span><span class="nm">歴史的転換点</span> <span class="cite">[1,2]</span><br><span class="ds">三つの拠点の光が収束し、小分子が足場タンパク質と標的タンパク質を橋渡しする</span></span></li>
+      <li><span class="tt">0:29-0:46</span><span><span class="nm">エビデンスが世界を変える</span> <span class="cite">[1,2,3]</span><br><span class="ds">標識された標的タンパク質鎖がほどけ、断片となって拡散する</span></span></li>
+      <li><span class="tt">0:46-1:03</span><span><span class="nm">設計する科学へ</span> <span class="cite">[4,5]</span><br><span class="ds">構造式が設計格子の上で書き換えられ、足場の立体構造が変化する</span></span></li>
+      <li><span class="tt">1:03-1:21</span><span><span class="nm">分子機構から免疫へ</span> <span class="cite">[3,6,7]</span><br><span class="ds">紫の細胞から光の鎖が伸び、質感のあるT細胞が活性化する</span></span></li>
+      <li><span class="tt">1:21-1:40</span><span><span class="nm">新時代の幕開け</span> <span class="cite">[8,9]</span><br><span class="ds">すべての光が集まり、夜明けのように白金と金へ開く</span></span></li>
+    </ul>
+  </div>
+
+  <div class="info-card">
+    <h2>出典</h2>
+    <ul class="ref-list">
+      <li><span class="n">1.</span><span>Krönke J, et al. Lenalidomide causes selective degradation of IKZF1 and IKZF3 in multiple myeloma cells. Science. 2014;343:301-305.</span></li>
+      <li><span class="n">2.</span><span>Lu G, et al. The myeloma drug lenalidomide promotes the cereblon-dependent destruction of Ikaros proteins. Science. 2014;343:305-309.</span></li>
+      <li><span class="n">3.</span><span>Gandhi AK, et al. Immunomodulatory agents lenalidomide and pomalidomide co-stimulate T cells by inducing degradation of Ikaros and Aiolos. Br J Haematol. 2014.</span></li>
+      <li><span class="n">4.</span><span>Hansen JD, et al. Discovery of CRBN E3 Ligase Modulator CC-92480 for the Treatment of Relapsed and Refractory Multiple Myeloma. J Med Chem. 2020;63(13):6648-6676.</span></li>
+      <li><span class="n">5.</span><span>Watson ER, et al. Molecular glue CELMoD compounds are regulators of cereblon conformation. Science. 2022;378(6619):549-553.</span></li>
+      <li><span class="n">6.</span><span>Gaffney B, et al. Mezigdomide (CC-92480), a novel cereblon E3 ligase modulator, induces vulnerability of multiple myeloma cells to T-cell-mediated killing. Blood. 2022;140(suppl 1):7108-7109.</span></li>
+      <li><span class="n">7.</span><span>Chiu H, et al. Mezigdomide reverses T-cell exhaustion through degradation of Aiolos/Ikaros and reinvigoration of cytokine production pathways. Blood. 2023;142(suppl 1):335.</span></li>
+      <li><span class="n">8.</span><span>Liu Y, et al. Targeting Ikaros and Aiolos: reviewing novel protein degraders for the treatment of multiple myeloma. Expert Rev Hematol. 2024;17(8):445-465.</span></li>
+      <li><span class="n">9.</span><span>Mezigdomide, carfilzomib, and dexamethasone (MeziKd) vs Kd in RRMM: SUCCESSOR-2. J Clin Oncol. 2026;44(17 suppl):LBA7506.</span></li>
+    </ul>
+    <p class="note">
+      画面内の描画はすべて本動画のために作成したオリジナルです。出典論文に掲載された図版そのものは転載していません（学術誌の図の転載には出版社の許諾が必要なため）。引用番号は各シーンが依拠する知見の出典を示します。<br>
+      化学構造は本剤クラスに共通する骨格を様式化して描いたもので、特定化合物の正確な構造式ではありません。<br>
+      ラストカットの社名・プロジェクト名はプレースホルダーです。
+    </p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const END_TITLE = "社名／プロジェクト名";
+  const DURATION = 100;
+  const CX = 400, CY = 210;
+  const svgns = "http://www.w3.org/2000/svg";
+  const $ = id => document.getElementById(id);
+
+  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  function smoothstep(e0,e1,x){ const t=clamp((x-e0)/(e1-e0),0,1); return t*t*(3-2*t); }
+  const easeOut=x=>1-Math.pow(1-x,3);
+  const easeOutQuint=x=>1-Math.pow(1-x,5);
+  function polar(cx,cy,r,d){ const a=d*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+  function el(tag,attrs,parent){
+    const e=document.createElementNS(svgns,tag);
+    for(const k in attrs) e.setAttribute(k,attrs[k]);
+    if(parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(p,a,c){ const e=el("text",a,p); e.textContent=c; return e; }
+  function hx(h){ return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+  function mixHex(a,b,t){
+    const A=hx(a),B=hx(b);
+    return `rgb(${Math.round(lerp(A[0],B[0],t))},${Math.round(lerp(A[1],B[1],t))},${Math.round(lerp(A[2],B[2],t))})`;
+  }
+
+  /* ======================= timeline ======================= */
+  const CUE={ s1a:0.3,s1b:6.7, s2a:13.5,s2b:21.0, s3a:29.5,s3b:36.0,
+              s4a:46.5,s4b:51.9,s4c:57.7, s5a:64.0,s5b:72.2,
+              s6a:82.0,s6b:85.8,s6c:89.6, end:97.0 };
+  const S2=13,S3=29,S4=46,S5=63,S6=81;
+
+  const captions=[
+    {s:CUE.s1a+0.5,e:6.2, t:"効くという事実の先に、まだ見えていない答えがあった。"},
+    {s:CUE.s1b+0.5,e:11.9,t:"私たちは、その理由を知りたかった。"},
+    {s:CUE.s2a+0.5,e:20.4,t:"複数の研究チームが、同じ答えにたどり着いた。"},
+    {s:CUE.s2b+0.5,e:27.8,t:"鍵は、分子同士を近づけるという発想だった。"},
+    {s:CUE.s3a+0.5,e:35.4,t:"薬は、標的を抑えるだけではない。"},
+    {s:CUE.s3b+0.5,e:43.2,t:"標的の運命を変えるという、新たな創薬の視点が生まれた。"},
+    {s:CUE.s4a+0.5,e:51.3,t:"発見は、次の問いを生んだ。"},
+    {s:CUE.s4b+0.5,e:57.1,t:"この分解を、意図して設計できるだろうか。"},
+    {s:CUE.s4c+0.5,e:62.9,t:"そして、狙い通りに分子を導くという発想が、ここから生まれた。"},
+    {s:CUE.s5a+0.5,e:71.6,t:"分子機構への理解は、免疫細胞の生物学を見つめ直す視点をもたらした。"},
+    {s:CUE.s5b+0.5,e:79.3,t:"そして、免疫細胞の機能に関わる可能性も示している。"},
+    {s:CUE.s6a+0.5,e:85.2,t:"問いは、理解へ。"},
+    {s:CUE.s6b+0.5,e:89.0,t:"理解は、設計へ。"},
+    {s:CUE.s6c+0.5,e:96.4,t:"そして今、分子を狙って導くという新たな時代が始まる。"},
+  ];
+
+  const flashes=[
+    {t:S2,a:.66,d:.7},{t:20,a:.28,d:.5},{t:25,a:.24,d:.4},{t:27,a:.34,d:.55},
+    {t:S3,a:.8,d:.85},{t:37,a:.5,d:.7},{t:S4,a:.68,d:.8},{t:CUE.s4c,a:.56,d:.9},
+    {t:S5,a:.62,d:.9},{t:S6,a:.74,d:.9},{t:CUE.s6b,a:.86,d:1.3},{t:CUE.end,a:.9,d:1.4},
+  ];
+  function flashAt(t){
+    let v=0;
+    for(const f of flashes){ const d=t-f.t; if(d>=0&&d<f.d) v=Math.max(v,f.a*Math.pow(1-d/f.d,2.3)); }
+    return v;
+  }
+  function shakeAt(t){
+    let sx=0,sy=0,rr=0;
+    for(const f of flashes){
+      const d=t-f.t;
+      if(d>=0&&d<0.55){
+        const k=Math.pow(1-d/0.55,2)*f.a;
+        sx+=Math.sin(d*88)*8*k; sy+=Math.cos(d*74)*6*k; rr+=Math.sin(d*62)*0.8*k;
+      }
+    }
+    return [sx,sy,rr];
+  }
+  const ringDefs=[
+    {t:S2,r:340,d:1.7,w:3,c:"#a8dcff"},{t:20,r:300,d:1.5,w:2.4,c:"#d6ecff"},
+    {t:25,r:220,d:1.2,w:2.2,c:"#ffd28f"},{t:27,r:360,d:1.6,w:3,c:"#ffcf8a"},
+    {t:S3,r:460,d:2.1,w:4.2,c:"#cbb8ff"},{t:S3+0.5,r:420,d:2.1,w:2.6,c:"#a8dcff"},
+    {t:37,r:440,d:2.1,w:3.4,c:"#ffe2ab"},{t:CUE.s4c,r:300,d:1.8,w:3,c:"#ffd782"},
+    {t:CUE.s5a,r:330,d:2,w:3.4,c:"#ffcf6e"},{t:CUE.s5b+2,r:280,d:1.8,w:2.6,c:"#8ff0dc"},
+    {t:S6,r:480,d:2.2,w:3.6,c:"#e3d0ff"},{t:CUE.s6b,r:560,d:2.6,w:4,c:"#fff2cf"},
+  ];
+
+  function energyAt(t){
+    if(t<5) return 0;
+    if(t<S2) return 0.4*smoothstep(5,7,t);
+    if(t<S3) return lerp(0.4,0.95,smoothstep(S2,S2+1,t));
+    if(t<S4) return 1.15;
+    if(t<S5) return 1.0;
+    if(t<S6) return lerp(1.0,1.2,smoothstep(S5,S5+2,t));
+    return lerp(1.3,0.5,smoothstep(96,99,t));
+  }
+  const WSTEP=0.1, warpTable=[0];
+  for(let i=1;i<=Math.ceil(DURATION/WSTEP)+2;i++)
+    warpTable[i]=warpTable[i-1]+(80+220*energyAt(i*WSTEP))*WSTEP;
+  function warpDist(t){
+    const i=clamp(Math.floor(t/WSTEP),0,warpTable.length-2);
+    return lerp(warpTable[i],warpTable[i+1],(t-i*WSTEP)/WSTEP);
+  }
+
+  /* ======================= reusable builders ======================= */
+  /* glowing organic cell: layered gradient body + turbulent membrane + rim light */
+  function makeCell(parent,cx,cy,r,opt){
+    const g=el("g",{opacity:0},parent);
+    const halo=el("circle",{cx,cy,r:r*1.28,fill:opt.body,filter:"url(#gL)",opacity:.5},g);
+    const body=el("circle",{cx,cy,r,fill:opt.body,filter:opt.mem},g);
+    const rim=el("circle",{cx,cy,r:r*1.02,fill:opt.rim,filter:opt.mem},g);
+    const edge=el("circle",{cx,cy,r,fill:"none",stroke:opt.edge,"stroke-width":1.4,
+      filter:opt.mem,opacity:.75},g);
+    const surface=opt.grain
+      ? el("circle",{cx,cy,r:r*0.985,fill:opt.grainFill||"#0e4a72",filter:"url(#grain)",opacity:.55},g)
+      : null;
+    return {g,halo,body,rim,edge,surface,cx,cy,r};
+  }
+  /* protein rendered as a chain of lit beads following a path */
+  function makeBeadChain(parent,d,count,grad,radius,glow){
+    const g=el("g",{opacity:0},parent);
+    const guide=el("path",{d,fill:"none",stroke:"none"},g);
+    const len=guide.getTotalLength();
+    const beads=[];
+    for(let i=0;i<count;i++){
+      const p=guide.getPointAtLength(len*(i/(count-1)));
+      beads.push({e:el("circle",{cx:p.x,cy:p.y,r:radius,fill:`url(#${grad})`,
+        filter:glow?"url(#gS)":null},g), x0:p.x, y0:p.y, i});
+    }
+    return {g,beads,len,guide};
+  }
+  /* protein ribbon: coiled helix stroked along a base curve */
+  function ribbonPath(x0,y0,x1,y1,coils,amp,segs){
+    const pts=[];
+    for(let i=0;i<=segs;i++){
+      const u=i/segs;
+      const bx=lerp(x0,x1,u), by=lerp(y0,y1,u)+Math.sin(u*Math.PI)* -28;
+      const ang=Math.atan2(y1-y0,x1-x0)+Math.PI/2;
+      const off=Math.sin(u*coils*Math.PI*2)*amp*Math.sin(u*Math.PI);
+      pts.push([bx+Math.cos(ang)*off, by+Math.sin(ang)*off]);
+    }
+    return "M"+pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L");
+  }
+  /* spiky particle: lit sphere with radial protrusions */
+  function makeSpike(parent,cx,cy,r,grad,edge){
+    const g=el("g",{opacity:0},parent);
+    const spin=el("g",{},g);
+    for(let i=0;i<14;i++){
+      const a=i*(360/14);
+      const [bx1,by1]=polar(0,0,r*0.9,a-5);
+      const [bx2,by2]=polar(0,0,r*0.9,a+5);
+      const [tx,ty]=polar(0,0,r*1.24,a);
+      el("path",{d:`M${bx1.toFixed(1)},${by1.toFixed(1)} L${tx.toFixed(1)},${ty.toFixed(1)} L${bx2.toFixed(1)},${by2.toFixed(1)} Z`,
+        fill:`url(#${grad})`,opacity:.9},spin);
+    }
+    el("circle",{cx:0,cy:0,r,fill:`url(#${grad})`},spin);
+    el("circle",{cx:0,cy:0,r:r*0.52,fill:"rgba(0,0,0,.28)"},spin);
+    el("circle",{cx:0,cy:0,r,fill:"none",stroke:edge,"stroke-width":1,opacity:.55},spin);
+    g.setAttribute("transform",`translate(${cx} ${cy})`);
+    return {g,spin,cx,cy,r};
+  }
+
+  /* ======================= build: field ======================= */
+  const ZSPAN=1500, FOV=620;
+  const warp=[];
+  for(let i=0;i<110;i++)
+    warp.push({x:(Math.random()-0.5)*1500,y:(Math.random()-0.5)*950,
+               z0:Math.random()*ZSPAN,r:0.7+Math.random()*1.4,hue:Math.random()});
+  const warpEls=warp.map(()=>el("circle",{fill:"#d5e6ff"},$("warpG")));
+
+  const shaftG=$("shaftG"), shaftInner=el("g",{},shaftG);
+  for(let i=0;i<7;i++){
+    const a=i*(360/7);
+    const [x1,y1]=polar(CX,CY,60,a-3), [x2,y2]=polar(CX,CY,640,a-9);
+    const [x3,y3]=polar(CX,CY,640,a+9), [x4,y4]=polar(CX,CY,60,a+3);
+    el("path",{d:`M${x1},${y1} L${x2},${y2} L${x3},${y3} L${x4},${y4} Z`,fill:"url(#shaftGrad)"},shaftInner);
+  }
+  const coreGlow=el("circle",{cx:CX,cy:CY,r:160,fill:"url(#coreFade)",opacity:0},$("coreGlow"));
+  const coreStop0=$("coreStop0"), coreStop1=$("coreStop1");
+
+  /* ======================= build: chemical structure ======================= */
+  /* stylised small-molecule skeleton: fused bicyclic + imide ring + linked heterocycle */
+  const chemG=$("chemG"), chemStrokes=[], chemFills=[];
+  (function buildChem(){
+    const S=el("g",{},chemG);
+    function hexPts(cx,cy,r,rot){
+      return [0,1,2,3,4,5].map(i=>{
+        const a=(60*i+rot)*Math.PI/180;
+        return [cx+r*Math.cos(a), cy+r*Math.sin(a)];
+      });
+    }
+    function poly(pts,close,w,col){
+      const d="M"+pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L")+(close?" Z":"");
+      const p=el("path",{d,fill:"none",stroke:col||"#a8e4ff","stroke-width":w||1.5,
+        "stroke-linejoin":"round","stroke-linecap":"round"},S);
+      p._len=p.getTotalLength();
+      p.setAttribute("stroke-dasharray",p._len);
+      chemStrokes.push(p);
+      return pts;
+    }
+    /* benzene ring */
+    const A=hexPts(-92,0,26,0); poly(A,true,1.6);
+    /* inner double-bond marks */
+    [[0,1],[2,3],[4,5]].forEach(([i,j])=>{
+      const a=A[i],b=A[j], mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2;
+      const sx=lerp(a[0],mx,0.22)+(-92-mx)*0.16, sy=lerp(a[1],my,0.22)+(0-my)*0.16;
+      const ex=lerp(b[0],mx,0.22)+(-92-mx)*0.16, ey=lerp(b[1],my,0.22)+(0-my)*0.16;
+      poly([[sx,sy],[ex,ey]],false,1.2,"#8fd8ff");
+    });
+    /* fused 5-membered ring with carbonyl */
+    const f1=A[0], f2=A[5];
+    poly([f1,[-38,-20],[-22,0],[-38,20],f2],true,1.6);
+    poly([[-22,0],[-4,0]],false,1.4);
+    poly([[-38,-20],[-40,-40]],false,1.3);
+    txt(S,{x:-40,y:-46,"text-anchor":"middle",fill:"#bfeaff","font-size":11,"font-family":"inherit"},"O");
+    /* imide ring */
+    const C=hexPts(30,0,26,0); poly(C,true,1.6);
+    poly([[-4,0],[C[3][0],C[3][1]]],false,1.4);
+    poly([[C[1][0],C[1][1]],[C[1][0]+6,C[1][1]-22]],false,1.3);
+    poly([[C[5][0],C[5][1]],[C[5][0]+6,C[5][1]+22]],false,1.3);
+    txt(S,{x:C[1][0]+6,y:C[1][1]-27,"text-anchor":"middle",fill:"#bfeaff","font-size":11,"font-family":"inherit"},"O");
+    txt(S,{x:C[5][0]+6,y:C[5][1]+34,"text-anchor":"middle",fill:"#bfeaff","font-size":11,"font-family":"inherit"},"O");
+    txt(S,{x:C[0][0]+12,y:C[0][1]+4,"text-anchor":"middle",fill:"#bfeaff","font-size":11,"font-family":"inherit"},"N");
+    /* linker + terminal ring */
+    poly([[C[0][0],C[0][1]],[92,-16],[116,2]],false,1.4);
+    const D=hexPts(142,16,22,10); poly(D,true,1.5);
+    txt(S,{x:D[3][0]-9,y:D[3][1]+4,"text-anchor":"middle",fill:"#bfeaff","font-size":10,"font-family":"inherit"},"N");
+    /* highlight hexagons, as in the reference frame */
+    [[-92,0,20],[30,0,20]].forEach(([cx,cy,r])=>{
+      const pts=hexPts(cx,cy,r,0);
+      chemFills.push(el("path",{d:"M"+pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L")+" Z",
+        fill:"rgba(255,255,255,.9)",opacity:0,filter:"url(#gS)"},S));
+    });
+  })();
+
+  /* ======================= build: proteins & cells ======================= */
+  const cellsG=$("cellsG");
+  /* scene 5 cells (reference frame: magenta cell left, granular cyan cell right) */
+  const cellA=makeCell(cellsG,242,222,132,{body:"url(#magentaCell)",rim:"url(#magentaRim)",
+    edge:"#e264d4",mem:"url(#memA)"});
+  const cellB=makeCell(cellsG,590,206,116,{body:"url(#cyanCell)",rim:"url(#cyanRim)",
+    edge:"#8ff0ff",mem:"url(#memB)",grain:true,grainFill:"#0d5a86"});
+  /* organelle rings inside the magenta cell */
+  const organelles=[[196,168,13,"#4fe08a"],[318,252,10,"#ff6b7a"],[214,286,8,"#7fd8ff"]].map(([x,y,r,c])=>{
+    const g=el("g",{opacity:0},cellsG);
+    el("circle",{cx:x,cy:y,r,fill:"none",stroke:c,"stroke-width":3,filter:"url(#gS)",opacity:.85},g);
+    el("circle",{cx:x,cy:y,r:r*0.45,fill:c,opacity:.35},g);
+    return g;
+  });
+  /* golden protein chains inside the magenta cell */
+  const innerChains=[
+    makeBeadChain(cellsG,"M188,240 Q214,214 236,236 Q258,258 282,232",13,"beadGold",5.2,true),
+    makeBeadChain(cellsG,"M212,300 Q238,286 252,306 Q268,326 296,306",11,"beadGold",4.8,true),
+    makeBeadChain(cellsG,"M258,176 Q286,158 306,180 Q324,200 348,186",12,"beadGold",5,true),
+  ];
+  /* signal chain travelling between the two cells */
+  const signalChain=makeBeadChain($("signalG"),"M352,282 Q436,346 500,268 Q536,224 566,214",26,"beadCyan",3.6,true);
+
+  /* scene 2/3 主要素: scaffold ribbon (teal), target protein chain (gold), spiky particle */
+  const ribbonG=$("ribbonG");
+  const ribbonPathEl=el("path",{d:ribbonPath(150,268,268,214,4.2,26,90),fill:"none",
+    stroke:"#3fe8b8","stroke-width":7,"stroke-linecap":"round",filter:"url(#gM)",opacity:.9},ribbonG);
+  ribbonPathEl._len=ribbonPathEl.getTotalLength();
+  ribbonPathEl.setAttribute("stroke-dasharray",ribbonPathEl._len);
+  const ribbonCore=el("path",{d:ribbonPath(150,268,268,214,4.2,26,90),fill:"none",
+    stroke:"#c8fff0","stroke-width":2,"stroke-linecap":"round",opacity:.8},ribbonG);
+  ribbonCore.setAttribute("stroke-dasharray",ribbonPathEl._len);
+  el("circle",{cx:150,cy:268,r:7,fill:"#8ffce0",filter:"url(#gS)"},ribbonG);
+
+  const targetChain=makeBeadChain($("chainsG"),
+    "M556,214 Q596,186 628,214 Q660,242 700,220",16,"beadGold",6,true);
+  const spike=makeSpike($("spikeG"),628,268,30,"spikeGold","#ffd88a");
+  const spikeArc=el("path",{d:"M584,246 A56,56 0 0 1 676,242",fill:"none",stroke:"rgba(255,214,140,.5)",
+    "stroke-width":1.1},$("spikeG"));
+
+  /* bridging bonds drawn by the small molecule */
+  const bridgeG=$("bridgeG");
+  const bridgeL=el("path",{d:"M282,226 Q330,206 352,204",stroke:"#bfeaff","stroke-width":1.6,
+    fill:"none",opacity:0,filter:"url(#gS)"},bridgeG);
+  const bridgeR=el("path",{d:"M452,204 Q506,208 552,214",stroke:"#ffd28f","stroke-width":1.6,
+    fill:"none",opacity:0,filter:"url(#gS)"},bridgeG);
+  [bridgeL,bridgeR].forEach(p=>{p._len=p.getTotalLength();p.setAttribute("stroke-dasharray",p._len);});
+
+  /* degradation fragments */
+  const frags=[];
+  for(let i=0;i<34;i++){
+    const a=Math.random()*360, d=60+Math.random()*230;
+    frags.push({a,d,r:1.6+Math.random()*2.6,t0:CUE.s3a+0.6+Math.random()*2.2,
+      e:el("circle",{r:2,fill:"url(#beadGold)",opacity:0,filter:"url(#gS)"},$("fragG"))});
+  }
+
+  /* mist for scene 1 */
+  const mist=[];
+  for(let i=0;i<54;i++){
+    const [sx,sy]=polar(CX,CY,160+Math.random()*200,Math.random()*360);
+    mist.push({sx,sy,tx:CX+(Math.random()-0.5)*260,ty:CY+(Math.random()-0.5)*120,
+      t0:0.6+(i/54)*3.4,r:0.8+Math.random()*1.5,
+      e:el("circle",{r:1.4,fill:"#dff0ff",opacity:0},$("mistG"))});
+  }
+
+  /* ======================= build: scene 2 sources ======================= */
+  const sources=[[108,72],[692,72],[400,392]];
+  const sourceEls=sources.map(([x,y])=>{
+    const g=el("g",{opacity:0},$("sourcesG"));
+    el("circle",{cx:x,cy:y,r:22,fill:"#bfe4ff",filter:"url(#gL)",opacity:.35},g);
+    el("circle",{cx:x,cy:y,r:4,fill:"#ffffff",filter:"url(#gS)"},g);
+    const halo=el("circle",{cx:x,cy:y,r:6,fill:"none",stroke:"#cfe8ff","stroke-width":1.4},g);
+    const halo2=el("circle",{cx:x,cy:y,r:6,fill:"none",stroke:"#9fd6ff","stroke-width":1},g);
+    return {g,halo,halo2};
+  });
+  const paths=sources.map(([x,y],i)=>{
+    const mx=(x+CX)/2,my=(y+CY)/2,nx=-(CY-y),ny=(CX-x),n=Math.hypot(nx,ny)||1;
+    const p=el("path",{d:`M${x},${y} Q${mx+(nx/n)*52},${my+(ny/n)*52} ${CX},${CY}`,
+      stroke:"#9fd6ff","stroke-width":1.6,filter:"url(#gS)"},$("pathsG"));
+    p._len=p.getTotalLength(); p.setAttribute("stroke-dasharray",p._len);
+    p._t0=CUE.s2a+1.1+i*0.45; p._t1=CUE.s2a+5.9+i*0.45;
+    return p;
+  });
+  const comets=paths.map(()=>({trail:Array.from({length:9},(_,k)=>
+    el("circle",{r:Math.max(.7,4-k*.42),fill:"#ffffff",opacity:0,filter:"url(#gS)"},$("cometsG")))}));
+
+  const ringEls=ringDefs.map(r=>el("circle",{cx:CX,cy:CY,r:0,stroke:r.c,"stroke-width":r.w,
+    opacity:0,fill:"none"},$("ringsG")));
+  const sparks=[];
+  function mkSparks(n,t0,life,ox,oy,spread,color){
+    for(let i=0;i<n;i++) sparks.push({t0,life,ox,oy,a:Math.random()*360,
+      dist:spread*(0.4+Math.random()*0.8),r:1+Math.random()*1.9,color});
+  }
+  mkSparks(24,27,1.3,352,204,180,"#cfeaff");
+  mkSparks(44,S3,2.0,CX,CY,350,"#ffd9a0");
+  mkSparks(28,CUE.s4c,1.8,CX,CY,250,"#ffd782");
+  mkSparks(30,S6,2.2,CX,CY,330,"#e6d4ff");
+  const sparkEls=sparks.map(s=>el("circle",{r:s.r,fill:s.color,opacity:0,filter:"url(#gS)"},$("sparksG")));
+
+  /* ======================= build: scene 3 evidence network ======================= */
+  const nodes=[];
+  for(let i=0;i<56;i++){
+    const a=Math.random()*360, rad=80+Math.pow(Math.random(),0.65)*230;
+    let [tx,ty]=polar(CX,CY-6,rad,a);
+    nodes.push({tx,ty:clamp(ty,32,380),t0:CUE.s3b-1.2+(i/56)*3.2,r:1.6+Math.random()*1.5});
+  }
+  const nodeEls=nodes.map(n=>el("circle",{r:n.r,fill:"#dff0ff",opacity:0},$("netNodesG")));
+  const netPairs=[];
+  for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+    const d=Math.hypot(nodes[i].tx-nodes[j].tx,nodes[i].ty-nodes[j].ty);
+    if(d<88) netPairs.push({i,j,d});
+  }
+  netPairs.sort(()=>Math.random()-0.5);
+  netPairs.length=Math.min(netPairs.length,56);
+  const netLineEls=netPairs.map(()=>el("line",{opacity:0,"stroke-width":0.8},$("netLinesG")));
+
+  /* ======================= build: scene 4 design ======================= */
+  const hexG=$("hexG"), hexes=[];
+  (function(){
+    const R=46,w=R*1.5,h=R*Math.sqrt(3);
+    for(let c=-1;c<13;c++)for(let r=-1;r<8;r++){
+      const cx=c*w, cy=r*h+(c%2?h/2:0);
+      if(cx<-60||cx>860||cy<-60||cy>510) continue;
+      let d="";
+      for(let i=0;i<6;i++){
+        const a=60*i*Math.PI/180;
+        d+=(i?"L":"M")+(cx+R*Math.cos(a)).toFixed(1)+","+(cy+R*Math.sin(a)).toFixed(1);
+      }
+      hexes.push({p:el("path",{d:d+"Z","stroke-width":0.8,opacity:0},hexG),
+                  dist:Math.hypot(cx-CX,cy-CY)});
+    }
+  })();
+  const designG=$("designG");
+  /* conformational states of the scaffold, ref [5] */
+  const conformA=el("path",{d:ribbonPath(300,300,500,300,3.4,30,70),fill:"none",stroke:"#3fe8b8",
+    "stroke-width":6,"stroke-linecap":"round",filter:"url(#gM)",opacity:.85},designG);
+  const conformB=el("path",{d:ribbonPath(300,300,500,300,5.2,16,70),fill:"none",stroke:"#7fe8ff",
+    "stroke-width":6,"stroke-linecap":"round",filter:"url(#gM)",opacity:0},designG);
+  const designMarks=[];
+  [[-92,0],[30,0],[142,16]].forEach(([mx,my],i)=>{
+    designMarks.push(el("circle",{cx:0,cy:0,r:26,fill:"none",stroke:"#ffd782","stroke-width":1.3,
+      "stroke-dasharray":"4 4",opacity:0,"data-mx":mx,"data-my":my},designG));
+  });
+  const goldHalo=el("circle",{cx:CX,cy:CY,r:150,fill:"url(#goldFade)",opacity:0},designG);
+
+  /* ======================= build: labels ======================= */
+  const labelsG=$("labelsG");
+  const LABELS=[
+    {sci:"cereblon（足場）", abs:"足場タンパク質", x:150, y:300, ax:200, ay:274, t0:22.4, t1:29.6},
+    {sci:"小分子",           abs:"小分子",         x:400, y:150, ax:400, ay:176, t0:22.0, t1:29.6},
+    {sci:"Ikaros / Aiolos", abs:"標的タンパク質",  x:668, y:306, ax:640, ay:276, t0:23.0, t1:29.6},
+    {sci:"標的の分解",       abs:"標的の分解",      x:432, y:120, ax:412, ay:150, t0:31.0, t1:35.0},
+    {sci:"構造最適化 [4]",   abs:"構造最適化",      x:400, y:126, ax:400, ay:152, t0:53.4, t1:57.0},
+    {sci:"立体構造の変化 [5]",abs:"立体構造の変化",  x:400, y:352, ax:400, ay:326, t0:54.6, t1:60.4},
+    {sci:"設計された小分子",  abs:"設計された小分子", x:400, y:330, ax:400, ay:304, t0:58.6, t1:62.4},
+    {sci:"免疫細胞",         abs:"免疫細胞",        x:242, y:376, ax:242, ay:352, t0:66.0, t1:79.4},
+    {sci:"T細胞",            abs:"T細胞",           x:590, y:74,  ax:590, ay:100, t0:73.4, t1:79.4},
+  ];
+  const labelEls=LABELS.map(L=>{
+    const g=el("g",{opacity:0},labelsG);
+    el("line",{x1:L.x,y1:L.y+(L.ay>L.y?4:-6),x2:L.ax,y2:L.ay,
+      stroke:"rgba(220,236,255,.42)","stroke-width":1},g);
+    const t=txt(g,{x:L.x,y:L.y,"text-anchor":"middle",fill:"rgba(232,242,255,.94)",
+      "font-size":13,"letter-spacing":"0.06em","font-family":"inherit",
+      style:"paint-order:stroke;stroke:rgba(0,0,0,.55);stroke-width:3px"},L.sci);
+    return {g,t,def:L};
+  });
+
+  /* ======================= build: citation chip ======================= */
+  const citeChip=el("g",{opacity:0},labelsG);
+  el("rect",{x:640,y:392,width:132,height:26,rx:6,fill:"rgba(4,8,20,.6)",
+    stroke:"rgba(150,196,255,.28)","stroke-width":1},citeChip);
+  const citeText=txt(citeChip,{x:706,y:409,"text-anchor":"middle",fill:"rgba(158,208,255,.95)",
+    "font-size":11.5,"font-weight":600,"font-family":"inherit"},"");
+  const CITES=[
+    {t0:14.5,t1:28.4,s:"出典 [1,2]"},
+    {t0:30.0,t1:44.0,s:"出典 [1,2,3]"},
+    {t0:47.5,t1:62.4,s:"出典 [4,5]"},
+    {t0:64.5,t1:79.4,s:"出典 [3,6,7]"},
+    {t0:82.5,t1:93.0,s:"出典 [8,9]"},
+  ];
+
+  /* ======================= build: scene 6 ======================= */
+  const streaksG=$("streaksG"), streaks=[];
+  const sc=["#7fb6ff","#4fd6c8","#ffc069","#c8a6ff"];
+  for(let i=0;i<24;i++)
+    streaks.push({l:el("line",{stroke:sc[i%4],"stroke-width":2.4,opacity:0,filter:"url(#gS)"},streaksG),
+      a:i*15+Math.random()*7,delay:(i%8)*0.11,len:70+Math.random()*70});
+  const dawnCore=el("circle",{cx:CX,cy:CY,r:0,fill:"url(#dawnFade)"},$("dawnG"));
+  const roadG=$("roadG"), VPX=CX, VPY=CY-6;
+  el("path",{d:`M110,470 L${VPX-10},${VPY} L${VPX+10},${VPY} L690,470 Z`,fill:"rgba(255,246,220,.17)"},roadG);
+  el("line",{x1:110,y1:470,x2:VPX-8,y2:VPY,stroke:"rgba(255,238,190,.55)","stroke-width":2},roadG);
+  el("line",{x1:690,y1:470,x2:VPX+8,y2:VPY,stroke:"rgba(255,238,190,.55)","stroke-width":2},roadG);
+  const travellers=[];
+  for(let i=0;i<5;i++){
+    const g=el("g",{opacity:0},roadG);
+    if(i===0){
+      [0,60,120,180,240,300].map(a=>polar(0,0,11,a)).forEach((p,k,arr)=>{
+        const n=arr[(k+1)%arr.length];
+        el("line",{x1:p[0],y1:p[1],x2:n[0],y2:n[1],stroke:"#fff4d8","stroke-width":1.6},g);
+      });
+    } else if(i===1||i===3){
+      for(let k=0;k<7;k++){
+        const [x,y]=polar(0,0,4+Math.random()*9,Math.random()*360);
+        el("circle",{cx:x,cy:y,r:1.8,fill:"#fff8e4"},g);
+      }
+    } else if(i===2){
+      el("circle",{cx:0,cy:0,r:10,fill:"none",stroke:"#fff4d8","stroke-width":1.8},g);
+      el("circle",{cx:0,cy:0,r:4,fill:"rgba(255,248,228,.7)"},g);
+    } else {
+      el("path",{d:"M-12,6 Q0,-10 12,4",fill:"none",stroke:"#fff4d8","stroke-width":1.8},g);
+    }
+    travellers.push({g,offset:i*0.17});
+  }
+  const endG=$("endG");
+  const endTitleText=txt(endG,{x:CX,y:CY+14,"text-anchor":"middle",fill:"#2b2620",
+    "font-size":46,"font-weight":700,"letter-spacing":"0.08em","font-family":"inherit"},END_TITLE);
+  const endRule=el("line",{x1:CX-90,y1:CY+42,x2:CX+90,y2:CY+42,
+    stroke:"rgba(60,52,40,.35)","stroke-width":1.4},endG);
+
+  /* ======================= DOM refs ======================= */
+  const bgStop0=$("bgStop0"),bgStop1=$("bgStop1");
+  const flashLayer=$("flashLayer"),vignette=$("vignette");
+  const captionBox=$("captionBox"),captionZone=$("captionZone");
+  const sceneTag=$("sceneTag"),statusStrip=$("statusStrip"),playOverlay=$("playOverlay");
+  const camera=$("camera");
+  const turbA=$("turbA"),turbB=$("turbB"),turbG=$("turbG");
+
+  function setStatus(s){
+    if(!s){ statusStrip.textContent=""; statusStrip.classList.remove("show"); return; }
+    statusStrip.textContent=s; statusStrip.classList.add("show");
+  }
+
+  /* ======================= captions ======================= */
+  let captionText="";
+  function fitCaption(){
+    if(!captionText) return;
+    captionBox.style.transform="scale(1)";
+    const avail=captionZone.getBoundingClientRect().width, w=captionBox.scrollWidth;
+    captionBox.style.transform=`scale(${(w>0?Math.min(1,avail/w):1).toFixed(4)})`;
+  }
+  function setCaption(s){
+    if(s===captionText) return;
+    captionText=s; captionBox.textContent=s; fitCaption();
+  }
+  window.addEventListener("resize",fitCaption);
+
+  /* ======================= narration ======================= */
+  let narrationEnabled=true,narrationWorking=false,narrationChecked=false,jaVoice=null;
+  const canSpeak="speechSynthesis" in window;
+  function loadVoices(){
+    if(!canSpeak) return;
+    jaVoice=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.toLowerCase().startsWith("ja"))||null;
+  }
+  if(canSpeak){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+  function flagNarrationUnavailable(){
+    if(narrationWorking||!narrationEnabled) return;
+    narrationEnabled=false;
+    narrationBtn.classList.add("is-off");
+    narrationBtn.setAttribute("aria-pressed","false");
+    narrationBtn.disabled=true;
+    setStatus("この環境では音声ナレーションを再生できないようです（音楽のみ再生します）。字幕はナレーションと同一の文言です。");
+  }
+  function speakCaption(s){
+    if(!narrationEnabled||!canSpeak) return;
+    try{
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(s);
+      u.lang="ja-JP"; if(jaVoice) u.voice=jaVoice;
+      u.rate=0.92; u.pitch=0.78; u.volume=1;
+      u.onstart=()=>{narrationWorking=true;};
+      u.onerror=()=>flagNarrationUnavailable();
+      speechSynthesis.speak(u);
+      if(!narrationChecked){
+        narrationChecked=true;
+        setTimeout(()=>{ if(!narrationWorking) flagNarrationUnavailable(); },1900);
+      }
+    }catch(e){ flagNarrationUnavailable(); }
+  }
+
+  /* ======================= music ======================= */
+  const BEAT=0.5, STEP=BEAT/4;
+  let audioCtx=null,master=null,musicBus=null,delayNode=null,noiseBuf=null;
+  let padFilter=null,padOscs=[],padGain=null,subOsc=null,subGain=null;
+  let strOscs=[],strFilter=null,strGain=null,tremDepth=null;
+  let musicEnabled=true,audioFailed=false,lastStep=-1;
+
+  const CHORDS=[
+    {t:0,root:110,tones:[220,261.63,329.63]},{t:6.5,root:87.31,tones:[174.61,220,261.63]},
+    {t:13,root:110,tones:[220,261.63,329.63]},{t:17,root:87.31,tones:[174.61,220,261.63]},
+    {t:21,root:130.81,tones:[196,261.63,329.63]},{t:25,root:98,tones:[196,246.94,293.66]},
+    {t:29,root:130.81,tones:[196,261.63,329.63]},{t:33,root:98,tones:[196,246.94,293.66]},
+    {t:37,root:110,tones:[220,261.63,329.63]},{t:41,root:87.31,tones:[174.61,220,261.63]},
+    {t:44.5,root:130.81,tones:[196,261.63,329.63]},{t:46,root:87.31,tones:[174.61,220,261.63]},
+    {t:50,root:130.81,tones:[196,261.63,329.63]},{t:54,root:110,tones:[220,261.63,329.63]},
+    {t:58,root:87.31,tones:[174.61,220,261.63]},{t:61,root:130.81,tones:[196,261.63,329.63]},
+    {t:63,root:73.42,tones:[174.61,220,293.66]},{t:67,root:110,tones:[220,261.63,329.63]},
+    {t:71,root:87.31,tones:[174.61,220,261.63]},{t:75,root:98,tones:[196,246.94,293.66]},
+    {t:78,root:110,tones:[220,261.63,329.63]},{t:81,root:130.81,tones:[196,261.63,329.63]},
+    {t:85,root:87.31,tones:[174.61,220,261.63]},{t:88,root:130.81,tones:[196,261.63,329.63]},
+    {t:91,root:98,tones:[196,246.94,293.66]},{t:94,root:110,tones:[220,261.63,329.63]},
+    {t:96.5,root:87.31,tones:[174.61,220,261.63]},{t:98,root:130.81,tones:[196,261.63,329.63]},
+  ];
+  function chordAt(t){ let c=CHORDS[0]; for(const x of CHORDS){ if(t>=x.t) c=x; } return c; }
+  const leadNotes=[
+    {t:37,f:880,d:.55},{t:37.7,f:1046.5,d:.55},{t:38.4,f:1318.51,d:1.1},
+    {t:39.7,f:1046.5,d:.55},{t:40.4,f:880,d:1},
+    {t:58.2,f:698.46,d:.6},{t:59,f:880,d:.6},{t:59.8,f:1046.5,d:1.2},
+    {t:61.2,f:987.77,d:.6},{t:62,f:783.99,d:1},
+    {t:89.8,f:783.99,d:.5},{t:90.4,f:1046.5,d:.5},{t:91,f:1174.66,d:1},
+    {t:92.2,f:1046.5,d:.6},{t:93,f:1318.51,d:1.6},
+    {t:94.6,f:1046.5,d:.6},{t:95.3,f:880,d:.6},{t:96,f:1046.5,d:1.6},
+  ];
+  let leadFired=leadNotes.map(()=>false);
+  const brassHits=[{t:S6,d:1.2},{t:83,d:.9},{t:85,d:1.1},{t:88,d:1},{t:91,d:1},{t:94,d:1.3}];
+  let brassFired=brassHits.map(()=>false);
+  const riserDefs=[{t:11.4,d:1.6},{t:27.2,d:1.8},{t:44.4,d:1.6},{t:61.4,d:1.6},{t:79.4,d:1.6},{t:95.4,d:1.6}];
+  let riserFired=riserDefs.map(()=>false);
+  const crashDefs=[S2,S3,37,S4,CUE.s4c,S5,S6,CUE.s6b,CUE.end];
+  let crashFired=crashDefs.map(()=>false);
+  const shimmerDefs=[CUE.s6b,CUE.end];
+  let shimmerFired=shimmerDefs.map(()=>false);
+  let finaleFired=false;
+
+  function buildGraph(){
+    master=audioCtx.createGain(); master.gain.value=.95;
+    const comp=audioCtx.createDynamicsCompressor();
+    comp.threshold.value=-13; comp.knee.value=22; comp.ratio.value=5;
+    comp.attack.value=.004; comp.release.value=.16;
+    master.connect(comp); comp.connect(audioCtx.destination);
+    musicBus=audioCtx.createGain(); musicBus.gain.value=1; musicBus.connect(master);
+    delayNode=audioCtx.createDelay(); delayNode.delayTime.value=BEAT*.75;
+    const fb=audioCtx.createGain(); fb.gain.value=.32;
+    delayNode.connect(fb); fb.connect(delayNode);
+    const wet=audioCtx.createGain(); wet.gain.value=.4;
+    delayNode.connect(wet); wet.connect(musicBus);
+    padFilter=audioCtx.createBiquadFilter();
+    padFilter.type="lowpass"; padFilter.frequency.value=620; padFilter.Q.value=.8;
+    padGain=audioCtx.createGain(); padGain.gain.value=.0001;
+    padFilter.connect(padGain); padGain.connect(musicBus);
+    const c0=CHORDS[0];
+    padOscs=c0.tones.map((f,i)=>{
+      const o=audioCtx.createOscillator();
+      o.type="sawtooth"; o.frequency.value=f; o.detune.value=(i-1)*6;
+      const g=audioCtx.createGain(); g.gain.value=.2;
+      o.connect(g); g.connect(padFilter); o.start(); return o;
+    });
+    subOsc=audioCtx.createOscillator(); subOsc.type="sine"; subOsc.frequency.value=c0.root/2;
+    subGain=audioCtx.createGain(); subGain.gain.value=.0001;
+    subOsc.connect(subGain); subGain.connect(musicBus); subOsc.start();
+    strFilter=audioCtx.createBiquadFilter();
+    strFilter.type="lowpass"; strFilter.frequency.value=2300; strFilter.Q.value=.6;
+    strGain=audioCtx.createGain(); strGain.gain.value=.0001;
+    strFilter.connect(strGain); strGain.connect(musicBus);
+    const vib=audioCtx.createOscillator(); vib.type="sine"; vib.frequency.value=5.2;
+    const vibAmt=audioCtx.createGain(); vibAmt.gain.value=5.5;
+    vib.connect(vibAmt); vib.start();
+    strOscs=c0.tones.map((f,i)=>{
+      const o=audioCtx.createOscillator();
+      o.type="sawtooth"; o.frequency.value=f*2; o.detune.value=(i-1)*9;
+      vibAmt.connect(o.detune);
+      const g=audioCtx.createGain(); g.gain.value=.26;
+      o.connect(g); g.connect(strFilter); o.start(); return o;
+    });
+    const trem=audioCtx.createOscillator(); trem.type="sine"; trem.frequency.value=7.2;
+    tremDepth=audioCtx.createGain(); tremDepth.gain.value=0;
+    trem.connect(tremDepth); tremDepth.connect(strGain.gain); trem.start();
+    const n=2*audioCtx.sampleRate;
+    noiseBuf=audioCtx.createBuffer(1,n,audioCtx.sampleRate);
+    const d=noiseBuf.getChannelData(0);
+    for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  }
+  function ensureAudio(){
+    if(audioFailed) return;
+    try{
+      if(!audioCtx){ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); buildGraph(); }
+      if(audioCtx.state==="suspended") audioCtx.resume();
+    }catch(e){ audioFailed=true; setStatus("この端末・ブラウザでは音楽を再生できないようです。"); }
+  }
+  function noiseSrc(){ const s=audioCtx.createBufferSource(); s.buffer=noiseBuf; s.loop=true; return s; }
+  function piano(f,v){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime, out=audioCtx.createGain(); out.gain.value=1;
+    out.connect(musicBus); out.connect(delayNode);
+    [[1,1,1.7],[2,.34,1.1],[3,.15,.72],[4.2,.06,.45]].forEach(([m,a,dec])=>{
+      const o=audioCtx.createOscillator();
+      o.type=m===1?"triangle":"sine"; o.frequency.value=f*m;
+      const g=audioCtx.createGain();
+      g.gain.setValueAtTime(.0001,now);
+      g.gain.linearRampToValueAtTime(.3*a*v,now+.006);
+      g.gain.exponentialRampToValueAtTime(.0001,now+dec);
+      o.connect(g); g.connect(out); o.start(now); o.stop(now+dec+.05);
+    });
+  }
+  function kick(v){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime, o=audioCtx.createOscillator(); o.type="sine";
+    o.frequency.setValueAtTime(165,now); o.frequency.exponentialRampToValueAtTime(44,now+.13);
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.6*v,now+.006);
+    g.gain.exponentialRampToValueAtTime(.0001,now+.3);
+    o.connect(g); g.connect(master); o.start(now); o.stop(now+.34);
+  }
+  function tom(v){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime,o=audioCtx.createOscillator(); o.type="sine";
+    o.frequency.setValueAtTime(220,now); o.frequency.exponentialRampToValueAtTime(96,now+.24);
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.3*v,now+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,now+.36);
+    o.connect(g); g.connect(master); o.start(now); o.stop(now+.4);
+  }
+  function snare(v){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime,s=noiseSrc();
+    const bp=audioCtx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=1900; bp.Q.value=.9;
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.28*v,now+.005);
+    g.gain.exponentialRampToValueAtTime(.0001,now+.19);
+    s.connect(bp); bp.connect(g); g.connect(master); s.start(now); s.stop(now+.22);
+  }
+  function hat(open,v){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime,s=noiseSrc();
+    const hp=audioCtx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=7400;
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime((open?.13:.09)*v,now+.003);
+    g.gain.exponentialRampToValueAtTime(.0001,now+(open?.22:.055));
+    s.connect(hp); hp.connect(g); g.connect(master); s.start(now); s.stop(now+(open?.26:.09));
+  }
+  function bass(f,dur){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime;
+    const o=audioCtx.createOscillator(); o.type="sawtooth"; o.frequency.value=f;
+    const o2=audioCtx.createOscillator(); o2.type="square"; o2.frequency.value=f/2;
+    const fl=audioCtx.createBiquadFilter(); fl.type="lowpass";
+    fl.frequency.setValueAtTime(880,now); fl.frequency.exponentialRampToValueAtTime(240,now+dur*.9);
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.28,now+.012);
+    g.gain.exponentialRampToValueAtTime(.0001,now+dur);
+    o.connect(fl); o2.connect(fl); fl.connect(g); g.connect(master);
+    o.start(now); o2.start(now); o.stop(now+dur+.05); o2.stop(now+dur+.05);
+  }
+  function pluck(f,v){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime;
+    const o=audioCtx.createOscillator(); o.type="triangle"; o.frequency.value=f;
+    const fl=audioCtx.createBiquadFilter(); fl.type="lowpass";
+    fl.frequency.setValueAtTime(5200,now); fl.frequency.exponentialRampToValueAtTime(900,now+.3);
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.15*v,now+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,now+.34);
+    o.connect(fl); fl.connect(g); g.connect(musicBus); g.connect(delayNode);
+    o.start(now); o.stop(now+.4);
+  }
+  function leadNote(f,dur){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime;
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.19,now+.04);
+    g.gain.setValueAtTime(.19,now+dur*.6);
+    g.gain.exponentialRampToValueAtTime(.0001,now+dur+.18);
+    const fl=audioCtx.createBiquadFilter(); fl.type="lowpass"; fl.frequency.value=3200;
+    [0,1].forEach(i=>{
+      const o=audioCtx.createOscillator();
+      o.type=i?"sawtooth":"triangle"; o.frequency.value=f; o.detune.value=i?8:-8;
+      const og=audioCtx.createGain(); og.gain.value=i?.32:.5;
+      o.connect(og); og.connect(fl); o.start(now); o.stop(now+dur+.28);
+    });
+    fl.connect(g); g.connect(musicBus); g.connect(delayNode);
+  }
+  function brass(f,dur){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime;
+    const fl=audioCtx.createBiquadFilter(); fl.type="lowpass";
+    fl.frequency.setValueAtTime(700,now);
+    fl.frequency.linearRampToValueAtTime(2600,now+.16);
+    fl.frequency.linearRampToValueAtTime(1100,now+dur);
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.2,now+.07);
+    g.gain.setValueAtTime(.2,now+dur*.55);
+    g.gain.exponentialRampToValueAtTime(.0001,now+dur+.2);
+    [1,1.5,2].forEach((m,i)=>{
+      const o=audioCtx.createOscillator();
+      o.type="sawtooth"; o.frequency.value=f*m; o.detune.value=(i-1)*7;
+      const og=audioCtx.createGain(); og.gain.value=[.5,.24,.16][i];
+      o.connect(og); og.connect(fl); o.start(now); o.stop(now+dur+.3);
+    });
+    fl.connect(g); g.connect(musicBus);
+  }
+  function crash(){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime,s=noiseSrc();
+    const hp=audioCtx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=3600;
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.3,now+.01);
+    g.gain.exponentialRampToValueAtTime(.0001,now+1.6);
+    s.connect(hp); hp.connect(g); g.connect(master); s.start(now); s.stop(now+1.7);
+  }
+  function riser(dur){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime,s=noiseSrc();
+    const bp=audioCtx.createBiquadFilter(); bp.type="bandpass"; bp.Q.value=3.5;
+    bp.frequency.setValueAtTime(400,now);
+    bp.frequency.exponentialRampToValueAtTime(6500,now+dur);
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.exponentialRampToValueAtTime(.22,now+dur*.92);
+    g.gain.exponentialRampToValueAtTime(.0001,now+dur+.12);
+    s.connect(bp); bp.connect(g); g.connect(master); s.start(now); s.stop(now+dur+.2);
+  }
+  function shimmer(){
+    if(!audioCtx||!musicEnabled) return;
+    [1046.5,1318.51,1567.98,2093,2637.02].forEach((f,i)=>{
+      const now=audioCtx.currentTime+i*.09;
+      const o=audioCtx.createOscillator(); o.type="sine"; o.frequency.value=f;
+      const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+      g.gain.linearRampToValueAtTime(.09,now+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,now+2.4);
+      o.connect(g); g.connect(musicBus); g.connect(delayNode);
+      o.start(now); o.stop(now+2.5);
+    });
+  }
+  function finale(){
+    if(!audioCtx||!musicEnabled) return;
+    const now=audioCtx.currentTime;
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(.0001,now);
+    g.gain.linearRampToValueAtTime(.26,now+.9);
+    g.gain.setValueAtTime(.26,now+2.2);
+    g.gain.exponentialRampToValueAtTime(.0001,now+4.4);
+    const fl=audioCtx.createBiquadFilter(); fl.type="lowpass"; fl.frequency.value=2400;
+    [130.81,261.63,329.63,392,523.25].forEach((fr,i)=>{
+      const o=audioCtx.createOscillator();
+      o.type=i<2?"sine":"sawtooth"; o.frequency.value=fr; o.detune.value=(i-2)*5;
+      const og=audioCtx.createGain(); og.gain.value=[.55,.4,.28,.22,.16][i];
+      o.connect(og); og.connect(fl); o.start(now); o.stop(now+4.6);
+    });
+    fl.connect(g); g.connect(musicBus);
+  }
+  function playStep(idx,t){
+    if(!audioCtx||!musicEnabled) return;
+    if(t>=CUE.end-0.2) return;
+    const s=idx%16, bar=Math.floor(idx/16), ch=chordAt(t);
+    if(t<6) return;
+    if(t<S2){
+      if(s===0) piano(ch.tones[0],.5);
+      if(s===8) piano(ch.tones[2],.38);
+      if(s===12&&bar%2===1) piano(ch.tones[1],.3);
+      if(t>=9.5&&s===0) bass(ch.root,.9);
+      return;
+    }
+    if(t<S3){
+      if(s===0){ kick(.5); piano(ch.tones[0],.48); bass(ch.root,.55); }
+      if(s===8){ kick(.4); piano(ch.tones[2],.36); bass(ch.root,.4); }
+      if(s===4||s===12) tom(.42);
+      if(t>=21&&(s===6||s===14)) pluck(ch.tones[(idx>>1)%3]*2,.7);
+      return;
+    }
+    if(t<S4){
+      if(s===0||s===8||s===11) kick(s===11?.7:1);
+      if(s===4||s===12) snare(.85);
+      if(s%2===0) hat(s===14,.7);
+      if(s===0||s===3||s===6||s===8||s===11||s===14) bass(ch.root,s===0?.42:.24);
+      if(s===2||s===6||s===10||s===14) pluck(ch.tones[(idx>>1)%3]*2,.85);
+      if(s===0) piano(ch.tones[1],.3);
+      return;
+    }
+    if(t<S5){
+      if(s%4===0) kick(.8);
+      if(s===4||s===12) snare(.7);
+      if(s%2===1) hat(false,.55);
+      if(s%4===0||s===6||s===14) bass(ch.root,.3);
+      if(s%2===0) pluck(ch.tones[(idx>>1)%3]*(s%8===0?2:4),.6);
+      if(s===0) piano(ch.tones[0],.34);
+      return;
+    }
+    if(t<S6){
+      if(s===0||s===8||s===10) kick(.9);
+      if(s===12) snare(.8);
+      if(s===6||s===14) tom(.6);
+      if(s%2===0) hat(false,.5);
+      if(s%2===0) bass(ch.root,.24);
+      if(s===4||s===12) pluck(ch.tones[0],.5);
+      return;
+    }
+    if(s%4===0) kick(1);
+    if(s===4||s===12) snare(.95);
+    if(s%2===0) hat(s===6||s===14,.85);
+    if(s%2===0) bass(ch.root,.24);
+    if(s%2===1) pluck(ch.tones[(idx>>1)%3]*(idx%4===1?4:2),.7);
+    if(s===0) piano(ch.tones[2],.32);
+  }
+  function updateMusicParams(t){
+    if(!audioCtx) return;
+    const ch=chordAt(t), now=audioCtx.currentTime;
+    padOscs.forEach((o,i)=>o.frequency.setTargetAtTime(ch.tones[i],now,.07));
+    strOscs.forEach((o,i)=>o.frequency.setTargetAtTime(ch.tones[i]*2,now,.07));
+    subOsc.frequency.setTargetAtTime(ch.root/2,now,.07);
+    padFilter.frequency.setTargetAtTime(520+smoothstep(0,3,t)*260+smoothstep(12,16,t)*420
+      +smoothstep(28,32,t)*700+smoothstep(80,86,t)*900,now,.12);
+    strFilter.frequency.setTargetAtTime(1500+smoothstep(28,34,t)*900+smoothstep(80,88,t)*1400,now,.12);
+    const tail=1-smoothstep(98.4,100,t);
+    padGain.gain.setTargetAtTime(musicEnabled?(0.1+smoothstep(44,50,t)*.03)*smoothstep(0,2,t)*tail:.0001,now,.15);
+    strGain.gain.setTargetAtTime(musicEnabled?(smoothstep(20,25,t)*.075+smoothstep(29,33,t)*.035
+      +smoothstep(63,68,t)*.035+smoothstep(81,86,t)*.05)*tail:.0001,now,.15);
+    tremDepth.gain.setTargetAtTime(musicEnabled?(t>=S5&&t<S6?.022:.004):0,now,.2);
+    subGain.gain.setTargetAtTime(musicEnabled?.15*smoothstep(8,13,t)*tail:.0001,now,.1);
+    const cap=captions.some(c=>t>c.s-.15&&t<c.e+.1);
+    musicBus.gain.setTargetAtTime(musicEnabled?smoothstep(0,1.2,t)*tail*(cap?.34:1):.0001,now,.22);
+    master.gain.setTargetAtTime(cap?.72:.95,now,.22);
+  }
+
+  /* ======================= events ======================= */
+  let captionFired=captions.map(()=>false);
+  function checkEvents(t,was){
+    if(!was) return;
+    captions.forEach((c,i)=>{ if(!captionFired[i]&&t>=c.s&&t<c.e){ captionFired[i]=true; speakCaption(c.t);} });
+    leadNotes.forEach((n,i)=>{ if(!leadFired[i]&&t>=n.t){ leadFired[i]=true; leadNote(n.f,n.d);} });
+    brassHits.forEach((b,i)=>{ if(!brassFired[i]&&t>=b.t){ brassFired[i]=true; brass(chordAt(t).root*2,b.d);} });
+    riserDefs.forEach((r,i)=>{ if(!riserFired[i]&&t>=r.t){ riserFired[i]=true; riser(r.d);} });
+    crashDefs.forEach((c,i)=>{ if(!crashFired[i]&&t>=c){ crashFired[i]=true; crash();} });
+    shimmerDefs.forEach((s,i)=>{ if(!shimmerFired[i]&&t>=s){ shimmerFired[i]=true; shimmer();} });
+    if(!finaleFired&&t>=CUE.end-.4){ finaleFired=true; finale(); }
+    const step=Math.floor(t/STEP);
+    if(step>lastStep){ lastStep=step; playStep(step,t); }
+  }
+  function syncFired(t){
+    captionFired=captions.map(c=>t>=c.s);
+    leadFired=leadNotes.map(n=>t>=n.t);
+    brassFired=brassHits.map(b=>t>=b.t);
+    riserFired=riserDefs.map(r=>t>=r.t);
+    crashFired=crashDefs.map(c=>t>=c);
+    shimmerFired=shimmerDefs.map(s=>t>=s);
+    finaleFired=t>=CUE.end-.4;
+    lastStep=Math.floor(t/STEP);
+  }
+
+  /* ======================= render ======================= */
+  let sciLabels=true, frameNo=0;
+
+  function render(t){
+    frameNo++;
+    const energy=energyAt(t);
+    const beat=Math.max(0,1-((t%BEAT)/BEAT)*3.4)*energy;
+    const dawn=smoothstep(CUE.s6b,95.5,t);
+    const gold=smoothstep(CUE.s4c,60.5,t);
+
+    /* background */
+    let inner=mixHex("#0a1230","#152a72",smoothstep(11,15,t));
+    inner=mixHex(inner,"#2a1f66",smoothstep(28,32,t));
+    inner=mixHex(inner,"#0e3a44",smoothstep(45,49,t));
+    inner=mixHex(inner,"#2a1046",smoothstep(62,66,t));
+    inner=mixHex(inner,"#fff8ec",dawn);
+    let outer=mixHex("#02030a","#050a24",smoothstep(11,15,t));
+    outer=mixHex(outer,"#0a0723",smoothstep(28,32,t));
+    outer=mixHex(outer,"#04181d",smoothstep(45,49,t));
+    outer=mixHex(outer,"#100420",smoothstep(62,66,t));
+    outer=mixHex(outer,"#ece3d2",dawn);
+    bgStop0.setAttribute("stop-color",inner);
+    bgStop1.setAttribute("stop-color",outer);
+    vignette.style.opacity=(1-dawn*.85).toFixed(3);
+
+    /* camera */
+    let cs;
+    if(t<S2) cs=lerp(1.16,1,easeOut(smoothstep(0,12,t)));
+    else if(t<S3) cs=lerp(1,1.07,smoothstep(S2,S3,t));
+    else if(t<S4) cs=lerp(.95,1.1,easeOut(smoothstep(S3,S4,t)));
+    else if(t<S5) cs=lerp(1,1.05,smoothstep(S4,S5,t));
+    else if(t<S6) cs=lerp(.97,1.06,smoothstep(S5,S6,t));
+    else cs=lerp(1,1.15,easeOut(smoothstep(S6,97,t)));
+    if(t>=CUE.end) cs=lerp(1.15,1.03,smoothstep(CUE.end,CUE.end+1.6,t));
+    cs+=beat*.012;
+    const [shx,shy,shr]=shakeAt(t);
+    camera.setAttribute("transform",
+      `translate(${(CX+Math.sin(t*.21)*8*energy+shx).toFixed(2)} ${(CY+Math.cos(t*.17)*5*energy+shy).toFixed(2)}) rotate(${(Math.sin(t*.13)*.9*energy+shr).toFixed(3)}) scale(${cs.toFixed(4)}) translate(${-CX} ${-CY})`);
+
+    /* drifting membranes — turbulence is costly, so only run it while the cells are on screen */
+    const cellsVisible = t>61.5 && t<84;
+    if(cellsVisible && frameNo%3===0){
+      turbA.setAttribute("baseFrequency",(0.0125+Math.sin(t*0.42)*0.0022).toFixed(5));
+      turbB.setAttribute("baseFrequency",(0.0165+Math.sin(t*0.55+1.6)*0.0026).toFixed(5));
+      turbG.setAttribute("baseFrequency",(0.055+Math.sin(t*0.3)*0.006).toFixed(4));
+    }
+    const cellDisp = cellsVisible ? "" : "none";
+    if(cellA.g.style.display!==cellDisp){
+      cellA.g.style.display=cellDisp; cellB.g.style.display=cellDisp;
+      organelles.forEach(o=>o.style.display=cellDisp);
+      innerChains.forEach(c=>c.g.style.display=cellDisp);
+      signalChain.g.style.display=cellDisp;
+    }
+
+    /* warp field */
+    const wd=warpDist(t), sf=1-dawn;
+    warp.forEach((w,i)=>{
+      const z=((w.z0-wd)%ZSPAN+ZSPAN)%ZSPAN+30, k=FOV/z, e=warpEls[i];
+      const x=CX+w.x*k, y=CY+w.y*k;
+      if(x<-140||x>940||y<-140||y>590||k<.12){ e.setAttribute("opacity",0); return; }
+      e.setAttribute("cx",x.toFixed(1)); e.setAttribute("cy",y.toFixed(1));
+      e.setAttribute("r",(w.r*k*1.5).toFixed(2));
+      e.setAttribute("opacity",(clamp((ZSPAN-z)/ZSPAN,0,1)*.85*(.3+energy*.5)*sf).toFixed(3));
+      e.setAttribute("fill",w.hue>.75?mixHex("#d5e6ff","#ffe0a6",gold):"#d5e6ff");
+    });
+
+    shaftG.setAttribute("opacity",clamp(((smoothstep(12.8,15,t)*.45+smoothstep(28.8,31,t)*.4
+      +smoothstep(CUE.s4c,60,t)*.45+smoothstep(S6,84,t)*.7)*(1-smoothstep(96,99,t))*(.5+beat*.3)),0,.85).toFixed(3));
+    shaftInner.setAttribute("transform",`rotate(${(-t*4.5).toFixed(2)} ${CX} ${CY})`);
+
+    coreStop0.setAttribute("stop-color",mixHex("#8fd8ff","#ffd782",gold));
+    coreStop1.setAttribute("stop-color",mixHex("#5aa8ff","#ffb347",gold));
+    coreGlow.setAttribute("opacity",clamp((smoothstep(6,11,t)*.45+smoothstep(19.4,21,t)*.3
+      +smoothstep(28.8,31,t)*.4+smoothstep(CUE.s4c,60,t)*.45+beat*.2)*(1-dawn*.7)*(1-smoothstep(63,66,t)*.5),0,1.2).toFixed(3));
+    coreGlow.setAttribute("r",(160+beat*22+smoothstep(29,34,t)*55).toFixed(1));
+
+    /* ---- scene 1: mist + chemical structure drawing itself ---- */
+    if(t<15){
+      mist.forEach(m=>{
+        const p=easeOut(smoothstep(m.t0,m.t0+5.2,t));
+        m.e.setAttribute("cx",lerp(m.sx,m.tx,p).toFixed(1));
+        m.e.setAttribute("cy",lerp(m.sy,m.ty,p).toFixed(1));
+        let op=p<.45?p/.45:(1-(p-.45)/.55);
+        if(t<m.t0) op=0;
+        m.e.setAttribute("opacity",clamp(op*.85,0,1).toFixed(3));
+      });
+    } else if(mist[0].e.getAttribute("opacity")!=="0"){
+      mist.forEach(m=>m.e.setAttribute("opacity",0));
+    }
+
+    /* the small molecule persists from scene 1 to the end of scene 4 */
+    const chemDraw=smoothstep(CUE.s1b,CUE.s1b+4.4,t);
+    const chemOn=clamp(smoothstep(CUE.s1b,CUE.s1b+1,t)*(1-smoothstep(62.4,64.4,t)),0,1);
+    chemG.setAttribute("opacity",chemOn.toFixed(3));
+    if(chemOn>0.01){
+      /* scene 1-3 centred; scene 4 lifts slightly to make room for the scaffold */
+      const cyOff = t<S4 ? 0 : lerp(0,-56,smoothstep(S4,S4+2.5,t));
+      const scale = t<S2 ? lerp(1.18,1,smoothstep(CUE.s1b,S2,t))
+                  : (t<S4 ? 1 : lerp(1,0.92,smoothstep(S4,S4+2.5,t)));
+      chemG.setAttribute("transform",
+        `translate(${CX} ${(CY+cyOff).toFixed(1)}) scale(${(scale*(1+beat*0.02)).toFixed(4)}) rotate(${(Math.sin(t*0.25)*2.5).toFixed(2)})`);
+      const col=mixHex("#a8e4ff","#ffd58a",gold);
+      chemStrokes.forEach((p,i)=>{
+        const d=clamp((chemDraw-i*0.012)/0.7,0,1);
+        p.setAttribute("stroke-dashoffset",(p._len*(1-d)).toFixed(2));
+        p.setAttribute("stroke",col);
+        p.setAttribute("filter",gold>0.3?"url(#gS)":null);
+      });
+      chemFills.forEach((f,i)=>{
+        const a=smoothstep(CUE.s2b+0.4+i*0.5,CUE.s2b+1.6+i*0.5,t)*(1-smoothstep(45,47,t))*0.9
+              + smoothstep(CUE.s4c,CUE.s4c+1.4,t)*0.9;
+        f.setAttribute("opacity",clamp(a,0,1).toFixed(3));
+        f.setAttribute("fill",gold>0.3?"rgba(255,232,170,.92)":"rgba(255,255,255,.9)");
+      });
+    }
+
+    /* ---- scene 2: sources, beams, the two proteins brought together ---- */
+    if(t>12&&t<32){
+      sourceEls.forEach((s,i)=>{
+        const ap=smoothstep(CUE.s2a+i*.28,CUE.s2a+.9+i*.28,t)*(1-smoothstep(21.5,23.5,t));
+        s.g.setAttribute("opacity",ap.toFixed(3));
+        const hp=smoothstep(CUE.s2a+i*.28,CUE.s2a+1.4+i*.28,t);
+        s.halo.setAttribute("r",(6+hp*36).toFixed(1));
+        s.halo.setAttribute("opacity",((1-hp)*.8*ap).toFixed(3));
+        const h2=(t*.55+i*.33)%1;
+        s.halo2.setAttribute("r",(6+h2*30).toFixed(1));
+        s.halo2.setAttribute("opacity",((1-h2)*.4*ap).toFixed(3));
+      });
+      paths.forEach((p,i)=>{
+        const dp=smoothstep(p._t0,p._t1,t);
+        p.setAttribute("stroke-dashoffset",(p._len*(1-dp)).toFixed(2));
+        p.setAttribute("opacity",(dp*(1-smoothstep(20.6,22.6,t))*.9).toFixed(3));
+        const cm=comets[i];
+        if(dp>0&&dp<1){
+          cm.trail.forEach((c,k)=>{
+            const pt=p.getPointAtLength(p._len*clamp(dp-k*.018,0,1));
+            c.setAttribute("cx",pt.x.toFixed(1)); c.setAttribute("cy",pt.y.toFixed(1));
+            c.setAttribute("opacity",(.95-k*.09).toFixed(3));
+          });
+        } else cm.trail.forEach(c=>c.setAttribute("opacity",0));
+      });
+    }
+
+    /* scaffold ribbon + target chain + spiky particle (scenes 2-3) */
+    const showComplex = t>CUE.s2b-0.6 && t<46;
+    const complexFade = smoothstep(CUE.s2b-0.4,CUE.s2b+1.6,t)*(1-smoothstep(44,46,t));
+    const degrade = smoothstep(CUE.s3a+0.4,CUE.s3a+4.2,t);
+    if(showComplex){
+      const rd=smoothstep(CUE.s2b-0.2,CUE.s2b+2.4,t);
+      ribbonG.setAttribute("opacity",complexFade.toFixed(3));
+      ribbonPathEl.setAttribute("stroke-dashoffset",(ribbonPathEl._len*(1-rd)).toFixed(2));
+      ribbonCore.setAttribute("stroke-dashoffset",(ribbonPathEl._len*(1-rd)).toFixed(2));
+      ribbonG.setAttribute("transform",`translate(${(Math.sin(t*0.7)*2).toFixed(1)} ${(Math.cos(t*0.5)*2).toFixed(1)})`);
+
+      targetChain.g.setAttribute("opacity",(complexFade*(1-degrade)).toFixed(3));
+      targetChain.beads.forEach((b,i)=>{
+        const wob=Math.sin(t*1.8+i*0.5)*2.2;
+        const tagged=smoothstep(CUE.s3a-0.4+i*0.06,CUE.s3a+0.6+i*0.06,t);
+        b.e.setAttribute("cx",(b.x0+wob).toFixed(1));
+        b.e.setAttribute("cy",(b.y0+Math.cos(t*1.5+i*0.42)*2).toFixed(1));
+        b.e.setAttribute("r",(6*(1-degrade*0.7)).toFixed(2));
+        b.e.setAttribute("fill", tagged>0.5 ? "url(#beadCyan)" : "url(#beadGold)");
+      });
+      spike.g.setAttribute("opacity",(complexFade*(1-degrade)).toFixed(3));
+      spike.g.setAttribute("transform",
+        `translate(${spike.cx} ${spike.cy}) scale(${(1+beat*0.05-degrade*0.4).toFixed(3)})`);
+      spike.spin.setAttribute("transform",`rotate(${(t*11).toFixed(1)})`);
+      spikeArc.setAttribute("opacity",(complexFade*(1-degrade)*0.7).toFixed(3));
+
+      const bl=smoothstep(CUE.s2b+1.8,CUE.s2b+3.6,t), br=smoothstep(CUE.s2b+2.4,CUE.s2b+4.2,t);
+      bridgeL.setAttribute("stroke-dashoffset",(bridgeL._len*(1-bl)).toFixed(2));
+      bridgeL.setAttribute("opacity",(bl*complexFade*(1-degrade)*.9).toFixed(3));
+      bridgeR.setAttribute("stroke-dashoffset",(bridgeR._len*(1-br)).toFixed(2));
+      bridgeR.setAttribute("opacity",(br*complexFade*(1-degrade)*.9).toFixed(3));
+    } else {
+      ribbonG.setAttribute("opacity",0);
+      targetChain.g.setAttribute("opacity",0);
+      spike.g.setAttribute("opacity",0);
+      spikeArc.setAttribute("opacity",0);
+      bridgeL.setAttribute("opacity",0); bridgeR.setAttribute("opacity",0);
+    }
+
+    /* ---- scene 3: fragments scatter, evidence network ---- */
+    if(t>CUE.s3a-1&&t<48){
+      frags.forEach(f=>{
+        const p=easeOut(smoothstep(f.t0,f.t0+3.4,t));
+        if(t<f.t0){ f.e.setAttribute("opacity",0); return; }
+        const [x,y]=polar(628,232,p*f.d,f.a);
+        f.e.setAttribute("cx",x.toFixed(1)); f.e.setAttribute("cy",y.toFixed(1));
+        f.e.setAttribute("r",(f.r*(1-p*0.5)).toFixed(2));
+        f.e.setAttribute("opacity",((1-p)*.85*(1-smoothstep(44,47,t))).toFixed(3));
+      });
+      const np=[];
+      nodes.forEach((n,i)=>{
+        const p=easeOutQuint(smoothstep(n.t0,n.t0+3.2,t));
+        const x=lerp(CX,n.tx,p), y=lerp(CY,n.ty,p);
+        np.push([x,y]);
+        nodeEls[i].setAttribute("cx",x.toFixed(1));
+        nodeEls[i].setAttribute("cy",y.toFixed(1));
+        nodeEls[i].setAttribute("opacity",
+          clamp(p*(.5+.45*Math.sin(t*3+i))*(1-smoothstep(44.5,47.5,t))*(t<n.t0?0:1),0,1).toFixed(3));
+      });
+      const lo=smoothstep(CUE.s3b-1,40,t)*.45*(1-smoothstep(44.5,47.5,t));
+      netPairs.forEach((pr,i)=>{
+        const e=netLineEls[i];
+        if(lo<=.01){ e.setAttribute("opacity",0); return; }
+        const a=np[pr.i],b=np[pr.j];
+        e.setAttribute("x1",a[0].toFixed(1)); e.setAttribute("y1",a[1].toFixed(1));
+        e.setAttribute("x2",b[0].toFixed(1)); e.setAttribute("y2",b[1].toFixed(1));
+        e.setAttribute("opacity",(lo*(1-pr.d/88)).toFixed(3));
+      });
+    } else if(t>=48&&nodeEls[0].getAttribute("opacity")!=="0"){
+      nodeEls.forEach(e=>e.setAttribute("opacity",0));
+      netLineEls.forEach(e=>e.setAttribute("opacity",0));
+      frags.forEach(f=>f.e.setAttribute("opacity",0));
+    }
+
+    /* ---- scene 4: design lattice + conformational change ---- */
+    if(t>44&&t<66){
+      const gf=smoothstep(CUE.s4a,CUE.s4a+2.2,t)*(1-smoothstep(61,64,t));
+      hexG.setAttribute("opacity",(gf*.9).toFixed(3));
+      hexes.forEach(h=>{
+        const ap=smoothstep(CUE.s4a+h.dist*.0045,CUE.s4a+1.2+h.dist*.0045,t);
+        h.p.setAttribute("opacity",(ap*(.07+.11*Math.max(0,Math.sin(t*2.2-h.dist*.017)))).toFixed(3));
+      });
+      designG.setAttribute("opacity",1);
+      const morph=smoothstep(CUE.s4b+2.4,CUE.s4b+6,t);
+      conformA.setAttribute("opacity",(smoothstep(CUE.s4b+0.6,CUE.s4b+2,t)*(1-morph)*.9*(1-smoothstep(61,63.5,t))).toFixed(3));
+      conformB.setAttribute("opacity",(morph*.9*(1-smoothstep(61,63.5,t))).toFixed(3));
+      designMarks.forEach((m,i)=>{
+        const ap=smoothstep(CUE.s4b+1.2+i*.5,CUE.s4b+2.2+i*.5,t)*(1-smoothstep(CUE.s4c,CUE.s4c+1.4,t));
+        const mx=+m.getAttribute("data-mx"), my=+m.getAttribute("data-my");
+        m.setAttribute("cx",(CX+mx*0.92).toFixed(1));
+        m.setAttribute("cy",(CY-56+my*0.92).toFixed(1));
+        m.setAttribute("r",(24+Math.sin(t*3+i)*3).toFixed(1));
+        m.setAttribute("opacity",(ap*.85).toFixed(3));
+      });
+      goldHalo.setAttribute("cy",(CY-56).toFixed(1));
+      goldHalo.setAttribute("opacity",(smoothstep(CUE.s4c,59.5,t)*(1-smoothstep(62.4,64,t))*.85).toFixed(3));
+      goldHalo.setAttribute("r",(140+beat*18).toFixed(1));
+    } else {
+      hexG.setAttribute("opacity",0);
+      designG.setAttribute("opacity",0);
+    }
+
+    /* ---- scene 5: two cells, the travelling signal, T-cell activation ---- */
+    if(t>61.5&&t<84){
+      const fade=1-smoothstep(80.5,83,t);
+      const aOn=smoothstep(CUE.s5a-0.5,CUE.s5a+2,t)*fade;
+      cellA.g.setAttribute("opacity",aOn.toFixed(3));
+      cellA.g.setAttribute("transform",
+        `translate(${(cellA.cx)} ${(cellA.cy)}) scale(${(1+Math.sin(t*0.8)*0.012+beat*0.012).toFixed(4)}) translate(${-cellA.cx} ${-cellA.cy})`);
+      organelles.forEach((o,i)=>
+        o.setAttribute("opacity",(aOn*(0.55+0.4*Math.sin(t*1.4+i*1.3))).toFixed(3)));
+
+      /* target chains inside the immune cell quietly fade — ref [3,7] */
+      const quiet=smoothstep(CUE.s5a+2.6,CUE.s5a+6.6,t);
+      innerChains.forEach((ch,ci)=>{
+        ch.g.setAttribute("opacity",(aOn*(1-quiet*0.92)).toFixed(3));
+        ch.beads.forEach((b,i)=>{
+          b.e.setAttribute("cx",(b.x0+Math.sin(t*1.5+i*0.5+ci)*2.4).toFixed(1));
+          b.e.setAttribute("cy",(b.y0+Math.cos(t*1.2+i*0.42+ci)*2.4).toFixed(1));
+          b.e.setAttribute("r",(5*(1-quiet*0.55)).toFixed(2));
+        });
+      });
+
+      /* signal chain travelling to the T cell (reference frame) */
+      const travel=smoothstep(CUE.s5b-1.2,CUE.s5b+3.4,t);
+      signalChain.g.setAttribute("opacity",fade.toFixed(3));
+      signalChain.beads.forEach((b,i)=>{
+        const u=i/(signalChain.beads.length-1);
+        const on=clamp((travel-u)*6,0,1);
+        b.e.setAttribute("cx",(b.x0+Math.sin(t*2+i*0.6)*1.6).toFixed(1));
+        b.e.setAttribute("cy",(b.y0+Math.cos(t*1.7+i*0.5)*1.6).toFixed(1));
+        b.e.setAttribute("opacity",(on*(0.55+0.45*Math.sin(t*4-i*0.7))).toFixed(3));
+      });
+
+      const bOn=smoothstep(CUE.s5b-0.5,CUE.s5b+2,t)*fade;
+      cellB.g.setAttribute("opacity",bOn.toFixed(3));
+      const act=smoothstep(CUE.s5b+1.6,CUE.s5b+5,t);
+      cellB.g.setAttribute("transform",
+        `translate(${cellB.cx} ${cellB.cy}) scale(${(1+act*0.05+Math.sin(t*1.1)*0.014+beat*0.02).toFixed(4)}) translate(${-cellB.cx} ${-cellB.cy})`);
+      cellB.halo.setAttribute("opacity",(0.4+act*0.45+beat*0.12).toFixed(3));
+      if(cellB.surface) cellB.surface.setAttribute("opacity",(0.42+act*0.3).toFixed(3));
+      cellB.edge.setAttribute("opacity",(0.5+act*0.45).toFixed(3));
+    } else {
+      cellA.g.setAttribute("opacity",0); cellB.g.setAttribute("opacity",0);
+      organelles.forEach(o=>o.setAttribute("opacity",0));
+      innerChains.forEach(c=>c.g.setAttribute("opacity",0));
+      signalChain.g.setAttribute("opacity",0);
+    }
+
+    /* rings + sparks */
+    ringDefs.forEach((r,i)=>{
+      const d=t-r.t,e=ringEls[i];
+      if(d<0||d>r.d){ e.setAttribute("opacity",0); return; }
+      const q=easeOut(d/r.d);
+      e.setAttribute("r",(q*r.r).toFixed(1));
+      e.setAttribute("stroke-width",(r.w*(1-q*.7)).toFixed(2));
+      e.setAttribute("opacity",((1-q)*.85).toFixed(3));
+    });
+    sparks.forEach((s,i)=>{
+      const d=t-s.t0,e=sparkEls[i];
+      if(d<0||d>s.life){ e.setAttribute("opacity",0); return; }
+      const q=easeOut(d/s.life);
+      const [x,y]=polar(s.ox,s.oy,q*s.dist,s.a);
+      e.setAttribute("cx",x.toFixed(1)); e.setAttribute("cy",y.toFixed(1));
+      e.setAttribute("opacity",((1-q)*.85).toFixed(3));
+    });
+
+    /* ---- scene 6 ---- */
+    if(t>79.5){
+      streaksG.setAttribute("opacity",1);
+      streaks.forEach(s=>{
+        const p=smoothstep(CUE.s6a+s.delay,CUE.s6a+2.6+s.delay,t);
+        const r0=lerp(540,90,easeOut(p));
+        const [x1,y1]=polar(CX,CY,r0+s.len,s.a), [x2,y2]=polar(CX,CY,r0,s.a);
+        s.l.setAttribute("x1",x1.toFixed(1)); s.l.setAttribute("y1",y1.toFixed(1));
+        s.l.setAttribute("x2",x2.toFixed(1)); s.l.setAttribute("y2",y2.toFixed(1));
+        s.l.setAttribute("opacity",(p<1?p*.85:0).toFixed(3));
+      });
+      $("dawnG").setAttribute("opacity",1);
+      dawnCore.setAttribute("r",(smoothstep(CUE.s6b,CUE.s6b+4.5,t)*580).toFixed(1));
+      dawnCore.setAttribute("opacity",
+        (smoothstep(CUE.s6b,CUE.s6b+.7,t)*(1-smoothstep(CUE.s6b+3,96,t)*.55)).toFixed(3));
+      const ro=smoothstep(CUE.s6c,CUE.s6c+2.2,t)*(1-smoothstep(95.5,97,t));
+      roadG.setAttribute("opacity",ro.toFixed(3));
+      travellers.forEach((tr,i)=>{
+        const q=((t-CUE.s6c)*.19+tr.offset)%1, ez=Math.pow(q,1.7);
+        tr.g.setAttribute("transform",
+          `translate(${lerp(400+(i-2)*120,VPX,ez).toFixed(1)} ${lerp(462,VPY,ez).toFixed(1)}) scale(${lerp(1.25,.12,ez).toFixed(3)})`);
+        tr.g.setAttribute("opacity",(ro*(q<.06?q/.06:1)*(q>.9?(1-q)/.1:1)).toFixed(3));
+      });
+      const et=smoothstep(CUE.end+.3,CUE.end+1.8,t);
+      endG.setAttribute("opacity",et.toFixed(3));
+      endTitleText.setAttribute("font-size",(46*lerp(.94,1,et)).toFixed(1));
+      endRule.setAttribute("opacity",(et*.8).toFixed(3));
+    } else {
+      streaksG.setAttribute("opacity",0); $("dawnG").setAttribute("opacity",0);
+      roadG.setAttribute("opacity",0); endG.setAttribute("opacity",0);
+    }
+
+    /* ---- labels + citation chip ---- */
+    labelEls.forEach(L=>{
+      const d=L.def;
+      const ap=smoothstep(d.t0,d.t0+.7,t)*(1-smoothstep(d.t1-.7,d.t1,t));
+      L.g.setAttribute("opacity",(ap*.95).toFixed(3));
+      const want=sciLabels?d.sci:d.abs;
+      if(L.t.textContent!==want) L.t.textContent=want;
+    });
+    let cite=null;
+    for(const c of CITES){ if(t>c.t0&&t<c.t1){ cite=c; break; } }
+    if(cite){
+      if(citeText.textContent!==cite.s) citeText.textContent=cite.s;
+      citeChip.setAttribute("opacity",
+        (smoothstep(cite.t0,cite.t0+.6,t)*(1-smoothstep(cite.t1-.6,cite.t1,t))*.92).toFixed(3));
+    } else citeChip.setAttribute("opacity",0);
+
+    /* flash / captions / tag */
+    flashLayer.style.opacity=flashAt(t).toFixed(3);
+    let active=null;
+    for(const c of captions){ if(t>c.s&&t<c.e){ active=c; break; } }
+    if(active){
+      setCaption(active.t);
+      let o=1;
+      if(t<active.s+.45) o=(t-active.s)/.45;
+      else if(t>active.e-.45) o=(active.e-t)/.45;
+      captionBox.style.opacity=clamp(o,0,1).toFixed(3);
+    } else captionBox.style.opacity=0;
+
+    sceneTag.textContent = t<S2?"シーン1・問い": t<S3?"シーン2・歴史的転換点":
+      t<S4?"シーン3・エビデンスが世界を変える": t<S5?"シーン4・設計する科学へ":
+      t<S6?"シーン5・分子機構から免疫へ":"シーン6・新時代の幕開け";
+    sceneTag.classList.toggle("on-light",dawn>.5);
+    sceneTag.style.opacity=t>=CUE.end?0:1;
+
+    updateMusicParams(t);
+  }
+
+  /* ======================= transport ======================= */
+  let playing=false,startPerf=performance.now(),currentT=0;
+  const playIcon=$("playIcon"),pauseIcon=$("pauseIcon");
+  const scrub=$("scrub"),timeLabel=$("timeLabel");
+  const narrationBtn=$("narrationBtn"),musicBtn=$("musicBtn"),labelBtn=$("labelBtn");
+
+  if(!canSpeak){
+    narrationEnabled=false;
+    narrationBtn.classList.add("is-off");
+    narrationBtn.setAttribute("aria-pressed","false");
+    narrationBtn.disabled=true;
+  }
+  function fmt(s){ s=Math.max(0,s); return Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0"); }
+  function updateUI(t){ scrub.value=t.toFixed(2); timeLabel.textContent=fmt(t)+" / 1:40"; }
+  function setPlaying(p){
+    playing=p;
+    playIcon.style.display=p?"none":"block";
+    pauseIcon.style.display=p?"block":"none";
+    playOverlay.classList.toggle("hide",p);
+  }
+  function startPlayback(){
+    ensureAudio(); setStatus("");
+    if(currentT>=DURATION){ currentT=0; syncFired(0); }
+    startPerf=performance.now()-currentT*1000;
+    setPlaying(true);
+    if(canSpeak) speechSynthesis.resume();
+  }
+  function pausePlayback(){
+    setPlaying(false);
+    if(audioCtx) audioCtx.suspend();
+    if(canSpeak) speechSynthesis.pause();
+  }
+  playOverlay.addEventListener("click",startPlayback);
+  $("playBtn").addEventListener("click",()=>{ playing?pausePlayback():startPlayback(); });
+  $("replayBtn").addEventListener("click",()=>{
+    ensureAudio(); setStatus("");
+    if(canSpeak) speechSynthesis.cancel();
+    currentT=0; syncFired(0); startPerf=performance.now(); setPlaying(true);
+  });
+  scrub.addEventListener("input",e=>{
+    setPlaying(false);
+    if(audioCtx) audioCtx.suspend();
+    if(canSpeak) speechSynthesis.cancel();
+    currentT=clamp(parseFloat(e.target.value),0,DURATION);
+    syncFired(currentT); render(currentT); updateUI(currentT);
+  });
+  narrationBtn.addEventListener("click",()=>{
+    narrationEnabled=!narrationEnabled;
+    narrationBtn.classList.toggle("is-off",!narrationEnabled);
+    narrationBtn.setAttribute("aria-pressed",String(narrationEnabled));
+    if(!narrationEnabled&&canSpeak) speechSynthesis.cancel();
+  });
+  musicBtn.addEventListener("click",()=>{
+    ensureAudio();
+    musicEnabled=!musicEnabled;
+    musicBtn.classList.toggle("is-off",!musicEnabled);
+    musicBtn.setAttribute("aria-pressed",String(musicEnabled));
+  });
+  labelBtn.addEventListener("click",()=>{
+    sciLabels=!sciLabels;
+    labelBtn.classList.toggle("is-off",!sciLabels);
+    labelBtn.setAttribute("aria-pressed",String(sciLabels));
+  });
+
+  function loop(now){
+    const was=playing;
+    if(playing){
+      currentT=(now-startPerf)/1000;
+      if(currentT>=DURATION){ currentT=DURATION; setPlaying(false); if(audioCtx) audioCtx.suspend(); }
+    }
+    checkEvents(currentT,was);
+    render(currentT);
+    updateUI(currentT);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
