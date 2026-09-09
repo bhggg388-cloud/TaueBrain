@@ -1,0 +1,21 @@
+{
+  "name": "drug-mechanism-video",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "music": "node scripts/render-music.mjs",
+    "studio": "remotion studio",
+    "render": "remotion render Story out/drug-mechanism-video.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.522",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "4.0.522"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "typescript": "5.7.3"
+  }
+}
