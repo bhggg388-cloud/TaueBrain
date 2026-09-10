@@ -12,6 +12,21 @@ HTML プレビュー版（リポジトリ直下の `drug-mechanism-video.html`�
 > 台本の内容は史実・公表文献に基づく構成であり、演出上の脚色を含みます。
 > **医学的内容の正確性は Medical の正式レビューを別途要します。**
 
+## バージョンについて
+
+`Story`（既定のコンポジション）は Three.js/WebGL による本物の3D描画版です。
+分子・プロテアソーム・CRBNクランプ・免疫細胞などを実メッシュ＋キーフレーム
+カメラワークで描画しています。従来のフラットな2D SVG風の描画は
+`StoryClassic2D` として残しています。
+
+WebGLのポストプロセス（Bloom/被写界深度/色収差などの `EffectComposer`）は、
+このプロジェクトの検証環境（ソフトウェアWebGLレンダラー）では一部シーンで
+フレーム全体が真っ黒になる不具合が再現したため、`Story3D.tsx` では使用して
+いません。ビネット・粒状感はWebGLパスを介さないCSSオーバーレイで代替して
+います。実GPU環境でレンダリングする場合は `src/three/PostFX.tsx`
+（`TestThree` 用に残してあります）を `Scene` に組み込み直すことで、本来の
+ポストプロセスを有効化できます。
+
 ## 出力方法
 
 ```bash
@@ -34,9 +49,11 @@ npx remotion render Story out/drug-mechanism-video.mp4 \
 | ファイル | 内容 |
 |---|---|
 | `src/timeline.mjs` | 台本・字幕・和音進行・カット割り。**映像と音楽の唯一の情報源** |
-| `src/Story.tsx` | 全6シーンの描画 |
-| `src/geometry.ts` | 化学構造式、タンパク質リボン、ビーズ鎖の座標 |
-| `src/particles.ts` | 星屑・粒子・ネットワークの配置 |
+| `src/Story3D.tsx` | 既定の3D版（`Story`）の描画。カメラリグ・シーン構成 |
+| `src/three/*.tsx` | 3D版で使う分子・リボン・プロテアソーム・細胞・クランプ等のメッシュ |
+| `src/Story.tsx` | 旧2D版（`StoryClassic2D`）の描画 |
+| `src/geometry.ts` | （2D版用）化学構造式、タンパク質リボン、ビーズ鎖の座標 |
+| `src/particles.ts` | （2D版用）星屑・粒子・ネットワークの配置 |
 | `scripts/render-music.mjs` | 楽曲を WAV に合成するオフライン音源 |
 
 `timeline.mjs` を映像と音楽の両方が読み込むため、字幕のタイミングを変えれば
