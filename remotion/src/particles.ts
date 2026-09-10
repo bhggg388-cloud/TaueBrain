@@ -22,7 +22,7 @@ export const MIST = Array.from({length: 54}, (_, i) => {
     sx, sy,
     tx: CX + (rnd() - 0.5) * 260,
     ty: CY + (rnd() - 0.5) * 120,
-    t0: 0.6 + (i / 54) * 3.4,
+    t0: 1.05 + (i / 54) * 5.94,
     r: 0.8 + rnd() * 1.5,
   };
 });
@@ -41,7 +41,7 @@ function mkSparks(n: number, t0: number, life: number, ox: number, oy: number, s
     SPARKS.push({t0, life, ox, oy, a: rnd() * 360, dist: spread * (0.4 + rnd() * 0.8), r: 1 + rnd() * 1.9, color});
   }
 }
-mkSparks(24, 27, 1.3, 352, 204, 180, '#cfeaff');
+mkSparks(24, 48.43, 1.3, 352, 204, 180, '#cfeaff');
 mkSparks(44, S3, 2.0, CX, CY, 350, '#ffd9a0');
 mkSparks(28, CUE.s4c, 1.8, CX, CY, 250, '#ffd782');
 mkSparks(30, S6, 2.2, CX, CY, 330, '#e6d4ff');

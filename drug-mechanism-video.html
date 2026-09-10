@@ -1,4 +1,4 @@
-<title>分子接近の物語</title>
+<title>CELMoD はこうして生まれた</title>
 <style>
   :root{ --page-bg:#f4f5f9; --card-bg:#ffffff; --text:#1c2033; --muted:#6b7290; --line:#e3e5ee; }
   @media (prefers-color-scheme: dark){
@@ -99,8 +99,8 @@
 
 <div class="wrap" lang="ja">
   <header class="page-head">
-    <h1>分子接近の物語 ― プレビュー動画（全6シーン・1分40秒）</h1>
-    <p>出典論文が示した分子機構を、発光する細胞・タンパク質鎖・化学構造として描き直したプレビューです。学術ラベルはコントロールバーから抽象表現へ切り替えられます。</p>
+    <h1>CELMoD はこうして生まれた ― プレビュー動画（全6シーン・3分00秒・台本 v3）</h1>
+    <p>台本「CELMoD はこうして生まれた（v3）」の分子機構を、発光する細胞・タンパク質鎖・化学構造として描き直したプレビューです。学術ラベルはコントロールバーから抽象表現へ切り替えられます。社内検討用資料 — Confidential, Internal use only。</p>
   </header>
 
   <div class="player-card">
@@ -264,54 +264,58 @@
         <svg class="off-slash" viewBox="0 0 24 24"><line x1="3" y1="3" x2="21" y2="21"/></svg>
       </button>
       <div class="scrub-wrap">
-        <input type="range" id="scrub" min="0" max="100" step="0.02" value="0">
+        <input type="range" id="scrub" min="0" max="180" step="0.02" value="0">
         <div class="scrub-ticks">
-          <i style="left:13%"></i><i style="left:29%"></i><i style="left:46%"></i>
-          <i style="left:63%"></i><i style="left:81%"></i>
+          <i style="left:12.6%"></i><i style="left:28.9%"></i><i style="left:45.9%"></i>
+          <i style="left:61.9%"></i><i style="left:88.1%"></i>
         </div>
       </div>
-      <div class="time-label" id="timeLabel">0:00 / 1:40</div>
+      <div class="time-label" id="timeLabel">0:00 / 3:00</div>
     </div>
     <div class="status-strip" id="statusStrip"></div>
   </div>
 
   <div class="info-card">
-    <h2>シーン構成と対応する出典</h2>
+    <h2>シーン構成と対応する出典（台本 v3 準拠）</h2>
     <ul class="scene-list">
-      <li><span class="tt">0:00-0:13</span><span><span class="nm">問い</span><br><span class="ds">星屑の中から、小分子の化学構造が一本ずつ描かれて現れる</span></span></li>
-      <li><span class="tt">0:13-0:29</span><span><span class="nm">歴史的転換点</span> <span class="cite">[1,2]</span><br><span class="ds">三つの拠点の光が収束し、小分子が足場タンパク質と標的タンパク質を橋渡しする</span></span></li>
-      <li><span class="tt">0:29-0:46</span><span><span class="nm">エビデンスが世界を変える</span> <span class="cite">[1,2,3]</span><br><span class="ds">標識された標的タンパク質鎖がほどけ、断片となって拡散する</span></span></li>
-      <li><span class="tt">0:46-1:03</span><span><span class="nm">設計する科学へ</span> <span class="cite">[4,5]</span><br><span class="ds">構造式が設計格子の上で書き換えられ、足場の立体構造が変化する</span></span></li>
-      <li><span class="tt">1:03-1:21</span><span><span class="nm">分子機構から免疫へ</span> <span class="cite">[3,6,7]</span><br><span class="ds">紫の細胞から光の鎖が伸び、質感のあるT細胞が活性化する</span></span></li>
-      <li><span class="tt">1:21-1:40</span><span><span class="nm">新時代の幕開け</span> <span class="cite">[8,9]</span><br><span class="ds">すべての光が集まり、夜明けのように白金と金へ開く</span></span></li>
+      <li><span class="tt">0:00-0:23</span><span><span class="nm">場面1・謎</span> <span class="cite">[1,2,3,4]</span><br><span class="ds">星屑の中から、小分子の化学構造が一本ずつ描かれて現れる — レナリドミド・ポマリドミドは効くが、機序は誰も知らなかった</span></span></li>
+      <li><span class="tt">0:23-0:52</span><span><span class="nm">場面2・同じ年、別々の場所</span> <span class="cite">[5,6,7]</span><br><span class="ds">三つの拠点の光が収束する — 2014年、Krönke／Lu／Gandhiの三チームが独立に同じ謎を追った</span></span></li>
+      <li><span class="tt">0:52-1:23</span><span><span class="nm">場面3・答えが見つかった</span> <span class="cite">[5,6]</span><br><span class="ds">標識された標的タンパク質鎖がほどけ、断片となって拡散する — セレブロンへの結合がAiolos/Ikarosの分解を招く</span></span></li>
+      <li><span class="tt">1:23-1:52</span><span><span class="nm">場面4・同じ手がかりから、二つの道を歩いた</span> <span class="cite">[8,9,10]</span><br><span class="ds">構造式が設計格子の上で書き換えられる — CC-220（Iberdomide, 2018年）からMezigdomide（2020年）へ</span></span></li>
+      <li><span class="tt">1:52-2:39</span><span><span class="nm">場面5・併せ持つ2つの効果</span> <span class="cite">[9,10,11,12]</span><br><span class="ds">紫の細胞から光の鎖が伸び、質感のあるT細胞が活性化する — 骨髄腫細胞への直接効果と、免疫細胞の活性化という2つの効果</span></span></li>
+      <li><span class="tt">2:39-3:00</span><span><span class="nm">場面6・新しい時代が始まる</span><br><span class="ds">すべての光が集まり、夜明けのように白金と金へ開く — CELMoDsという新しいクラスの始まり</span></span></li>
     </ul>
   </div>
 
   <div class="info-card">
-    <h2>出典</h2>
+    <h2>出典（全出典リスト — 台本 v3）</h2>
     <ul class="ref-list">
-      <li><span class="n">1.</span><span>Krönke J, et al. Lenalidomide causes selective degradation of IKZF1 and IKZF3 in multiple myeloma cells. Science. 2014;343:301-305.</span></li>
-      <li><span class="n">2.</span><span>Lu G, et al. The myeloma drug lenalidomide promotes the cereblon-dependent destruction of Ikaros proteins. Science. 2014;343:305-309.</span></li>
-      <li><span class="n">3.</span><span>Gandhi AK, et al. Immunomodulatory agents lenalidomide and pomalidomide co-stimulate T cells by inducing degradation of Ikaros and Aiolos. Br J Haematol. 2014.</span></li>
-      <li><span class="n">4.</span><span>Hansen JD, et al. Discovery of CRBN E3 Ligase Modulator CC-92480 for the Treatment of Relapsed and Refractory Multiple Myeloma. J Med Chem. 2020;63(13):6648-6676.</span></li>
-      <li><span class="n">5.</span><span>Watson ER, et al. Molecular glue CELMoD compounds are regulators of cereblon conformation. Science. 2022;378(6619):549-553.</span></li>
-      <li><span class="n">6.</span><span>Gaffney B, et al. Mezigdomide (CC-92480), a novel cereblon E3 ligase modulator, induces vulnerability of multiple myeloma cells to T-cell-mediated killing. Blood. 2022;140(suppl 1):7108-7109.</span></li>
-      <li><span class="n">7.</span><span>Chiu H, et al. Mezigdomide reverses T-cell exhaustion through degradation of Aiolos/Ikaros and reinvigoration of cytokine production pathways. Blood. 2023;142(suppl 1):335.</span></li>
-      <li><span class="n">8.</span><span>Liu Y, et al. Targeting Ikaros and Aiolos: reviewing novel protein degraders for the treatment of multiple myeloma. Expert Rev Hematol. 2024;17(8):445-465.</span></li>
-      <li><span class="n">9.</span><span>Mezigdomide, carfilzomib, and dexamethasone (MeziKd) vs Kd in RRMM: SUCCESSOR-2. J Clin Oncol. 2026;44(17 suppl):LBA7506.</span></li>
+      <li><span class="n">1.</span><span>Singhal S, et al. N Engl J Med. 1999;341(21):1565-1571.</span></li>
+      <li><span class="n">2.</span><span>VanRhee F, et al. Blood. 2008;112(4):1035-1038.</span></li>
+      <li><span class="n">3.</span><span>Chen C, et al. Br J Haematol. 2009;146(2):164-170.</span></li>
+      <li><span class="n">4.</span><span>San Miguel JF, et al. Lancet Oncol. 2013;14(11):1055-1066.</span></li>
+      <li><span class="n">5.</span><span>Krönke J, et al. Science. 2014;343(6168):301-305.</span></li>
+      <li><span class="n">6.</span><span>Lu G, et al. Science. 2014;343(6168):305-309.</span></li>
+      <li><span class="n">7.</span><span>Gandhi AK, et al. Br J Haematol. 2014.</span></li>
+      <li><span class="n">8.</span><span>Matyskiela ME, et al. J Med Chem. 2018;61(2):535-542.（Iberdomide = CC-220）</span></li>
+      <li><span class="n">9.</span><span>Hansen JD, et al. J Med Chem. 2020;63(13):6648-6676.（Mezigdomide）</span></li>
+      <li><span class="n">10.</span><span>Thakurta A, et al. Oncotarget. 2021;12(15):1555-1563.</span></li>
+      <li><span class="n">11.</span><span>Watson ER, et al. Science. 2022;378(6619):549-553.</span></li>
+      <li><span class="n">12.</span><span>Richardson PG, et al. N Engl J Med. 2023;389(11):1009-1022.</span></li>
     </ul>
     <p class="note">
+      本動画の台本は「CELMoD はこうして生まれた（台本 v3）」に基づきます。社内検討用資料。Confidential — Internal use only。<br>
+      本台本の内容は史実・公表文献に基づく構成であり、演出上の脚色を含みます。<b>医学的内容の正確性は Medical の正式レビューを別途要します。</b><br>
       画面内の描画はすべて本動画のために作成したオリジナルです。出典論文に掲載された図版そのものは転載していません（学術誌の図の転載には出版社の許諾が必要なため）。引用番号は各シーンが依拠する知見の出典を示します。<br>
-      化学構造は本剤クラスに共通する骨格を様式化して描いたもので、特定化合物の正確な構造式ではありません。<br>
-      ラストカットの社名・プロジェクト名はプレースホルダーです。
+      化学構造は本剤クラスに共通する骨格を様式化して描いたもので、特定化合物の正確な構造式ではありません。
     </p>
   </div>
 </div>
 
 <script>
 (function(){
-  const END_TITLE = "社名／プロジェクト名";
-  const DURATION = 100;
+  const END_TITLE = "CELMoD はこうして生まれた";
+  const DURATION = 180;
   const CX = 400, CY = 210;
   const svgns = "http://www.w3.org/2000/svg";
   const $ = id => document.getElementById(id);
@@ -336,32 +340,53 @@
   }
 
   /* ======================= timeline ======================= */
-  const CUE={ s1a:0.3,s1b:6.7, s2a:13.5,s2b:21.0, s3a:29.5,s3b:36.0,
-              s4a:46.5,s4b:51.9,s4c:57.7, s5a:64.0,s5b:72.2,
-              s6a:82.0,s6b:85.8,s6c:89.6, end:97.0 };
-  const S2=13,S3=29,S4=46,S5=63,S6=81;
+  const CUE={ s1a:0.3,s1b:9.9, s2a:23,s2b:45.9, s3a:54.3,s3b:66.6,
+              s4a:83,s4b:89.9,s4c:105, s5a:127.5,s5b:137.4,
+              s6a:158.8,s6b:166.7,s6c:169.1, end:176.5 };
+  const S2=22.7,S3=52.1,S4=82.7,S5=111.5,S6=158.5;
 
   const captions=[
-    {s:CUE.s1a+0.5,e:6.2, t:"効くという事実の先に、まだ見えていない答えがあった。"},
-    {s:CUE.s1b+0.5,e:11.9,t:"私たちは、その理由を知りたかった。"},
-    {s:CUE.s2a+0.5,e:20.4,t:"複数の研究チームが、同じ答えにたどり着いた。"},
-    {s:CUE.s2b+0.5,e:27.8,t:"鍵は、分子同士を近づけるという発想だった。"},
-    {s:CUE.s3a+0.5,e:35.4,t:"薬は、標的を抑えるだけではない。"},
-    {s:CUE.s3b+0.5,e:43.2,t:"標的の運命を変えるという、新たな創薬の視点が生まれた。"},
-    {s:CUE.s4a+0.5,e:51.3,t:"発見は、次の問いを生んだ。"},
-    {s:CUE.s4b+0.5,e:57.1,t:"この分解を、意図して設計できるだろうか。"},
-    {s:CUE.s4c+0.5,e:62.9,t:"そして、狙い通りに分子を導くという発想が、ここから生まれた。"},
-    {s:CUE.s5a+0.5,e:71.6,t:"分子機構への理解は、免疫細胞の生物学を見つめ直す視点をもたらした。"},
-    {s:CUE.s5b+0.5,e:79.3,t:"そして、免疫細胞の機能に関わる可能性も示している。"},
-    {s:CUE.s6a+0.5,e:85.2,t:"問いは、理解へ。"},
-    {s:CUE.s6b+0.5,e:89.0,t:"理解は、設計へ。"},
-    {s:CUE.s6c+0.5,e:96.4,t:"そして今、分子を狙って導くという新たな時代が始まる。"},
+    {s:0.8,e:7.3,t:"レナリドミド、ポマリドミドは、長年、多発性骨髄腫の治療の柱として、患者さんに届けられてきた。"},
+    {s:7.6,e:10.1,t:"効くことは、誰の目にも明らかだった。"},
+    {s:10.4,e:13.7,t:"しかし、その仕組みは、誰にも分かっていなかった。"},
+    {s:14,e:15.7,t:"なぜ、この薬は効くのか。"},
+    {s:16,e:22.1,t:"教科書には「免疫調整薬（iMiD）」という、機序ではなく効果を指す名前だけが書かれていた。"},
+    {s:23.5,e:26.3,t:"2014年。ボストン、ダナファーバーがん研究所。"},
+    {s:26.6,e:32,t:"Krönkeらのグループは、ある転写因子が、なぜ細胞から消えていくのかを追っていた。"},
+    {s:32.3,e:35.9,t:"同じ年、別のLuらのグループも、同じ問いを追っていた。"},
+    {s:36.2,e:38.4,t:"そしてニュージャージー州サミット。"},
+    {s:38.7,e:46.1,t:"レナリドミド・ポマリドミドを開発した当時のセルジーン社自身の研究チーム、Gandhiらもまた、同じ謎を追っていた。"},
+    {s:46.4,e:51.5,t:"この年、少なくとも三つの独立したチームが、同じ謎を追い、結論にたどり着いた。"},
+    {s:52.9,e:54.5,t:"答えはこうだった。"},
+    {s:54.8,e:58.4,t:"薬は、細胞内の分解装置の一部、セレブロンに結合する。"},
+    {s:58.7,e:66.8,t:"結合したセレブロンは、それまで手が届かなかった二つのタンパク質——AiolosとIkaros——を、新たに動員できるようになる。"},
+    {s:67.1,e:73.6,t:"動員された二つのタンパク質は、ユビキチンの印を付けられ、プロテアソームへと送られ、分解されていく。"},
+    {s:73.9,e:79,t:"骨髄腫細胞の生存に必要な、この二つのタンパク質が消え、細胞は生きられなくなる。"},
+    {s:79.3,e:82.1,t:"これが、2014年に見つかった答えだった。"},
+    {s:83.5,e:86.3,t:"機序が分かれば、次の問いは自然に生まれた。"},
+    {s:86.6,e:90.1,t:"この仕組みを、もっと強く、もっと効率良くできないか。"},
+    {s:90.4,e:97.1,t:"2018年、有望なものを選び出すスクリーニングによってCC-220、後のIberdomideが見つかった。"},
+    {s:97.4,e:105.2,t:"この化合物は、レナリドミド・ポマリドミドより強くセレブロンに結合し、Aiolos/Ikarosの動員と分解を、より強く誘導した。"},
+    {s:105.5,e:110.9,t:"2020年、分解の強さと速さを兼ね備えることを目標に設計されたのがMezigdomideだ。"},
+    {s:112.3,e:117.7,t:"Mezigdomideは、セレブロンへの結合親和性が、ポマリドミドの実に40倍に達する。"},
+    {s:118,e:124.9,t:"この結合は、セレブロンの立体構造をClosed型へと変え、AiolosおよびIkarosの分解を強く促進する。"},
+    {s:125.2,e:127.7,t:"この分解は、二つの効果を同時に生む。"},
+    {s:128,e:130.5,t:"一つは、骨髄腫細胞そのものへの効果。"},
+    {s:130.8,e:137.6,t:"従来の免疫調節薬（IMiDs）と比べて、高い増殖抑制作用、アポトーシス誘導、そして腫瘍退縮作用を示す。"},
+    {s:137.9,e:140,t:"もう一つは、免疫細胞への効果。"},
+    {s:140.3,e:145.9,t:"T細胞とNK細胞の活性化と増殖を促し、疲弊していたT細胞を、その疲弊から解き放つ。"},
+    {s:146.2,e:153.8,t:"Mezigdomideは、骨髄腫細胞に対する直接的な増殖抑制作用とともに免疫調節作用を示すことで、抗腫瘍作用を発揮する。"},
+    {s:154.1,e:157.9,t:"これは、すなわちCELMoDという、新しいクラスの誕生だ。"},
+    {s:159.3,e:161.5,t:"謎解きから、10年余りが過ぎた。"},
+    {s:161.8,e:166.9,t:"かつて「免疫調整薬」としか呼べなかった薬の物語は、今、次の一章を迎えている。"},
+    {s:167.2,e:169.3,t:"CELMoDsは、ここから始まる。"},
+    {s:169.6,e:176.5,t:"これは、ひとつの謎が解けた物語であり、同時に——多発性骨髄腫治療の、新しい時代の、始まりの物語でもある。"},
   ];
 
   const flashes=[
-    {t:S2,a:.66,d:.7},{t:20,a:.28,d:.5},{t:25,a:.24,d:.4},{t:27,a:.34,d:.55},
-    {t:S3,a:.8,d:.85},{t:37,a:.5,d:.7},{t:S4,a:.68,d:.8},{t:CUE.s4c,a:.56,d:.9},
-    {t:S5,a:.62,d:.9},{t:S6,a:.74,d:.9},{t:CUE.s6b,a:.86,d:1.3},{t:CUE.end,a:.9,d:1.4},
+    {t:22.7,a:.66,d:.7},{t:35.56,a:.28,d:.5},{t:44.75,a:.24,d:.4},{t:48.43,a:.34,d:.55},
+    {t:52.1,a:.8,d:.85},{t:66.5,a:.5,d:.7},{t:82.7,a:.68,d:.8},{t:102.52,a:.56,d:.9},
+    {t:111.5,a:.62,d:.9},{t:158.5,a:.74,d:.9},{t:163.93,a:.86,d:1.3},{t:176.61,a:.9,d:1.4},
   ];
   function flashAt(t){
     let v=0;
@@ -380,22 +405,22 @@
     return [sx,sy,rr];
   }
   const ringDefs=[
-    {t:S2,r:340,d:1.7,w:3,c:"#a8dcff"},{t:20,r:300,d:1.5,w:2.4,c:"#d6ecff"},
-    {t:25,r:220,d:1.2,w:2.2,c:"#ffd28f"},{t:27,r:360,d:1.6,w:3,c:"#ffcf8a"},
-    {t:S3,r:460,d:2.1,w:4.2,c:"#cbb8ff"},{t:S3+0.5,r:420,d:2.1,w:2.6,c:"#a8dcff"},
-    {t:37,r:440,d:2.1,w:3.4,c:"#ffe2ab"},{t:CUE.s4c,r:300,d:1.8,w:3,c:"#ffd782"},
-    {t:CUE.s5a,r:330,d:2,w:3.4,c:"#ffcf6e"},{t:CUE.s5b+2,r:280,d:1.8,w:2.6,c:"#8ff0dc"},
-    {t:S6,r:480,d:2.2,w:3.6,c:"#e3d0ff"},{t:CUE.s6b,r:560,d:2.6,w:4,c:"#fff2cf"},
+    {t:22.7,r:340,d:1.7,w:3,c:"#a8dcff"},{t:35.56,r:300,d:1.5,w:2.4,c:"#d6ecff"},
+    {t:44.75,r:220,d:1.2,w:2.2,c:"#ffd28f"},{t:48.43,r:360,d:1.6,w:3,c:"#ffcf8a"},
+    {t:52.1,r:460,d:2.1,w:4.2,c:"#cbb8ff"},{t:53,r:420,d:2.1,w:2.6,c:"#a8dcff"},
+    {t:66.5,r:440,d:2.1,w:3.4,c:"#ffe2ab"},{t:102.52,r:300,d:1.8,w:3,c:"#ffd782"},
+    {t:114.11,r:330,d:2,w:3.4,c:"#ffcf6e"},{t:140.74,r:280,d:1.8,w:2.6,c:"#8ff0dc"},
+    {t:158.5,r:480,d:2.2,w:3.6,c:"#e3d0ff"},{t:163.93,r:560,d:2.6,w:4,c:"#fff2cf"},
   ];
 
   function energyAt(t){
-    if(t<5) return 0;
-    if(t<S2) return 0.4*smoothstep(5,7,t);
+    if(t < 8.73) return 0;
+    if(t<S2) return 0.4*smoothstep(8.73, 12.22,t);
     if(t<S3) return lerp(0.4,0.95,smoothstep(S2,S2+1,t));
     if(t<S4) return 1.15;
     if(t<S5) return 1.0;
     if(t<S6) return lerp(1.0,1.2,smoothstep(S5,S5+2,t));
-    return lerp(1.3,0.5,smoothstep(96,99,t));
+    return lerp(1.3,0.5,smoothstep(175.47, 178.87,t));
   }
   const WSTEP=0.1, warpTable=[0];
   for(let i=1;i<=Math.ceil(DURATION/WSTEP)+2;i++)
@@ -684,15 +709,16 @@
   /* ======================= build: labels ======================= */
   const labelsG=$("labelsG");
   const LABELS=[
-    {sci:"cereblon（足場）", abs:"足場タンパク質", x:150, y:300, ax:200, ay:274, t0:22.4, t1:29.6},
-    {sci:"小分子",           abs:"小分子",         x:400, y:150, ax:400, ay:176, t0:22.0, t1:29.6},
-    {sci:"Ikaros / Aiolos", abs:"標的タンパク質",  x:668, y:306, ax:640, ay:276, t0:23.0, t1:29.6},
-    {sci:"標的の分解",       abs:"標的の分解",      x:432, y:120, ax:412, ay:150, t0:31.0, t1:35.0},
-    {sci:"構造最適化 [4]",   abs:"構造最適化",      x:400, y:126, ax:400, ay:152, t0:53.4, t1:57.0},
-    {sci:"立体構造の変化 [5]",abs:"立体構造の変化",  x:400, y:352, ax:400, ay:326, t0:54.6, t1:60.4},
-    {sci:"設計された小分子",  abs:"設計された小分子", x:400, y:330, ax:400, ay:304, t0:58.6, t1:62.4},
-    {sci:"免疫細胞",         abs:"免疫細胞",        x:242, y:376, ax:242, ay:352, t0:66.0, t1:79.4},
-    {sci:"T細胞",            abs:"T細胞",           x:590, y:74,  ax:590, ay:100, t0:73.4, t1:79.4},
+    {sci:"セレブロン（足場）", abs:"足場タンパク質", x:150, y:300, ax:200, ay:274, t0:45.9, t1:66.8},
+    {sci:"小分子",             abs:"小分子",         x:400, y:150, ax:400, ay:176, t0:45.9, t1:66.8},
+    {sci:"Aiolos / Ikaros",   abs:"標的タンパク質",  x:668, y:306, ax:640, ay:276, t0:46.9, t1:66.8},
+    {sci:"標的の分解",         abs:"標的の分解",      x:432, y:120, ax:412, ay:150, t0:67.1, t1:79.0},
+    {sci:"CC-220（Iberdomide）",abs:"新規化合物",     x:400, y:126, ax:400, ay:152, t0:90.4, t1:105.2},
+    {sci:"結合強度の向上",     abs:"結合強度の向上",   x:400, y:352, ax:400, ay:326, t0:89.9, t1:105.0},
+    {sci:"Mezigdomide",       abs:"設計された小分子", x:400, y:330, ax:400, ay:304, t0:105.5, t1:117.7},
+    {sci:"立体構造の変化（Closed型）",abs:"立体構造の変化", x:400, y:352, ax:400, ay:326, t0:118.0, t1:124.9},
+    {sci:"免疫細胞",           abs:"免疫細胞",        x:242, y:376, ax:242, ay:352, t0:118.0, t1:153.8},
+    {sci:"T細胞",              abs:"T細胞",           x:590, y:74,  ax:590, ay:100, t0:137.9, t1:153.8},
   ];
   const labelEls=LABELS.map(L=>{
     const g=el("g",{opacity:0},labelsG);
@@ -711,11 +737,11 @@
   const citeText=txt(citeChip,{x:706,y:409,"text-anchor":"middle",fill:"rgba(158,208,255,.95)",
     "font-size":11.5,"font-weight":600,"font-family":"inherit"},"");
   const CITES=[
-    {t0:14.5,t1:28.4,s:"出典 [1,2]"},
-    {t0:30.0,t1:44.0,s:"出典 [1,2,3]"},
-    {t0:47.5,t1:62.4,s:"出典 [4,5]"},
-    {t0:64.5,t1:79.4,s:"出典 [3,6,7]"},
-    {t0:82.5,t1:93.0,s:"出典 [8,9]"},
+    {t0:1.0,t1:22.1,s:"出典 [1,2,3,4]"},
+    {t0:23.5,t1:51.5,s:"出典 [5,6,7]"},
+    {t0:52.9,t1:82.1,s:"出典 [5,6]"},
+    {t0:83.5,t1:110.9,s:"出典 [8,9,10]"},
+    {t0:112.3,t1:157.9,s:"出典 [9,10,11,12]"},
   ];
 
   /* ======================= build: scene 6 ======================= */
@@ -1078,19 +1104,19 @@
     if(!audioCtx||!musicEnabled) return;
     if(t>=CUE.end-0.2) return;
     const s=idx%16, bar=Math.floor(idx/16), ch=chordAt(t);
-    if(t<6) return;
+    if(t < 10.48) return;
     if(t<S2){
       if(s===0) piano(ch.tones[0],.5);
       if(s===8) piano(ch.tones[2],.38);
       if(s===12&&bar%2===1) piano(ch.tones[1],.3);
-      if(t>=9.5&&s===0) bass(ch.root,.9);
+      if(t >= 16.59&&s===0) bass(ch.root,.9);
       return;
     }
     if(t<S3){
       if(s===0){ kick(.5); piano(ch.tones[0],.48); bass(ch.root,.55); }
       if(s===8){ kick(.4); piano(ch.tones[2],.36); bass(ch.root,.4); }
       if(s===4||s===12) tom(.42);
-      if(t>=21&&(s===6||s===14)) pluck(ch.tones[(idx>>1)%3]*2,.7);
+      if(t >= 37.4&&(s===6||s===14)) pluck(ch.tones[(idx>>1)%3]*2,.7);
       return;
     }
     if(t<S4){
@@ -1133,17 +1159,17 @@
     padOscs.forEach((o,i)=>o.frequency.setTargetAtTime(ch.tones[i],now,.07));
     strOscs.forEach((o,i)=>o.frequency.setTargetAtTime(ch.tones[i]*2,now,.07));
     subOsc.frequency.setTargetAtTime(ch.root/2,now,.07);
-    padFilter.frequency.setTargetAtTime(520+smoothstep(0,3,t)*260+smoothstep(12,16,t)*420
-      +smoothstep(28,32,t)*700+smoothstep(80,86,t)*900,now,.12);
-    strFilter.frequency.setTargetAtTime(1500+smoothstep(28,34,t)*900+smoothstep(80,88,t)*1400,now,.12);
-    const tail=1-smoothstep(98.4,100,t);
-    padGain.gain.setTargetAtTime(musicEnabled?(0.1+smoothstep(44,50,t)*.03)*smoothstep(0,2,t)*tail:.0001,now,.15);
-    strGain.gain.setTargetAtTime(musicEnabled?(smoothstep(20,25,t)*.075+smoothstep(29,33,t)*.035
-      +smoothstep(63,68,t)*.035+smoothstep(81,86,t)*.05)*tail:.0001,now,.15);
+    padFilter.frequency.setTargetAtTime(520+smoothstep(0, 5.24,t)*260+smoothstep(20.95, 28.21,t)*420
+      +smoothstep(50.26, 57.5,t)*700+smoothstep(155.89, 164.16,t)*900,now,.12);
+    strFilter.frequency.setTargetAtTime(1500+smoothstep(50.26, 61.1,t)*900+smoothstep(155.89, 166.42,t)*1400,now,.12);
+    const tail=1-smoothstep(178.19, 180,t);
+    padGain.gain.setTargetAtTime(musicEnabled?(0.1+smoothstep(79.1, 89.48,t)*.03)*smoothstep(0, 3.49,t)*tail:.0001,now,.15);
+    strGain.gain.setTargetAtTime(musicEnabled?(smoothstep(35.56, 44.75,t)*.075+smoothstep(52.1, 59.3,t)*.035
+      +smoothstep(111.5, 124.56,t)*.035+smoothstep(158.5, 164.16,t)*.05)*tail:.0001,now,.15);
     tremDepth.gain.setTargetAtTime(musicEnabled?(t>=S5&&t<S6?.022:.004):0,now,.2);
-    subGain.gain.setTargetAtTime(musicEnabled?.15*smoothstep(8,13,t)*tail:.0001,now,.1);
+    subGain.gain.setTargetAtTime(musicEnabled?.15*smoothstep(13.97, 22.7,t)*tail:.0001,now,.1);
     const cap=captions.some(c=>t>c.s-.15&&t<c.e+.1);
-    musicBus.gain.setTargetAtTime(musicEnabled?smoothstep(0,1.2,t)*tail*(cap?.34:1):.0001,now,.22);
+    musicBus.gain.setTargetAtTime(musicEnabled?smoothstep(0, 2.1,t)*tail*(cap?.34:1):.0001,now,.22);
     master.gain.setTargetAtTime(cap?.72:.95,now,.22);
   }
 
@@ -1179,19 +1205,19 @@
     frameNo++;
     const energy=energyAt(t);
     const beat=Math.max(0,1-((t%BEAT)/BEAT)*3.4)*energy;
-    const dawn=smoothstep(CUE.s6b,95.5,t);
-    const gold=smoothstep(CUE.s4c,60.5,t);
+    const dawn=smoothstep(CUE.s6b, 174.91,t);
+    const gold=smoothstep(CUE.s4c, 107.26,t);
 
     /* background */
-    let inner=mixHex("#0a1230","#152a72",smoothstep(11,15,t));
-    inner=mixHex(inner,"#2a1f66",smoothstep(28,32,t));
-    inner=mixHex(inner,"#0e3a44",smoothstep(45,49,t));
-    inner=mixHex(inner,"#2a1046",smoothstep(62,66,t));
+    let inner=mixHex("#0a1230","#152a72",smoothstep(19.21, 26.38,t));
+    inner=mixHex(inner,"#2a1f66",smoothstep(50.26, 57.5,t));
+    inner=mixHex(inner,"#0e3a44",smoothstep(80.9, 87.78,t));
+    inner=mixHex(inner,"#2a1046",smoothstep(109.81, 119.33,t));
     inner=mixHex(inner,"#fff8ec",dawn);
-    let outer=mixHex("#02030a","#050a24",smoothstep(11,15,t));
-    outer=mixHex(outer,"#0a0723",smoothstep(28,32,t));
-    outer=mixHex(outer,"#04181d",smoothstep(45,49,t));
-    outer=mixHex(outer,"#100420",smoothstep(62,66,t));
+    let outer=mixHex("#02030a","#050a24",smoothstep(19.21, 26.38,t));
+    outer=mixHex(outer,"#0a0723",smoothstep(50.26, 57.5,t));
+    outer=mixHex(outer,"#04181d",smoothstep(80.9, 87.78,t));
+    outer=mixHex(outer,"#100420",smoothstep(109.81, 119.33,t));
     outer=mixHex(outer,"#ece3d2",dawn);
     bgStop0.setAttribute("stop-color",inner);
     bgStop1.setAttribute("stop-color",outer);
@@ -1199,12 +1225,12 @@
 
     /* camera */
     let cs;
-    if(t<S2) cs=lerp(1.16,1,easeOut(smoothstep(0,12,t)));
+    if(t<S2) cs=lerp(1.16,1,easeOut(smoothstep(0, 20.95,t)));
     else if(t<S3) cs=lerp(1,1.07,smoothstep(S2,S3,t));
     else if(t<S4) cs=lerp(.95,1.1,easeOut(smoothstep(S3,S4,t)));
     else if(t<S5) cs=lerp(1,1.05,smoothstep(S4,S5,t));
     else if(t<S6) cs=lerp(.97,1.06,smoothstep(S5,S6,t));
-    else cs=lerp(1,1.15,easeOut(smoothstep(S6,97,t)));
+    else cs=lerp(1,1.15,easeOut(smoothstep(S6, 176.61,t)));
     if(t>=CUE.end) cs=lerp(1.15,1.03,smoothstep(CUE.end,CUE.end+1.6,t));
     cs+=beat*.012;
     const [shx,shy,shr]=shakeAt(t);
@@ -1212,7 +1238,7 @@
       `translate(${(CX+Math.sin(t*.21)*8*energy+shx).toFixed(2)} ${(CY+Math.cos(t*.17)*5*energy+shy).toFixed(2)}) rotate(${(Math.sin(t*.13)*.9*energy+shr).toFixed(3)}) scale(${cs.toFixed(4)}) translate(${-CX} ${-CY})`);
 
     /* drifting membranes — turbulence is costly, so only run it while the cells are on screen */
-    const cellsVisible = t>61.5 && t<84;
+    const cellsVisible = t > 108.96 && t < 161.89;
     if(cellsVisible && frameNo%3===0){
       turbA.setAttribute("baseFrequency",(0.0125+Math.sin(t*0.42)*0.0022).toFixed(5));
       turbB.setAttribute("baseFrequency",(0.0165+Math.sin(t*0.55+1.6)*0.0026).toFixed(5));
@@ -1238,18 +1264,18 @@
       e.setAttribute("fill",w.hue>.75?mixHex("#d5e6ff","#ffe0a6",gold):"#d5e6ff");
     });
 
-    shaftG.setAttribute("opacity",clamp(((smoothstep(12.8,15,t)*.45+smoothstep(28.8,31,t)*.4
-      +smoothstep(CUE.s4c,60,t)*.45+smoothstep(S6,84,t)*.7)*(1-smoothstep(96,99,t))*(.5+beat*.3)),0,.85).toFixed(3));
+    shaftG.setAttribute("opacity",clamp(((smoothstep(22.35, 26.38,t)*.45+smoothstep(51.73, 55.7,t)*.4
+      +smoothstep(CUE.s4c, 106.42,t)*.45+smoothstep(S6, 161.89,t)*.7)*(1-smoothstep(175.47, 178.87,t))*(.5+beat*.3)),0,.85).toFixed(3));
     shaftInner.setAttribute("transform",`rotate(${(-t*4.5).toFixed(2)} ${CX} ${CY})`);
 
     coreStop0.setAttribute("stop-color",mixHex("#8fd8ff","#ffd782",gold));
     coreStop1.setAttribute("stop-color",mixHex("#5aa8ff","#ffb347",gold));
-    coreGlow.setAttribute("opacity",clamp((smoothstep(6,11,t)*.45+smoothstep(19.4,21,t)*.3
-      +smoothstep(28.8,31,t)*.4+smoothstep(CUE.s4c,60,t)*.45+beat*.2)*(1-dawn*.7)*(1-smoothstep(63,66,t)*.5),0,1.2).toFixed(3));
-    coreGlow.setAttribute("r",(160+beat*22+smoothstep(29,34,t)*55).toFixed(1));
+    coreGlow.setAttribute("opacity",clamp((smoothstep(10.48, 19.21,t)*.45+smoothstep(34.46, 37.4,t)*.3
+      +smoothstep(51.73, 55.7,t)*.4+smoothstep(CUE.s4c, 106.42,t)*.45+beat*.2)*(1-dawn*.7)*(1-smoothstep(111.5, 119.33,t)*.5),0,1.2).toFixed(3));
+    coreGlow.setAttribute("r",(160+beat*22+smoothstep(52.1, 61.1,t)*55).toFixed(1));
 
     /* ---- scene 1: mist + chemical structure drawing itself ---- */
-    if(t<15){
+    if(t < 26.38){
       mist.forEach(m=>{
         const p=easeOut(smoothstep(m.t0,m.t0+5.2,t));
         m.e.setAttribute("cx",lerp(m.sx,m.tx,p).toFixed(1));
@@ -1264,7 +1290,7 @@
 
     /* the small molecule persists from scene 1 to the end of scene 4 */
     const chemDraw=smoothstep(CUE.s1b,CUE.s1b+4.4,t);
-    const chemOn=clamp(smoothstep(CUE.s1b,CUE.s1b+1,t)*(1-smoothstep(62.4,64.4,t)),0,1);
+    const chemOn=clamp(smoothstep(CUE.s1b,CUE.s1b+1,t)*(1-smoothstep(110.48, 115.16,t)),0,1);
     chemG.setAttribute("opacity",chemOn.toFixed(3));
     if(chemOn>0.01){
       /* scene 1-3 centred; scene 4 lifts slightly to make room for the scaffold */
@@ -1281,7 +1307,7 @@
         p.setAttribute("filter",gold>0.3?"url(#gS)":null);
       });
       chemFills.forEach((f,i)=>{
-        const a=smoothstep(CUE.s2b+0.4+i*0.5,CUE.s2b+1.6+i*0.5,t)*(1-smoothstep(45,47,t))*0.9
+        const a=smoothstep(CUE.s2b+0.4+i*0.5,CUE.s2b+1.6+i*0.5,t)*(1-smoothstep(80.9, 84.39,t))*0.9
               + smoothstep(CUE.s4c,CUE.s4c+1.4,t)*0.9;
         f.setAttribute("opacity",clamp(a,0,1).toFixed(3));
         f.setAttribute("fill",gold>0.3?"rgba(255,232,170,.92)":"rgba(255,255,255,.9)");
@@ -1289,9 +1315,9 @@
     }
 
     /* ---- scene 2: sources, beams, the two proteins brought together ---- */
-    if(t>12&&t<32){
+    if(t > 20.95&&t < 57.5){
       sourceEls.forEach((s,i)=>{
-        const ap=smoothstep(CUE.s2a+i*.28,CUE.s2a+.9+i*.28,t)*(1-smoothstep(21.5,23.5,t));
+        const ap=smoothstep(CUE.s2a+i*.28,CUE.s2a+.9+i*.28,t)*(1-smoothstep(38.32, 41.99,t));
         s.g.setAttribute("opacity",ap.toFixed(3));
         const hp=smoothstep(CUE.s2a+i*.28,CUE.s2a+1.4+i*.28,t);
         s.halo.setAttribute("r",(6+hp*36).toFixed(1));
@@ -1303,7 +1329,7 @@
       paths.forEach((p,i)=>{
         const dp=smoothstep(p._t0,p._t1,t);
         p.setAttribute("stroke-dashoffset",(p._len*(1-dp)).toFixed(2));
-        p.setAttribute("opacity",(dp*(1-smoothstep(20.6,22.6,t))*.9).toFixed(3));
+        p.setAttribute("opacity",(dp*(1-smoothstep(36.67, 40.34,t))*.9).toFixed(3));
         const cm=comets[i];
         if(dp>0&&dp<1){
           cm.trail.forEach((c,k)=>{
@@ -1316,8 +1342,8 @@
     }
 
     /* scaffold ribbon + target chain + spiky particle (scenes 2-3) */
-    const showComplex = t>CUE.s2b-0.6 && t<46;
-    const complexFade = smoothstep(CUE.s2b-0.4,CUE.s2b+1.6,t)*(1-smoothstep(44,46,t));
+    const showComplex = t>CUE.s2b-0.6 && t < 82.7;
+    const complexFade = smoothstep(CUE.s2b-0.4,CUE.s2b+1.6,t)*(1-smoothstep(79.1, 82.7,t));
     const degrade = smoothstep(CUE.s3a+0.4,CUE.s3a+4.2,t);
     if(showComplex){
       const rd=smoothstep(CUE.s2b-0.2,CUE.s2b+2.4,t);
@@ -1355,14 +1381,14 @@
     }
 
     /* ---- scene 3: fragments scatter, evidence network ---- */
-    if(t>CUE.s3a-1&&t<48){
+    if(t>CUE.s3a-1&&t < 86.09){
       frags.forEach(f=>{
         const p=easeOut(smoothstep(f.t0,f.t0+3.4,t));
         if(t<f.t0){ f.e.setAttribute("opacity",0); return; }
         const [x,y]=polar(628,232,p*f.d,f.a);
         f.e.setAttribute("cx",x.toFixed(1)); f.e.setAttribute("cy",y.toFixed(1));
         f.e.setAttribute("r",(f.r*(1-p*0.5)).toFixed(2));
-        f.e.setAttribute("opacity",((1-p)*.85*(1-smoothstep(44,47,t))).toFixed(3));
+        f.e.setAttribute("opacity",((1-p)*.85*(1-smoothstep(79.1, 84.39,t))).toFixed(3));
       });
       const np=[];
       nodes.forEach((n,i)=>{
@@ -1372,9 +1398,9 @@
         nodeEls[i].setAttribute("cx",x.toFixed(1));
         nodeEls[i].setAttribute("cy",y.toFixed(1));
         nodeEls[i].setAttribute("opacity",
-          clamp(p*(.5+.45*Math.sin(t*3+i))*(1-smoothstep(44.5,47.5,t))*(t<n.t0?0:1),0,1).toFixed(3));
+          clamp(p*(.5+.45*Math.sin(t*3+i))*(1-smoothstep(80, 85.24,t))*(t<n.t0?0:1),0,1).toFixed(3));
       });
-      const lo=smoothstep(CUE.s3b-1,40,t)*.45*(1-smoothstep(44.5,47.5,t));
+      const lo=smoothstep(CUE.s3b-1, 71.9,t)*.45*(1-smoothstep(80, 85.24,t));
       netPairs.forEach((pr,i)=>{
         const e=netLineEls[i];
         if(lo<=.01){ e.setAttribute("opacity",0); return; }
@@ -1383,15 +1409,15 @@
         e.setAttribute("x2",b[0].toFixed(1)); e.setAttribute("y2",b[1].toFixed(1));
         e.setAttribute("opacity",(lo*(1-pr.d/88)).toFixed(3));
       });
-    } else if(t>=48&&nodeEls[0].getAttribute("opacity")!=="0"){
+    } else if(t >= 86.09&&nodeEls[0].getAttribute("opacity")!=="0"){
       nodeEls.forEach(e=>e.setAttribute("opacity",0));
       netLineEls.forEach(e=>e.setAttribute("opacity",0));
       frags.forEach(f=>f.e.setAttribute("opacity",0));
     }
 
     /* ---- scene 4: design lattice + conformational change ---- */
-    if(t>44&&t<66){
-      const gf=smoothstep(CUE.s4a,CUE.s4a+2.2,t)*(1-smoothstep(61,64,t));
+    if(t > 79.1&&t < 119.33){
+      const gf=smoothstep(CUE.s4a,CUE.s4a+2.2,t)*(1-smoothstep(108.11, 114.11,t));
       hexG.setAttribute("opacity",(gf*.9).toFixed(3));
       hexes.forEach(h=>{
         const ap=smoothstep(CUE.s4a+h.dist*.0045,CUE.s4a+1.2+h.dist*.0045,t);
@@ -1399,8 +1425,8 @@
       });
       designG.setAttribute("opacity",1);
       const morph=smoothstep(CUE.s4b+2.4,CUE.s4b+6,t);
-      conformA.setAttribute("opacity",(smoothstep(CUE.s4b+0.6,CUE.s4b+2,t)*(1-morph)*.9*(1-smoothstep(61,63.5,t))).toFixed(3));
-      conformB.setAttribute("opacity",(morph*.9*(1-smoothstep(61,63.5,t))).toFixed(3));
+      conformA.setAttribute("opacity",(smoothstep(CUE.s4b+0.6,CUE.s4b+2,t)*(1-morph)*.9*(1-smoothstep(108.11, 112.81,t))).toFixed(3));
+      conformB.setAttribute("opacity",(morph*.9*(1-smoothstep(108.11, 112.81,t))).toFixed(3));
       designMarks.forEach((m,i)=>{
         const ap=smoothstep(CUE.s4b+1.2+i*.5,CUE.s4b+2.2+i*.5,t)*(1-smoothstep(CUE.s4c,CUE.s4c+1.4,t));
         const mx=+m.getAttribute("data-mx"), my=+m.getAttribute("data-my");
@@ -1410,7 +1436,7 @@
         m.setAttribute("opacity",(ap*.85).toFixed(3));
       });
       goldHalo.setAttribute("cy",(CY-56).toFixed(1));
-      goldHalo.setAttribute("opacity",(smoothstep(CUE.s4c,59.5,t)*(1-smoothstep(62.4,64,t))*.85).toFixed(3));
+      goldHalo.setAttribute("opacity",(smoothstep(CUE.s4c, 105.57,t)*(1-smoothstep(110.48, 114.11,t))*.85).toFixed(3));
       goldHalo.setAttribute("r",(140+beat*18).toFixed(1));
     } else {
       hexG.setAttribute("opacity",0);
@@ -1418,8 +1444,8 @@
     }
 
     /* ---- scene 5: two cells, the travelling signal, T-cell activation ---- */
-    if(t>61.5&&t<84){
-      const fade=1-smoothstep(80.5,83,t);
+    if(t > 108.96&&t < 161.89){
+      const fade=1-smoothstep(157.19, 160.76,t);
       const aOn=smoothstep(CUE.s5a-0.5,CUE.s5a+2,t)*fade;
       cellA.g.setAttribute("opacity",aOn.toFixed(3));
       cellA.g.setAttribute("transform",
@@ -1483,7 +1509,7 @@
     });
 
     /* ---- scene 6 ---- */
-    if(t>79.5){
+    if(t > 154.58){
       streaksG.setAttribute("opacity",1);
       streaks.forEach(s=>{
         const p=smoothstep(CUE.s6a+s.delay,CUE.s6a+2.6+s.delay,t);
@@ -1496,8 +1522,8 @@
       $("dawnG").setAttribute("opacity",1);
       dawnCore.setAttribute("r",(smoothstep(CUE.s6b,CUE.s6b+4.5,t)*580).toFixed(1));
       dawnCore.setAttribute("opacity",
-        (smoothstep(CUE.s6b,CUE.s6b+.7,t)*(1-smoothstep(CUE.s6b+3,96,t)*.55)).toFixed(3));
-      const ro=smoothstep(CUE.s6c,CUE.s6c+2.2,t)*(1-smoothstep(95.5,97,t));
+        (smoothstep(CUE.s6b,CUE.s6b+.7,t)*(1-smoothstep(CUE.s6b+3, 175.47,t)*.55)).toFixed(3));
+      const ro=smoothstep(CUE.s6c,CUE.s6c+2.2,t)*(1-smoothstep(174.91, 176.61,t));
       roadG.setAttribute("opacity",ro.toFixed(3));
       travellers.forEach((tr,i)=>{
         const q=((t-CUE.s6c)*.19+tr.offset)%1, ez=Math.pow(q,1.7);
@@ -1564,7 +1590,7 @@
     narrationBtn.disabled=true;
   }
   function fmt(s){ s=Math.max(0,s); return Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0"); }
-  function updateUI(t){ scrub.value=t.toFixed(2); timeLabel.textContent=fmt(t)+" / 1:40"; }
+  function updateUI(t){ scrub.value=t.toFixed(2); timeLabel.textContent=fmt(t)+" / 3:00"; }
   function setPlaying(p){
     playing=p;
     playIcon.style.display=p?"none":"block";

@@ -12,7 +12,7 @@ import {
 } from './geometry';
 
 const FONT = 'IPAGothic, "Noto Sans JP", sans-serif';
-const END_TITLE = '社名／プロジェクト名';
+const END_TITLE = 'CELMoD はこうして生まれた';
 const SCI_LABELS = true;
 
 /* warp field speed varies with energy, so pre-integrate it into a lookup */
@@ -35,29 +35,29 @@ export const Story: React.FC = () => {
 
   const energy = energyAt(t);
   const beat = Math.max(0, 1 - ((t % BEAT) / BEAT) * 3.4) * energy;
-  const dawn = smoothstep(CUE.s6b, 95.5, t);
-  const gold = smoothstep(CUE.s4c, 60.5, t);
+  const dawn = smoothstep(CUE.s6b, 174.91, t);
+  const gold = smoothstep(CUE.s4c, 107.26, t);
 
   /* background grade */
-  let inner = mixHex('#0a1230', '#152a72', smoothstep(11, 15, t));
-  inner = mixHex(inner, '#2a1f66', smoothstep(28, 32, t));
-  inner = mixHex(inner, '#0e3a44', smoothstep(45, 49, t));
-  inner = mixHex(inner, '#2a1046', smoothstep(62, 66, t));
+  let inner = mixHex('#0a1230', '#152a72', smoothstep(19.21, 26.38, t));
+  inner = mixHex(inner, '#2a1f66', smoothstep(50.26, 57.5, t));
+  inner = mixHex(inner, '#0e3a44', smoothstep(80.9, 87.78, t));
+  inner = mixHex(inner, '#2a1046', smoothstep(109.81, 119.33, t));
   inner = mixHex(inner, '#fff8ec', dawn);
-  let outer = mixHex('#02030a', '#050a24', smoothstep(11, 15, t));
-  outer = mixHex(outer, '#0a0723', smoothstep(28, 32, t));
-  outer = mixHex(outer, '#04181d', smoothstep(45, 49, t));
-  outer = mixHex(outer, '#100420', smoothstep(62, 66, t));
+  let outer = mixHex('#02030a', '#050a24', smoothstep(19.21, 26.38, t));
+  outer = mixHex(outer, '#0a0723', smoothstep(50.26, 57.5, t));
+  outer = mixHex(outer, '#04181d', smoothstep(80.9, 87.78, t));
+  outer = mixHex(outer, '#100420', smoothstep(109.81, 119.33, t));
   outer = mixHex(outer, '#ece3d2', dawn);
 
   /* camera */
   let cs: number;
-  if (t < S2) cs = lerp(1.16, 1, easeOut(smoothstep(0, 12, t)));
+  if (t < S2) cs = lerp(1.16, 1, easeOut(smoothstep(0, 20.95, t)));
   else if (t < S3) cs = lerp(1, 1.07, smoothstep(S2, S3, t));
   else if (t < S4) cs = lerp(0.95, 1.1, easeOut(smoothstep(S3, S4, t)));
   else if (t < S5) cs = lerp(1, 1.05, smoothstep(S4, S5, t));
   else if (t < S6) cs = lerp(0.97, 1.06, smoothstep(S5, S6, t));
-  else cs = lerp(1, 1.15, easeOut(smoothstep(S6, 97, t)));
+  else cs = lerp(1, 1.15, easeOut(smoothstep(S6, 176.61, t)));
   if (t >= CUE.end) cs = lerp(1.15, 1.03, smoothstep(CUE.end, CUE.end + 1.6, t));
   cs += beat * 0.012;
   const [shx, shy, shr] = shakeAt(t);
@@ -66,16 +66,16 @@ export const Story: React.FC = () => {
   const roll = Math.sin(t * 0.13) * 0.9 * energy + shr;
   const cam = `translate(${F(camX)} ${F(camY)}) rotate(${F(roll)}) scale(${cs.toFixed(4)}) translate(${-CX} ${-CY})`;
 
-  const cellsVisible = t > 61.5 && t < 84;
-  const dissolved = 1 - smoothstep(S3 + 0.8, 34.5, t);
+  const cellsVisible = t > 108.96 && t < 161.89;
+  const dissolved = 1 - smoothstep(S3 + 0.8, 62, t);
   const degrade = smoothstep(CUE.s3a + 0.4, CUE.s3a + 4.2, t);
-  const complexFade = smoothstep(CUE.s2b - 0.4, CUE.s2b + 1.6, t) * (1 - smoothstep(44, 46, t));
-  const showComplex = t > CUE.s2b - 0.6 && t < 46;
+  const complexFade = smoothstep(CUE.s2b - 0.4, CUE.s2b + 1.6, t) * (1 - smoothstep(79.1, 82.7, t));
+  const showComplex = t > CUE.s2b - 0.6 && t < 82.7;
   const wd = warpDist(t);
   const starFade = 1 - dawn;
 
   const chemDraw = smoothstep(CUE.s1b, CUE.s1b + 4.4, t);
-  const chemOn = clamp(smoothstep(CUE.s1b, CUE.s1b + 1, t) * (1 - smoothstep(62.4, 64.4, t)), 0, 1);
+  const chemOn = clamp(smoothstep(CUE.s1b, CUE.s1b + 1, t) * (1 - smoothstep(110.48, 115.16, t)), 0, 1);
   const chemCy = t < S4 ? 0 : lerp(0, -56, smoothstep(S4, S4 + 2.5, t));
   const chemScale =
     t < S2 ? lerp(1.18, 1, smoothstep(CUE.s1b, S2, t)) : t < S4 ? 1 : lerp(1, 0.92, smoothstep(S4, S4 + 2.5, t));
@@ -201,9 +201,9 @@ export const Story: React.FC = () => {
           </g>
 
           {/* volumetric shafts */}
-          <g opacity={F(clamp((smoothstep(12.8, 15, t) * 0.24 + smoothstep(28.8, 31, t) * 0.2 +
-            smoothstep(CUE.s4c, 60, t) * 0.22 + smoothstep(S6, 84, t) * 0.4) *
-            (1 - smoothstep(96, 99, t)) * (0.55 + beat * 0.25), 0, 0.42))}>
+          <g opacity={F(clamp((smoothstep(22.35, 26.38, t) * 0.24 + smoothstep(51.73, 55.7, t) * 0.2 +
+            smoothstep(CUE.s4c, 106.42, t) * 0.22 + smoothstep(S6, 161.89, t) * 0.4) *
+            (1 - smoothstep(175.47, 178.87, t)) * (0.55 + beat * 0.25), 0, 0.42))}>
             <g transform={`rotate(${F(-t * 4.5)} ${CX} ${CY})`}>
               {Array.from({length: 7}, (_, i) => {
                 const a = i * (360 / 7);
@@ -218,9 +218,9 @@ export const Story: React.FC = () => {
           </g>
 
           {/* design lattice */}
-          {t > 44 && t < 66 && (
+          {t > 79.1 && t < 119.33 && (
             <g stroke="#4fd6c8" fill="none"
-              opacity={F(smoothstep(CUE.s4a, CUE.s4a + 2.2, t) * (1 - smoothstep(61, 64, t)) * 0.9)}>
+              opacity={F(smoothstep(CUE.s4a, CUE.s4a + 2.2, t) * (1 - smoothstep(108.11, 114.11, t)) * 0.9)}>
               {HEXES.map((h, i) => (
                 <path key={i} d={h.d} strokeWidth={0.8}
                   opacity={F(smoothstep(CUE.s4a + h.dist * 0.0045, CUE.s4a + 1.2 + h.dist * 0.0045, t) *
@@ -231,10 +231,10 @@ export const Story: React.FC = () => {
 
           {/* central glow */}
           <circle cx={CX} cy={CY} fill="url(#coreFade)"
-            r={F(160 + beat * 22 + smoothstep(29, 34, t) * 55)}
-            opacity={F(clamp((smoothstep(6, 11, t) * 0.45 + smoothstep(19.4, 21, t) * 0.3 +
-              smoothstep(28.8, 31, t) * 0.4 + smoothstep(CUE.s4c, 60, t) * 0.45 + beat * 0.2) *
-              (1 - dawn * 0.7) * (1 - smoothstep(63, 66, t) * 0.5), 0, 1.2))} />
+            r={F(160 + beat * 22 + smoothstep(52.1, 61.1, t) * 55)}
+            opacity={F(clamp((smoothstep(10.48, 19.21, t) * 0.45 + smoothstep(34.46, 37.4, t) * 0.3 +
+              smoothstep(51.73, 55.7, t) * 0.4 + smoothstep(CUE.s4c, 106.42, t) * 0.45 + beat * 0.2) *
+              (1 - dawn * 0.7) * (1 - smoothstep(111.5, 119.33, t) * 0.5), 0, 1.2))} />
 
           {/* ---- scene 5: cells ---- */}
           {cellsVisible && <Cells t={t} beat={beat} />}
@@ -300,7 +300,7 @@ export const Story: React.FC = () => {
                   fontFamily={FONT} opacity={F(clamp((chemDraw - 0.5) * 3, 0, 1))}>{a.s}</text>
               ))}
               {CHEM.fills.map((d, i) => {
-                const a = smoothstep(CUE.s2b + 0.4 + i * 0.5, CUE.s2b + 1.6 + i * 0.5, t) * (1 - smoothstep(45, 47, t)) * 0.9 +
+                const a = smoothstep(CUE.s2b + 0.4 + i * 0.5, CUE.s2b + 1.6 + i * 0.5, t) * (1 - smoothstep(80.9, 84.39, t)) * 0.9 +
                   smoothstep(CUE.s4c, CUE.s4c + 1.4, t) * 0.9;
                 return <path key={i} d={d} opacity={F(clamp(a, 0, 1))} filter="url(#gS)"
                   fill={gold > 0.3 ? 'rgba(255,232,170,.92)' : 'rgba(255,255,255,.9)'} />;
@@ -309,7 +309,7 @@ export const Story: React.FC = () => {
           )}
 
           {/* ---- scene 1 mist ---- */}
-          {t < 15 && MIST.map((m, i) => {
+          {t < 26.38 && MIST.map((m, i) => {
             const p = easeOut(smoothstep(m.t0, m.t0 + 5.2, t));
             if (t < m.t0) return null;
             const op = clamp((p < 0.45 ? p / 0.45 : 1 - (p - 0.45) / 0.55) * 0.85, 0, 1);
@@ -319,13 +319,13 @@ export const Story: React.FC = () => {
           })}
 
           {/* ---- scene 2: sources and beams ---- */}
-          {t > 12 && t < 32 && <Sources t={t} />}
+          {t > 20.95 && t < 57.5 && <Sources t={t} />}
 
           {/* ---- scene 3: fragments + evidence network ---- */}
-          {t > CUE.s3a - 1 && t < 48 && <Evidence t={t} />}
+          {t > CUE.s3a - 1 && t < 86.09 && <Evidence t={t} />}
 
           {/* ---- scene 4: conformational change ---- */}
-          {t > 44 && t < 66 && <Design t={t} beat={beat} />}
+          {t > 79.1 && t < 119.33 && <Design t={t} beat={beat} />}
 
           {/* rings + sparks */}
           {RINGS.map((r: any, i: number) => {
@@ -345,7 +345,7 @@ export const Story: React.FC = () => {
           })}
 
           {/* ---- scene 6 ---- */}
-          {t > 79.5 && <Finale t={t} />}
+          {t > 154.58 && <Finale t={t} />}
 
           {/* ---- labels ---- */}
           {LABELS.map((L: any, i: number) => {
@@ -428,7 +428,7 @@ const Sources: React.FC<{t: number}> = ({t}) => {
   return (
     <>
       {pts.map(([x, y], i) => {
-        const ap = smoothstep(CUE.s2a + i * 0.28, CUE.s2a + 0.9 + i * 0.28, t) * (1 - smoothstep(21.5, 23.5, t));
+        const ap = smoothstep(CUE.s2a + i * 0.28, CUE.s2a + 0.9 + i * 0.28, t) * (1 - smoothstep(38.32, 41.99, t));
         if (ap < 0.01) return null;
         const hp = smoothstep(CUE.s2a + i * 0.28, CUE.s2a + 1.4 + i * 0.28, t);
         const h2 = (t * 0.55 + i * 0.33) % 1;
@@ -450,7 +450,7 @@ const Sources: React.FC<{t: number}> = ({t}) => {
         const d = `M${x},${y} Q${F(qx)},${F(qy)} ${CX},${CY}`;
         const len = Math.hypot(qx - x, qy - y) + Math.hypot(CX - qx, CY - qy);
         const dp = smoothstep(CUE.s2a + 1.1 + i * 0.45, CUE.s2a + 5.9 + i * 0.45, t);
-        const op = dp * (1 - smoothstep(20.6, 22.6, t)) * 0.9;
+        const op = dp * (1 - smoothstep(36.67, 40.34, t)) * 0.9;
         if (op < 0.01) return null;
         /* comet head with a tapering trail */
         const bez = (u: number): [number, number] => {
@@ -478,13 +478,13 @@ const Evidence: React.FC<{t: number}> = ({t}) => {
     const p = easeOutQuint(smoothstep(n.t0, n.t0 + 3.2, t));
     return [lerp(CX, n.tx, p), lerp(CY, n.ty, p), p] as [number, number, number];
   });
-  const lo = smoothstep(CUE.s3b - 1, 40, t) * 0.45 * (1 - smoothstep(44.5, 47.5, t));
+  const lo = smoothstep(CUE.s3b - 1, 71.9, t) * 0.45 * (1 - smoothstep(80, 85.24, t));
   return (
     <>
       {FRAGMENTS.map((f, i) => {
         if (t < f.t0) return null;
         const p = easeOut(smoothstep(f.t0, f.t0 + 3.4, t));
-        const op = (1 - p) * 0.85 * (1 - smoothstep(44, 47, t));
+        const op = (1 - p) * 0.85 * (1 - smoothstep(79.1, 84.39, t));
         if (op < 0.01) return null;
         const [x, y] = polar(628, 232, p * f.d, f.a);
         return <circle key={i} cx={F(x)} cy={F(y)} r={F(f.r * (1 - p * 0.5))} fill="url(#beadGold)"
@@ -496,7 +496,7 @@ const Evidence: React.FC<{t: number}> = ({t}) => {
       ))}
       {NODES.map((n, i) => {
         if (t < n.t0) return null;
-        const op = clamp(pos[i][2] * (0.5 + 0.45 * Math.sin(t * 3 + i)) * (1 - smoothstep(44.5, 47.5, t)), 0, 1);
+        const op = clamp(pos[i][2] * (0.5 + 0.45 * Math.sin(t * 3 + i)) * (1 - smoothstep(80, 85.24, t)), 0, 1);
         if (op < 0.01) return null;
         return <circle key={i} cx={F(pos[i][0])} cy={F(pos[i][1])} r={F(n.r)} fill="#dff0ff" opacity={F(op)} />;
       })}
@@ -506,7 +506,7 @@ const Evidence: React.FC<{t: number}> = ({t}) => {
 
 const Design: React.FC<{t: number; beat: number}> = ({t, beat}) => {
   const morph = smoothstep(CUE.s4b + 2.4, CUE.s4b + 6, t);
-  const out = 1 - smoothstep(61, 63.5, t);
+  const out = 1 - smoothstep(108.11, 112.81, t);
   return (
     <>
       <path d={CONFORM_A} fill="none" stroke="#3fe8b8" strokeWidth={6} strokeLinecap="round" filter="url(#gM)"
@@ -522,13 +522,13 @@ const Design: React.FC<{t: number; beat: number}> = ({t, beat}) => {
           strokeDasharray="4 4" opacity={F(ap * 0.85)} />;
       })}
       <circle cx={CX} cy={CY - 56} r={F(140 + beat * 18)} fill="url(#goldFade)"
-        opacity={F(smoothstep(CUE.s4c, 59.5, t) * (1 - smoothstep(62.4, 64, t)) * 0.85)} />
+        opacity={F(smoothstep(CUE.s4c, 105.57, t) * (1 - smoothstep(110.48, 114.11, t)) * 0.85)} />
     </>
   );
 };
 
 const Cells: React.FC<{t: number; beat: number}> = ({t, beat}) => {
-  const fade = 1 - smoothstep(80.5, 83, t);
+  const fade = 1 - smoothstep(157.19, 160.76, t);
   const aOn = smoothstep(CUE.s5a - 0.5, CUE.s5a + 2, t) * fade;
   const bOn = smoothstep(CUE.s5b - 0.5, CUE.s5b + 2, t) * fade;
   const act = smoothstep(CUE.s5b + 1.6, CUE.s5b + 5, t);
@@ -621,7 +621,7 @@ const Cells: React.FC<{t: number; beat: number}> = ({t, beat}) => {
 };
 
 const Finale: React.FC<{t: number}> = ({t}) => {
-  const ro = smoothstep(CUE.s6c, CUE.s6c + 2.2, t) * (1 - smoothstep(95.5, 97, t));
+  const ro = smoothstep(CUE.s6c, CUE.s6c + 2.2, t) * (1 - smoothstep(174.91, 176.61, t));
   const et = smoothstep(CUE.end + 0.3, CUE.end + 1.8, t);
   const VPY = CY - 6;
   return (
@@ -636,7 +636,7 @@ const Finale: React.FC<{t: number}> = ({t}) => {
           strokeWidth={2.4} opacity={F(p * 0.85)} filter="url(#gS)" />;
       })}
       <circle cx={CX} cy={CY} r={F(smoothstep(CUE.s6b, CUE.s6b + 4.5, t) * 580)} fill="url(#dawnFade)"
-        opacity={F(smoothstep(CUE.s6b, CUE.s6b + 0.7, t) * (1 - smoothstep(CUE.s6b + 3, 96, t) * 0.55))} />
+        opacity={F(smoothstep(CUE.s6b, CUE.s6b + 0.7, t) * (1 - smoothstep(CUE.s6b + 3, 175.47, t) * 0.55))} />
       {ro > 0.01 && (
         <g opacity={F(ro)}>
           <path d={`M110,470 L${CX - 10},${VPY} L${CX + 10},${VPY} L690,470 Z`} fill="rgba(255,246,220,.17)" />
