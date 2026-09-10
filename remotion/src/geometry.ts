@@ -1,7 +1,7 @@
 /* Static drawing data: the chemical skeleton, protein ribbons and bead chains.
    Everything is computed analytically so it needs no DOM measurement. */
 // @ts-ignore - plain ESM module shared with the music renderer
-import {lerp} from './timeline.mjs';
+import {lerp, polar} from './timeline.mjs';
 
 export type Pt = [number, number];
 
@@ -158,3 +158,44 @@ export const ORGANELLES: {x: number; y: number; r: number; c: string}[] = [
   {x: 318, y: 252, r: 10, c: '#ff6b7a'},
   {x: 214, y: 286, r: 8, c: '#7fd8ff'},
 ];
+
+/* ============================================================
+   Figure-reference additions (scientific accuracy pass).
+   Shapes are original stylisations for this video, not reproductions
+   of the source figures — only shape/relationship/direction is
+   referenced, per the internal "図版リファレンス" brief. */
+
+/* Proteasome barrel (scene 3): tagged targets travel here and are
+   degraded. Ref: Lu G et al. Science 2014, Fig. 1-3. */
+export const PROTEASOME_X = 628, PROTEASOME_Y = 348;
+export const PROTEASOME_RINGS = [-17, -6, 5, 16].map((dy) => ({dy, rx: 26, ry: 9}));
+
+/* Bystander proteins (scene 2-3): many substrates are present in the
+   cell; only the two CRBN neosubstrates are selectively removed.
+   Ref: Krönke J et al. Science 2014, Fig. 1 (selectivity). */
+export const BYSTANDER_PROTEINS = Array.from({length: 12}, (_, i) => {
+  const a = i * (360 / 12) + 12;
+  const r = 68 + (i % 3) * 15;
+  const [x, y] = polar(628, 236, r, a);
+  return {x, y, r: 2.6 + (i % 2) * 1.1};
+});
+
+/* Candidate compounds narrowing (scene 4): iterative screening narrows
+   many candidates toward one optimized molecule.
+   Ref: Hansen JD et al. J Med Chem 2020 (structure optimization). */
+export const CANDIDATES = Array.from({length: 6}, (_, i) => {
+  const a = i * 60 + 20;
+  const [x, y] = polar(400, 96, 74, a);
+  return {x, y};
+});
+
+/* CRBN open -> closed clamp jaw (scene 5): a single hook-shaped arc,
+   drawn twice and rotated to show the conformational change that
+   locks the neosubstrate in place.
+   Ref: Watson ER et al. Science 2022, Fig. 3 (CRBN open/closed). */
+function arcPts(r: number, a0: number, a1: number, n = 22): Pt[] {
+  const pts: Pt[] = [];
+  for (let i = 0; i <= n; i++) pts.push(polar(0, 0, r, lerp(a0, a1, i / n)) as Pt);
+  return pts;
+}
+export const CLAMP_JAW = polyD(arcPts(52, -68, 68));

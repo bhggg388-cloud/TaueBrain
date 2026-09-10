@@ -568,6 +568,27 @@
     edge:"#e264d4",mem:"url(#memA)"});
   const cellB=makeCell(cellsG,590,206,116,{body:"url(#cyanCell)",rim:"url(#cyanRim)",
     edge:"#8ff0ff",mem:"url(#memB)",grain:true,grainFill:"#0d5a86"});
+  /* ref: Chiu H et al. Blood 2026 Fig.7 — exhausted T cells (dim, low
+     reactivity) are shown before the CRBN-driven reinvigoration */
+  const exhaustedRing=el("circle",{cx:590,cy:206,r:95,fill:"rgba(110,116,128,.10)",
+    stroke:"#6a7280","stroke-width":1.1,"stroke-dasharray":"3 3",opacity:0},cellsG);
+  /* ref: Watson ER et al. Science 2022 Fig.3 — CRBN's open-to-closed
+     conformational change locks the neosubstrate in place */
+  function arcPath(r,a0,a1,n){
+    let d="";
+    for(let i=0;i<=n;i++){
+      const a=a0+(a1-a0)*(i/n), [x,y]=polar(0,0,r,a);
+      d+=(i?"L":"M")+x.toFixed(1)+","+y.toFixed(1);
+    }
+    return d;
+  }
+  const CLAMP_JAW_D=arcPath(52,-68,68,22);
+  const clampG=el("g",{opacity:0,transform:`translate(${CX} ${CY-74})`},cellsG);
+  const clampJawA=el("path",{d:CLAMP_JAW_D,fill:"none",stroke:"#8ff0dc","stroke-width":5,
+    "stroke-linecap":"round",filter:"url(#gM)",opacity:.9},clampG);
+  const clampJawB=el("path",{d:CLAMP_JAW_D,fill:"none",stroke:"#8ff0dc","stroke-width":5,
+    "stroke-linecap":"round",filter:"url(#gM)",opacity:.9},clampG);
+  const clampLock=el("circle",{r:6,fill:"url(#beadCyan)",filter:"url(#gS)",opacity:.5},clampG);
   /* organelle rings inside the magenta cell */
   const organelles=[[196,168,13,"#4fe08a"],[318,252,10,"#ff6b7a"],[214,286,8,"#7fd8ff"]].map(([x,y,r,c])=>{
     const g=el("g",{opacity:0},cellsG);
@@ -600,6 +621,25 @@
   const spike=makeSpike($("spikeG"),628,268,30,"spikeGold","#ffd88a");
   const spikeArc=el("path",{d:"M584,246 A56,56 0 0 1 676,242",fill:"none",stroke:"rgba(255,214,140,.5)",
     "stroke-width":1.1},$("spikeG"));
+
+  /* ref: Krönke J et al. Science 2014 Fig.1 — many substrates are present,
+     only the two CRBN neosubstrates are selectively removed */
+  const bystanders=Array.from({length:12},(_,i)=>{
+    const a=i*(360/12)+12, r=68+(i%3)*15;
+    const [x,y]=polar(628,236,r,a);
+    return {x,y,r:2.6+(i%2)*1.1,e:el("circle",{r:2.6+(i%2)*1.1,fill:"#cfe0ff",opacity:0},$("spikeG"))};
+  });
+
+  /* ref: Lu G et al. Science 2014 Fig.1-3 — ubiquitinated targets are
+     delivered to the proteasome for degradation */
+  const PROTEASOME_X=628, PROTEASOME_Y=348;
+  const proteasomeG=el("g",{opacity:0,transform:`translate(${PROTEASOME_X} ${PROTEASOME_Y})`},$("spikeG"));
+  el("ellipse",{cx:0,cy:0,rx:22,ry:30,fill:"rgba(20,40,90,.55)"},proteasomeG);
+  const proteasomeRings=[-17,-6,5,16].map(dy=>el("ellipse",{cx:0,cy:dy,rx:26,ry:9,fill:"none",
+    stroke:"#7fb6ff","stroke-width":2.2,opacity:.7,filter:"url(#gS)"},proteasomeG));
+  const proteasomeCore=el("circle",{r:9,fill:"url(#coreFade)",opacity:.3},proteasomeG);
+  const ubqTags=Array.from({length:32},()=>
+    el("circle",{r:1.6,fill:"#ffd782",opacity:0},$("spikeG")));
 
   /* bridging bonds drawn by the small molecule */
   const bridgeG=$("bridgeG");
@@ -705,6 +745,14 @@
       "stroke-dasharray":"4 4",opacity:0,"data-mx":mx,"data-my":my},designG));
   });
   const goldHalo=el("circle",{cx:CX,cy:CY,r:150,fill:"url(#goldFade)",opacity:0},designG);
+
+  /* ref: Hansen JD et al. J Med Chem 2020 — iterative screening narrows
+     many candidate compounds toward one optimized molecule */
+  const candidates=Array.from({length:6},(_,i)=>{
+    const a=i*60+20, [x,y]=polar(400,96,74,a);
+    return {x,y,fadeAt:S4+1.2+i*1.4,e:el("circle",{cx:x,cy:y,r:4,fill:"none",stroke:"#ffd782",
+      "stroke-width":1.3,opacity:0},designG)};
+  });
 
   /* ======================= build: labels ======================= */
   const labelsG=$("labelsG");
@@ -1352,15 +1400,39 @@
       ribbonCore.setAttribute("stroke-dashoffset",(ribbonPathEl._len*(1-rd)).toFixed(2));
       ribbonG.setAttribute("transform",`translate(${(Math.sin(t*0.7)*2).toFixed(1)} ${(Math.cos(t*0.5)*2).toFixed(1)})`);
 
-      targetChain.g.setAttribute("opacity",(complexFade*(1-degrade)).toFixed(3));
+      targetChain.g.setAttribute("opacity",complexFade.toFixed(3));
+      const toProt=smoothstep(CUE.s3b-0.5,CUE.s3b+3.5,t);
       targetChain.beads.forEach((b,i)=>{
         const wob=Math.sin(t*1.8+i*0.5)*2.2;
         const tagged=smoothstep(CUE.s3a-0.4+i*0.06,CUE.s3a+0.6+i*0.06,t);
-        b.e.setAttribute("cx",(b.x0+wob).toFixed(1));
-        b.e.setAttribute("cy",(b.y0+Math.cos(t*1.5+i*0.42)*2).toFixed(1));
-        b.e.setAttribute("r",(6*(1-degrade*0.7)).toFixed(2));
+        const bx=lerp(b.x0+wob,PROTEASOME_X,toProt);
+        const by=lerp(b.y0+Math.cos(t*1.5+i*0.42)*2,PROTEASOME_Y,toProt);
+        const op=1-smoothstep(0.8,1,toProt);
+        b.e.setAttribute("cx",bx.toFixed(1));
+        b.e.setAttribute("cy",by.toFixed(1));
+        b.e.setAttribute("r",(6*(1-toProt*0.85)).toFixed(2));
         b.e.setAttribute("fill", tagged>0.5 ? "url(#beadCyan)" : "url(#beadGold)");
+        b.e.setAttribute("opacity",op.toFixed(3));
+        const t1=ubqTags[i*2], t2=ubqTags[i*2+1];
+        if(tagged>0.5){
+          const tagOp=tagged*(1-toProt);
+          t1.setAttribute("cx",(bx+6).toFixed(1)); t1.setAttribute("cy",(by-6).toFixed(1));
+          t1.setAttribute("opacity",tagOp.toFixed(3));
+          t2.setAttribute("cx",(bx+9).toFixed(1)); t2.setAttribute("cy",(by-3).toFixed(1));
+          t2.setAttribute("opacity",(tagOp*0.8).toFixed(3));
+        } else { t1.setAttribute("opacity",0); t2.setAttribute("opacity",0); }
       });
+      bystanders.forEach((p,i)=>{
+        p.e.setAttribute("cx",(p.x+Math.sin(t*1.1+i)*1.5).toFixed(1));
+        p.e.setAttribute("cy",(p.y+Math.cos(t*0.9+i)*1.5).toFixed(1));
+        p.e.setAttribute("opacity",(complexFade*0.6*(0.3+0.25*Math.sin(t*1.6+i*0.7))).toFixed(3));
+      });
+      const protOn=smoothstep(S3-1,S3+2,t)*(1-smoothstep(S4-3,S4,t));
+      proteasomeG.setAttribute("opacity",protOn.toFixed(3));
+      const cyclePos=(((t-CUE.s3b)%3)+3)%3;
+      const pulse=clamp(1-cyclePos/3,0,1)*smoothstep(CUE.s3b,CUE.s3b+2,t);
+      proteasomeCore.setAttribute("r",(9+pulse*7).toFixed(2));
+      proteasomeCore.setAttribute("opacity",(0.3+pulse*0.4).toFixed(3));
       spike.g.setAttribute("opacity",(complexFade*(1-degrade)).toFixed(3));
       spike.g.setAttribute("transform",
         `translate(${spike.cx} ${spike.cy}) scale(${(1+beat*0.05-degrade*0.4).toFixed(3)})`);
@@ -1378,6 +1450,9 @@
       spike.g.setAttribute("opacity",0);
       spikeArc.setAttribute("opacity",0);
       bridgeL.setAttribute("opacity",0); bridgeR.setAttribute("opacity",0);
+      bystanders.forEach(p=>p.e.setAttribute("opacity",0));
+      ubqTags.forEach(u=>u.setAttribute("opacity",0));
+      proteasomeG.setAttribute("opacity",0);
     }
 
     /* ---- scene 3: fragments scatter, evidence network ---- */
@@ -1424,6 +1499,10 @@
         h.p.setAttribute("opacity",(ap*(.07+.11*Math.max(0,Math.sin(t*2.2-h.dist*.017)))).toFixed(3));
       });
       designG.setAttribute("opacity",1);
+      candidates.forEach(c=>{
+        const op=smoothstep(S4,S4+0.6,t)*(1-smoothstep(c.fadeAt,c.fadeAt+1.4,t));
+        c.e.setAttribute("opacity",(op*0.75).toFixed(3));
+      });
       const morph=smoothstep(CUE.s4b+2.4,CUE.s4b+6,t);
       conformA.setAttribute("opacity",(smoothstep(CUE.s4b+0.6,CUE.s4b+2,t)*(1-morph)*.9*(1-smoothstep(108.11, 112.81,t))).toFixed(3));
       conformB.setAttribute("opacity",(morph*.9*(1-smoothstep(108.11, 112.81,t))).toFixed(3));
@@ -1475,6 +1554,11 @@
         b.e.setAttribute("opacity",(on*(0.55+0.45*Math.sin(t*4-i*0.7))).toFixed(3));
       });
 
+      /* ref: Chiu H et al. Blood 2026 Fig.7 — exhausted T cells (dim) shown
+         before CRBN degrades IKZF1/3 and reinvigorates them */
+      const exOn=smoothstep(S5+1,S5+3,t)*(1-smoothstep(CUE.s5b-0.3,CUE.s5b+0.8,t))*fade;
+      exhaustedRing.setAttribute("opacity",exOn.toFixed(3));
+
       const bOn=smoothstep(CUE.s5b-0.5,CUE.s5b+2,t)*fade;
       cellB.g.setAttribute("opacity",bOn.toFixed(3));
       const act=smoothstep(CUE.s5b+1.6,CUE.s5b+5,t);
@@ -1483,11 +1567,24 @@
       cellB.halo.setAttribute("opacity",(0.4+act*0.45+beat*0.12).toFixed(3));
       if(cellB.surface) cellB.surface.setAttribute("opacity",(0.42+act*0.3).toFixed(3));
       cellB.edge.setAttribute("opacity",(0.5+act*0.45).toFixed(3));
+
+      /* ref: Watson ER et al. Science 2022 Fig.3 — CRBN open->closed clamp */
+      const clampOn=smoothstep(S5,S5+2.5,t)*(1-smoothstep(S5+15,S5+18,t))*fade;
+      clampG.setAttribute("opacity",clampOn.toFixed(3));
+      const closeT=clamp((t-(S5+1))/11,0,1);
+      const gap=lerp(44,2,easeOut(closeT));
+      const lockOn=smoothstep(S5+9,S5+12,t);
+      clampJawA.setAttribute("transform",`rotate(${(-gap).toFixed(1)})`);
+      clampJawB.setAttribute("transform",`rotate(${(180+gap).toFixed(1)})`);
+      clampLock.setAttribute("r",(6+lockOn*3).toFixed(2));
+      clampLock.setAttribute("opacity",(0.5+lockOn*0.5).toFixed(3));
     } else {
       cellA.g.setAttribute("opacity",0); cellB.g.setAttribute("opacity",0);
       organelles.forEach(o=>o.setAttribute("opacity",0));
       innerChains.forEach(c=>c.g.setAttribute("opacity",0));
       signalChain.g.setAttribute("opacity",0);
+      exhaustedRing.setAttribute("opacity",0);
+      clampG.setAttribute("opacity",0);
     }
 
     /* rings + sparks */

@@ -7,8 +7,9 @@ import {
 } from './timeline.mjs';
 import {FOV, FRAGMENTS, HEXES, MIST, NET_PAIRS, NODES, SPARKS, STREAKS, WARP, ZSPAN} from './particles';
 import {
-  BRANCH_A, BRANCH_A_LEN, BRANCH_B, BRANCH_B_LEN, BRIDGE_L, BRIDGE_R, CHEM, CONFORM_A, CONFORM_B,
-  INNER_CHAINS, ORGANELLES, RIBBON_D, RIBBON_LEN, SIGNAL_CHAIN, SPIKES, TARGET_CHAIN, T_CELLS, T_THREADS,
+  BRANCH_A, BRANCH_A_LEN, BRANCH_B, BRANCH_B_LEN, BRIDGE_L, BRIDGE_R, BYSTANDER_PROTEINS, CANDIDATES,
+  CHEM, CLAMP_JAW, CONFORM_A, CONFORM_B, INNER_CHAINS, ORGANELLES, PROTEASOME_RINGS, PROTEASOME_X,
+  PROTEASOME_Y, RIBBON_D, RIBBON_LEN, SIGNAL_CHAIN, SPIKES, TARGET_CHAIN, T_CELLS, T_THREADS,
 } from './geometry';
 
 const FONT = 'IPAGothic, "Noto Sans JP", sans-serif';
@@ -253,14 +254,43 @@ export const Story: React.FC = () => {
                 <circle cx={150} cy={268} r={7} fill="#8ffce0" filter="url(#gS)" />
               </g>
 
-              <g opacity={F(complexFade * (1 - degrade))}>
+              {/* ref: Krönke J et al. Science 2014 Fig.1 — many substrates are present,
+                  only the two CRBN neosubstrates are selectively removed */}
+              <g opacity={F(complexFade * 0.6 * (1 - degrade * 0.5))}>
+                {BYSTANDER_PROTEINS.map((b, i) => (
+                  <circle key={i} cx={F(b.x + Math.sin(t * 1.1 + i) * 1.5)}
+                    cy={F(b.y + Math.cos(t * 0.9 + i) * 1.5)} r={b.r} fill="#cfe0ff"
+                    opacity={F(0.3 + 0.25 * Math.sin(t * 1.6 + i * 0.7))} />
+                ))}
+              </g>
+
+              {/* ref: Lu G et al. Science 2014 Fig.1-3 — CRBN-bound targets are
+                  ubiquitinated (small tag) and travel to the proteasome for degradation */}
+              <g opacity={F(complexFade)}>
                 {TARGET_CHAIN.map((p, i) => {
                   const tagged = smoothstep(CUE.s3a - 0.4 + i * 0.06, CUE.s3a + 0.6 + i * 0.06, t);
-                  return <circle key={i} cx={F(p[0] + Math.sin(t * 1.8 + i * 0.5) * 2.2)}
-                    cy={F(p[1] + Math.cos(t * 1.5 + i * 0.42) * 2)} r={F(6 * (1 - degrade * 0.7))}
-                    fill={tagged > 0.5 ? 'url(#beadCyan)' : 'url(#beadGold)'} filter="url(#gS)" />;
+                  const toProt = smoothstep(CUE.s3b - 0.5, CUE.s3b + 3.5, t);
+                  const bx = lerp(p[0] + Math.sin(t * 1.8 + i * 0.5) * 2.2, PROTEASOME_X, toProt);
+                  const by = lerp(p[1] + Math.cos(t * 1.5 + i * 0.42) * 2, PROTEASOME_Y, toProt);
+                  const op = 1 - smoothstep(0.8, 1, toProt);
+                  if (op < 0.01) return null;
+                  return (
+                    <g key={i} opacity={F(op)}>
+                      <circle cx={F(bx)} cy={F(by)} r={F(6 * (1 - toProt * 0.85))}
+                        fill={tagged > 0.5 ? 'url(#beadCyan)' : 'url(#beadGold)'} filter="url(#gS)" />
+                      {tagged > 0.5 && (
+                        <>
+                          <circle cx={F(bx + 6)} cy={F(by - 6)} r={1.8} fill="#ffd782"
+                            opacity={F(tagged * (1 - toProt))} />
+                          <circle cx={F(bx + 9)} cy={F(by - 3)} r={1.4} fill="#ffd782"
+                            opacity={F(tagged * (1 - toProt) * 0.8)} />
+                        </>
+                      )}
+                    </g>
+                  );
                 })}
               </g>
+              <Proteasome t={t} />
 
               <g opacity={F(complexFade * (1 - degrade))}
                 transform={`translate(628 268) scale(${(1 + beat * 0.05 - degrade * 0.4).toFixed(3)})`}>
@@ -509,6 +539,15 @@ const Design: React.FC<{t: number; beat: number}> = ({t, beat}) => {
   const out = 1 - smoothstep(108.11, 112.81, t);
   return (
     <>
+      {/* ref: Hansen JD et al. J Med Chem 2020 — iterative screening narrows
+          many candidate compounds toward one optimized molecule */}
+      {CANDIDATES.map((c, i) => {
+        const fadeAt = S4 + 1.2 + i * 1.4;
+        const op = smoothstep(S4, S4 + 0.6, t) * (1 - smoothstep(fadeAt, fadeAt + 1.4, t));
+        if (op < 0.01) return null;
+        return <circle key={i} cx={c.x} cy={c.y} r={4} fill="none" stroke="#ffd782" strokeWidth={1.3}
+          opacity={F(op * 0.75)} />;
+      })}
       <path d={CONFORM_A} fill="none" stroke="#3fe8b8" strokeWidth={6} strokeLinecap="round" filter="url(#gM)"
         opacity={F(smoothstep(CUE.s4b + 0.6, CUE.s4b + 2, t) * (1 - morph) * 0.9 * out)} />
       <path d={CONFORM_B} fill="none" stroke="#7fe8ff" strokeWidth={6} strokeLinecap="round" filter="url(#gM)"
@@ -527,6 +566,44 @@ const Design: React.FC<{t: number; beat: number}> = ({t, beat}) => {
   );
 };
 
+/* ref: Lu G et al. Science 2014 Fig.1-3 — the proteasome that receives
+   ubiquitinated CRBN neosubstrates (scene 3) */
+const Proteasome: React.FC<{t: number}> = ({t}) => {
+  const on = smoothstep(S3 - 1, S3 + 2, t) * (1 - smoothstep(S4 - 3, S4, t));
+  if (on < 0.01) return null;
+  const cyclePos = ((t - CUE.s3b) % 3 + 3) % 3;
+  const pulse = clamp(1 - cyclePos / 3, 0, 1) * smoothstep(CUE.s3b, CUE.s3b + 2, t);
+  return (
+    <g opacity={F(on)} transform={`translate(${PROTEASOME_X} ${PROTEASOME_Y})`}>
+      <ellipse cx={0} cy={0} rx={22} ry={30} fill="rgba(20,40,90,.55)" />
+      {PROTEASOME_RINGS.map((r, i) => (
+        <ellipse key={i} cx={0} cy={r.dy} rx={r.rx} ry={r.ry} fill="none"
+          stroke="#7fb6ff" strokeWidth={2.2} opacity={0.7} filter="url(#gS)" />
+      ))}
+      <circle r={F(9 + pulse * 7)} fill="url(#coreFade)" opacity={F(0.3 + pulse * 0.4)} />
+    </g>
+  );
+};
+
+/* ref: Watson ER et al. Science 2022 Fig.3 — CRBN's open-to-closed
+   conformational change locks the neosubstrate in place (scene 5) */
+const Clamp: React.FC<{t: number; fade: number}> = ({t, fade}) => {
+  const on = smoothstep(S5, S5 + 2.5, t) * (1 - smoothstep(S5 + 15, S5 + 18, t)) * fade;
+  if (on < 0.01) return null;
+  const closeT = clamp((t - (S5 + 1)) / 11, 0, 1);
+  const gap = lerp(44, 2, easeOut(closeT));
+  const lockOn = smoothstep(S5 + 9, S5 + 12, t);
+  return (
+    <g opacity={F(on)} transform={`translate(${CX} ${CY - 74})`}>
+      <path d={CLAMP_JAW} fill="none" stroke="#8ff0dc" strokeWidth={5} strokeLinecap="round"
+        filter="url(#gM)" transform={`rotate(${F(-gap)})`} opacity={0.9} />
+      <path d={CLAMP_JAW} fill="none" stroke="#8ff0dc" strokeWidth={5} strokeLinecap="round"
+        filter="url(#gM)" transform={`rotate(${F(180 + gap)})`} opacity={0.9} />
+      <circle r={F(6 + lockOn * 3)} fill="url(#beadCyan)" filter="url(#gS)" opacity={F(0.5 + lockOn * 0.5)} />
+    </g>
+  );
+};
+
 const Cells: React.FC<{t: number; beat: number}> = ({t, beat}) => {
   const fade = 1 - smoothstep(157.19, 160.76, t);
   const aOn = smoothstep(CUE.s5a - 0.5, CUE.s5a + 2, t) * fade;
@@ -542,6 +619,8 @@ const Cells: React.FC<{t: number; beat: number}> = ({t, beat}) => {
 
   return (
     <>
+      <Clamp t={t} fade={fade} />
+
       {/* immune cell */}
       <g opacity={F(aOn)} transform={`translate(242 222) scale(${aScale.toFixed(4)}) translate(-242 -222)`}>
         <circle cx={242} cy={222} r={169} fill="url(#magentaCell)" filter="url(#gL)" opacity={0.5} />
@@ -583,20 +662,31 @@ const Cells: React.FC<{t: number; beat: number}> = ({t, beat}) => {
         <circle cx={590} cy={206} r={116} fill="none" stroke="#8ff0ff" strokeWidth={1.4}
           filter="url(#memB)" opacity={F(0.5 + act * 0.45)} />
       </g>
+      {/* ref: Chiu H et al. Blood 2026 Fig.7 — exhausted T cells (dim, low
+          reactivity) are reinvigorated once CRBN degrades IKZF1/3: a
+          before/after contrast rather than the cells simply appearing */}
       {T_CELLS.map((c, i) => {
+        const exOn = smoothstep(S5 + 1, S5 + 3, t) * (1 - smoothstep(CUE.s5b - 0.3, CUE.s5b + 0.8, t)) * fade;
         const ap = smoothstep(CUE.s5b + 0.8 + i * 0.4, CUE.s5b + 2.4 + i * 0.4, t) * fade;
-        if (ap < 0.01) return null;
         const a2 = smoothstep(CUE.s5b + 2 + i * 0.35, CUE.s5b + 4.5 + i * 0.35, t);
         const hp = (t * 0.6 + i * 0.4) % 1, hp2 = (t * 0.6 + i * 0.4 + 0.5) % 1;
         return (
-          <g key={i} opacity={F(ap)}>
-            <circle cx={c.x} cy={c.y} r={c.r} fill="rgba(80,220,190,.15)" stroke="#6fe6cd" strokeWidth={1.6} />
-            <circle cx={c.x} cy={c.y} r={F(c.r + hp * 24)} fill="none" stroke="#b6fff0" strokeWidth={1.8}
-              opacity={F(a2 * (1 - hp) * 0.8)} />
-            <circle cx={c.x} cy={c.y} r={F(c.r + hp2 * 24)} fill="none" stroke="#8ff0dc" strokeWidth={1.1}
-              opacity={F(a2 * (1 - hp2) * 0.45)} />
-            <circle cx={c.x} cy={c.y} r={F(c.r * 0.42)} fill="rgba(190,255,240,.5)" filter="url(#gS)"
-              opacity={F(0.35 + a2 * 0.5 + beat * 0.12)} />
+          <g key={i}>
+            {exOn > 0.01 && (
+              <circle cx={c.x} cy={c.y} r={F(c.r * 0.82)} fill="rgba(110,116,128,.12)"
+                stroke="#6a7280" strokeWidth={1.1} strokeDasharray="3 3" opacity={F(exOn)} />
+            )}
+            {ap > 0.01 && (
+              <g opacity={F(ap)}>
+                <circle cx={c.x} cy={c.y} r={c.r} fill="rgba(80,220,190,.15)" stroke="#6fe6cd" strokeWidth={1.6} />
+                <circle cx={c.x} cy={c.y} r={F(c.r + hp * 24)} fill="none" stroke="#b6fff0" strokeWidth={1.8}
+                  opacity={F(a2 * (1 - hp) * 0.8)} />
+                <circle cx={c.x} cy={c.y} r={F(c.r + hp2 * 24)} fill="none" stroke="#8ff0dc" strokeWidth={1.1}
+                  opacity={F(a2 * (1 - hp2) * 0.45)} />
+                <circle cx={c.x} cy={c.y} r={F(c.r * 0.42)} fill="rgba(190,255,240,.5)" filter="url(#gS)"
+                  opacity={F(0.35 + a2 * 0.5 + beat * 0.12)} />
+              </g>
+            )}
           </g>
         );
       })}
