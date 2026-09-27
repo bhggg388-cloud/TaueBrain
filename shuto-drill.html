@@ -1,0 +1,1056 @@
+<title>しゅと即答ドリル</title>
+<meta name="description" content="世界の主な国と首都を、両方向から即答できるようにする練習アプリ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<style>
+:root{
+  --bg:#EEF3F1; --surface:#FFFFFF; --surface-2:#F6F9F8; --ink:#1D2B36; --muted:#5E6E78; --line:#D3DDD9;
+  --accent:#2F4FA8; --accent-ink:#FFFFFF; --accent-soft:#E3E9F8;
+  --gold:#E29A12; --gold-soft:#FFF1D2; --ok:#2B8A55; --ok-soft:#DFF3E6; --ng:#CF4036; --ng-soft:#FBE3E0;
+  --lv-none:#DCE3E0; --lv0:#CF4036; --lv1:#EE9A4E; --lv2:#E4C53E; --lv3:#7CC06A; --lv4:#E29A12;
+  --r1:#4F7FC9; --r2:#E07B39; --r3:#3E9A63; --r4:#8B5CB8; --r5:#2A9A9A; --r6:#D0506E;
+  --shadow:0 1px 0 rgba(29,43,54,.06),0 6px 18px rgba(29,43,54,.07);
+  --font:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#11191E; --surface:#1A252C; --surface-2:#162026; --ink:#E6EEF0; --muted:#9AABB3; --line:#2C3A42;
+    --accent:#8EA7F0; --accent-ink:#0E1620; --accent-soft:#233154;
+    --gold:#F2B840; --gold-soft:#3B2F14; --ok:#5CC08A; --ok-soft:#173326; --ng:#F0736A; --ng-soft:#3A2224;
+    --lv-none:#2C3A42; --lv0:#F0736A; --lv1:#F0A45E; --lv2:#E6CD55; --lv3:#85C977; --lv4:#F2B840;
+    --r1:#7FA6E6; --r2:#F09A5F; --r3:#67C08A; --r4:#B38BE0; --r5:#5CC6C6; --r6:#EC7E98;
+    --shadow:0 1px 0 rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#11191E; --surface:#1A252C; --surface-2:#162026; --ink:#E6EEF0; --muted:#9AABB3; --line:#2C3A42;
+  --accent:#8EA7F0; --accent-ink:#0E1620; --accent-soft:#233154;
+  --gold:#F2B840; --gold-soft:#3B2F14; --ok:#5CC08A; --ok-soft:#173326; --ng:#F0736A; --ng-soft:#3A2224;
+  --lv-none:#2C3A42; --lv0:#F0736A; --lv1:#F0A45E; --lv2:#E6CD55; --lv3:#85C977; --lv4:#F2B840;
+  --r1:#7FA6E6; --r2:#F09A5F; --r3:#67C08A; --r4:#B38BE0; --r5:#5CC6C6; --r6:#EC7E98;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;font-weight:500;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:16px 48px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.3}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+rt{font-size:.42em;font-weight:700;color:var(--muted);letter-spacing:.02em}
+body.no-ruby rt{display:none}
+
+/* header / tabs */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;margin-bottom:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.brand h1{font-size:22px;font-weight:900;letter-spacing:.02em}
+.brand small{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+.tabs button{white-space:nowrap;border:0;background:transparent;border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+
+/* home */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:var(--surface);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.ring{width:108px;height:108px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .lbl{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1.1}
+.ring .lbl b{font-size:28px;font-weight:900}
+.ring .lbl span{font-size:11px;color:var(--muted)}
+.hero-stats{display:grid;gap:8px}
+.hero-stats .row{display:flex;gap:16px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column}
+.stat b{font-size:22px;font-weight:900;line-height:1.2}
+.stat span{font-size:12px;color:var(--muted)}
+.dirbar{display:grid;gap:4px;font-size:12px;color:var(--muted)}
+.stack{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--lv-none)}
+.stack i{display:block;height:100%}
+.section-title{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin:22px 4px 10px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:2px;min-height:92px;transition:transform .08s,border-color .15s}
+.mode:hover{border-color:var(--accent)}
+.mode:active{transform:scale(.98)}
+.mode b{font-size:17px;font-weight:900}
+.mode span{font-size:12.5px;color:var(--muted);line-height:1.45}
+.mode .tag{background:var(--accent-soft);color:var(--accent);align-self:flex-start;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-bottom:4px}
+.mode.primary{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.mode.primary span{color:inherit;opacity:.85}
+.mode.weak{border-color:var(--ng);background:var(--ng-soft)}
+.mode.weak .tag{background:var(--ng);color:#fff}
+.mode[disabled]{opacity:.5;cursor:not-allowed}
+.opts{display:grid;gap:12px;background:var(--surface);border-radius:16px;padding:14px;border:1px solid var(--line)}
+.optrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.optrow>label{font-size:13px;color:var(--muted);min-width:4.5em;font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--surface-2);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.tip{margin-top:16px;font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:10px 12px;border:1px dashed var(--line)}
+
+/* quiz */
+.qtop{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.qtop .quit{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
+.prog{flex:1;height:8px;border-radius:6px;background:var(--lv-none);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.qcount{font-size:13px;color:var(--muted);font-weight:700}
+.card{background:var(--surface);border-radius:22px;box-shadow:var(--shadow);padding:22px 18px 18px;text-align:center;position:relative;overflow:hidden}
+.card .region{position:absolute;top:0;left:0;right:0;height:6px}
+.qlabel{font-size:14px;color:var(--muted);font-weight:700;display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap}
+.qlabel .again{background:var(--ng);color:#fff;border-radius:999px;padding:0 8px;font-size:12px}
+.qword{font-size:clamp(40px,11vw,64px);font-weight:900;line-height:1.5;margin:6px 0 2px;letter-spacing:.04em}
+.qsub{font-size:15px;color:var(--muted)}
+.timer{height:10px;border-radius:6px;background:var(--lv-none);overflow:hidden;margin:16px 0 4px;position:relative}
+.timer i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);width:100%;transform-origin:left;border-radius:6px}
+.timer.slow i{background:var(--muted)}
+.timer-note{font-size:12px;color:var(--muted);height:18px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.choice{border:2.5px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 6px;font-size:clamp(20px,5.6vw,28px);font-weight:900;min-height:84px;line-height:1.6;transition:transform .06s}
+.choice:active{transform:scale(.97)}
+.choice.correct{border-color:var(--ok);background:var(--ok-soft)}
+.choice.wrong{border-color:var(--ng);background:var(--ng-soft)}
+.choice.dim{opacity:.45}
+.choice[disabled]{cursor:default}
+.fb{margin-top:14px;border-radius:16px;padding:12px 14px;text-align:left;display:grid;gap:6px}
+.fb.ok{background:var(--ok-soft)}
+.fb.fast{background:var(--gold-soft)}
+.fb.ng{background:var(--ng-soft)}
+.fb .head{font-size:20px;font-weight:900}
+.fb.ok .head{color:var(--ok)} .fb.fast .head{color:var(--gold)} .fb.ng .head{color:var(--ng)}
+.fb .body{font-size:16px}
+.fb .memo{font-size:13px;color:var(--muted)}
+.btn{border:0;border-radius:14px;padding:12px 18px;font-weight:900;font-size:17px;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+.btn.danger{background:var(--ng);color:#fff}
+.btn.block{width:100%}
+
+/* result */
+.result{display:grid;gap:14px}
+.score{background:var(--surface);border-radius:22px;box-shadow:var(--shadow);padding:20px;text-align:center;display:grid;gap:6px}
+.score .big{font-size:56px;font-weight:900;line-height:1.1}
+.score .big small{font-size:22px;color:var(--muted)}
+.score .msg{font-size:18px;font-weight:700}
+.score .row{display:flex;justify-content:center;gap:22px;flex-wrap:wrap}
+.list{background:var(--surface);border-radius:16px;border:1px solid var(--line);overflow:hidden}
+.list .item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid var(--line)}
+.list .item:first-child{border-top:0}
+.list .item .ic{width:26px;height:26px;border-radius:50%;display:grid;place-content:center;font-weight:900;font-size:14px}
+.ic.ok{background:var(--ok-soft);color:var(--ok)} .ic.ng{background:var(--ng-soft);color:var(--ng)} .ic.fast{background:var(--gold-soft);color:var(--gold)}
+.item .main{font-weight:700;line-height:1.9}
+.item .sub{line-height:1.9}
+.item .sub{font-size:12px;color:var(--muted)}
+.item .ms{font-size:13px;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.actions .btn{flex:1 1 180px}
+
+/* records */
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.panel{background:var(--surface);border-radius:18px;padding:16px;box-shadow:var(--shadow);display:grid;gap:12px}
+.panel h2{font-size:17px;font-weight:900}
+.panel p.note{margin:0;font-size:13px;color:var(--muted)}
+.regions{display:grid;gap:14px}
+.reg h3{font-size:13px;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.reg h3 .dot{width:10px;height:10px;border-radius:50%}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.tile{border:1.5px solid var(--line);background:var(--surface-2);border-radius:10px;padding:6px 8px;text-align:left;display:grid;gap:3px}
+.tile .nm{font-size:14px;font-weight:900;line-height:1.2}
+.tile .cp{font-size:11px;color:var(--muted);line-height:1.2}
+.tile .bars{display:grid;grid-template-columns:auto minmax(20px,1fr);white-space:nowrap;gap:2px 5px;align-items:center;font-size:10px;color:var(--muted)}
+.tile .bars i{height:6px;border-radius:3px;display:block}
+.tile.sel{border-color:var(--accent)}
+.detail{background:var(--accent-soft);border-radius:12px;padding:12px 14px;display:grid;gap:6px;font-size:14px}
+.detail b{font-size:18px}
+.detail table{border-collapse:collapse;font-size:13px}
+.detail td,.detail th{padding:3px 10px 3px 0;text-align:left}
+.detail th{color:var(--muted);font-weight:700}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-family:var(--font);font-size:15px}
+.chart-wrap{overflow-x:auto}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:10px}
+
+/* settings */
+.set{display:grid;gap:14px}
+.set .optrow{justify-content:space-between}
+textarea{width:100%;min-height:90px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);font:12px/1.4 ui-monospace,Menlo,monospace;padding:8px}
+.status{font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-weight:700;font-size:14px;z-index:9}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+.pop{animation:pop .25s ease-out}
+/* v2: rank, missions, map, combo, time attack */
+.rank{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rank .badge{background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:900}
+.rank .title{font-size:17px;font-weight:900}
+.xpbar{height:8px;border-radius:6px;background:var(--lv-none);overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold))}
+.xpnote{font-size:11px;color:var(--muted)}
+.missions{display:grid;gap:8px}
+.mission{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:10px 12px}
+.mission .chk{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-content:center;font-weight:900;font-size:15px;color:var(--muted)}
+.mission.done{border-color:var(--gold);background:var(--gold-soft)}
+.mission.done .chk{background:var(--gold);border-color:var(--gold);color:#fff}
+.mission .mt{font-weight:700;font-size:14px}
+.mission .mp{height:5px;border-radius:3px;background:var(--lv-none);overflow:hidden;margin-top:4px}
+.mission .mp i{display:block;height:100%;background:var(--gold)}
+.mission .rw{font-size:12px;font-weight:900;color:var(--gold)}
+.mode.ta{border-color:var(--gold);background:var(--gold-soft)}
+.mode.ta .tag{background:var(--gold);color:#fff}
+.map{display:grid;grid-template-columns:repeat(18,1fr);grid-template-rows:repeat(12,auto);gap:3px;max-width:640px;margin:0 auto}
+.map .mt{grid-column:7/16;grid-row:1/3;align-self:start;display:grid;gap:4px}
+.map .mt b{font-size:17px;font-weight:900;line-height:1.2}
+.map .mt span{font-size:11.5px;color:var(--muted);line-height:1.4}
+.map .ml{grid-column:6/13;grid-row:11/13;align-self:end;justify-self:start}
+.pt{aspect-ratio:1;border-radius:5px;border:1px solid var(--line);background:var(--surface-2);display:grid;place-content:center;font-size:clamp(8px,2.7vw,16px);font-weight:900;line-height:1;letter-spacing:-.08em;white-space:nowrap;color:var(--ink);padding:0;min-width:0;overflow:hidden;position:relative}
+.pt.seen{color:#1D2B36;border-color:transparent}
+.pt.conq{background:var(--gold);color:#1D2B36;border-color:transparent;box-shadow:0 0 0 2px var(--gold-soft) inset}
+.pt.conq::after{content:"★";position:absolute;top:0;right:1px;font-size:.8em;color:#fff}
+.pt:hover{outline:2px solid var(--accent)}
+.combo{position:absolute;top:12px;right:12px;background:var(--gold);color:#fff;border-radius:999px;padding:1px 10px;font-weight:900;font-size:14px}
+.combo.big{font-size:17px;background:var(--ng)}
+.choice{position:relative}
+.choice .key{position:absolute;top:6px;left:8px;width:22px;height:22px;border-radius:6px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:900;line-height:22px;text-align:center;font-family:var(--font)}
+.choice.correct .key{background:var(--ok)} .choice.wrong .key{background:var(--ng)}
+.keyhint{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+.tabox{display:flex;gap:10px;align-items:center;font-weight:900}
+.tabox .left{font-size:18px;color:var(--ng)}
+.tabox .sc{font-size:14px;color:var(--muted)}
+.banner{border-radius:16px;padding:14px 16px;display:grid;gap:4px;background:var(--gold-soft);border:2px solid var(--gold)}
+.banner b{font-size:19px;font-weight:900}
+.banner span{font-size:14px}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:8}
+/* world version */
+.qflag{font-size:clamp(44px,12vw,64px);line-height:1.1;margin-top:4px}
+.qword{font-size:clamp(30px,9vw,56px)}
+.choice{font-size:clamp(16px,4.6vw,26px);word-break:keep-all;overflow-wrap:anywhere}
+.choice .fl{display:block;font-size:1.3em;line-height:1.2}
+.pt.fb2{font-size:clamp(6px,1.9vw,10px);letter-spacing:-.12em}
+.pt.lv2{opacity:.55}
+.tile .nm .fl{margin-right:3px}
+@media (max-width:420px){
+  .hero{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .hero-stats .row{justify-content:center}
+  .dirbar{width:100%;text-align:left}
+  .modes{grid-template-columns:1fr}
+  .mode{min-height:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>しゅと即答ドリル</h1><small>せかいの国 × 2ほうこう</small></div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-view="home" aria-selected="true">れんしゅう</button>
+      <button role="tab" data-view="stats" aria-selected="false">きろく</button>
+      <button role="tab" data-view="settings" aria-selected="false">せってい</button>
+    </nav>
+  </header>
+  <main id="app"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+"use strict";
+// ---------- data ----------
+// [国, よみ(かんじのときだけ), 首都, よみ, 地域, 国コード, レベル(1=きほん 2=もっと), 首都ではない有名な都市(まちがいの選択肢)]
+const P = [
+["日本","にほん","東京","とうきょう",0,"JP",1,"大阪:おおさか,京都:きょうと,横浜:よこはま"],
+["中国","ちゅうごく","北京","ペキン",0,"CN",1,"シャンハイ,ホンコン"],
+["韓国","かんこく","ソウル","",0,"KR",1,"プサン,インチョン"],
+["北朝鮮","きたちょうせん","ピョンヤン","",0,"KP",2,""],
+["モンゴル","","ウランバートル","",0,"MN",2,""],
+["フィリピン","","マニラ","",0,"PH",1,"セブ"],
+["ベトナム","","ハノイ","",0,"VN",1,"ホーチミン,ダナン"],
+["タイ","","バンコク","",0,"TH",1,"チェンマイ,プーケット"],
+["カンボジア","","プノンペン","",0,"KH",2,"シェムリアップ"],
+["ラオス","","ビエンチャン","",0,"LA",2,""],
+["マレーシア","","クアラルンプール","",0,"MY",1,"ペナン"],
+["インドネシア","","ジャカルタ","",0,"ID",1,"スラバヤ"],
+["インド","","ニューデリー","",0,"IN",1,"ムンバイ,コルカタ"],
+["ネパール","","カトマンズ","",0,"NP",2,""],
+["パキスタン","","イスラマバード","",0,"PK",2,"カラチ,ラホール"],
+["バングラデシュ","","ダッカ","",0,"BD",2,""],
+["サウジアラビア","","リヤド","",0,"SA",1,"メッカ,ジッダ"],
+["イラン","","テヘラン","",0,"IR",2,""],
+["イラク","","バグダッド","",0,"IQ",2,""],
+["トルコ","","アンカラ","",0,"TR",1,"イスタンブール"],
+["アラブ首長国連邦","アラブしゅちょうこくれんぽう","アブダビ","",0,"AE",2,"ドバイ"],
+["カタール","","ドーハ","",0,"QA",2,""],
+["イギリス","","ロンドン","",1,"GB",1,"マンチェスター,リバプール"],
+["フランス","","パリ","",1,"FR",1,"マルセイユ,リヨン"],
+["ドイツ","","ベルリン","",1,"DE",1,"ミュンヘン,フランクフルト"],
+["イタリア","","ローマ","",1,"IT",1,"ミラノ,ベネチア"],
+["スペイン","","マドリード","",1,"ES",1,"バルセロナ"],
+["ポルトガル","","リスボン","",1,"PT",2,""],
+["オランダ","","アムステルダム","",1,"NL",1,"ロッテルダム,ハーグ"],
+["ベルギー","","ブリュッセル","",1,"BE",2,""],
+["スイス","","ベルン","",1,"CH",1,"チューリッヒ,ジュネーブ"],
+["オーストリア","","ウィーン","",1,"AT",2,""],
+["ギリシャ","","アテネ","",1,"GR",1,""],
+["スウェーデン","","ストックホルム","",1,"SE",2,""],
+["ノルウェー","","オスロ","",1,"NO",2,""],
+["フィンランド","","ヘルシンキ","",1,"FI",2,""],
+["デンマーク","","コペンハーゲン","",1,"DK",2,""],
+["アイルランド","","ダブリン","",1,"IE",2,""],
+["ポーランド","","ワルシャワ","",1,"PL",2,""],
+["チェコ","","プラハ","",1,"CZ",2,""],
+["ハンガリー","","ブダペスト","",1,"HU",2,""],
+["ロシア","","モスクワ","",1,"RU",1,"サンクトペテルブルク"],
+["ウクライナ","","キーウ","",1,"UA",2,""],
+["エジプト","","カイロ","",2,"EG",1,"アレクサンドリア"],
+["南アフリカ","みなみアフリカ","プレトリア","",2,"ZA",1,"ケープタウン,ヨハネスブルグ"],
+["ケニア","","ナイロビ","",2,"KE",1,"モンバサ"],
+["ナイジェリア","","アブジャ","",2,"NG",2,"ラゴス"],
+["エチオピア","","アディスアベバ","",2,"ET",2,""],
+["モロッコ","","ラバト","",2,"MA",2,"カサブランカ,マラケシュ"],
+["アルジェリア","","アルジェ","",2,"DZ",2,""],
+["ガーナ","","アクラ","",2,"GH",2,""],
+["セネガル","","ダカール","",2,"SN",2,""],
+["マダガスカル","","アンタナナリボ","",2,"MG",2,""],
+["アメリカ","","ワシントンD.C.","",3,"US",1,"ニューヨーク,ロサンゼルス,シカゴ"],
+["カナダ","","オタワ","",3,"CA",1,"トロント,バンクーバー"],
+["メキシコ","","メキシコシティ","",3,"MX",1,"カンクン"],
+["キューバ","","ハバナ","",3,"CU",2,""],
+["ジャマイカ","","キングストン","",3,"JM",2,""],
+["パナマ","","パナマシティ","",3,"PA",2,""],
+["コスタリカ","","サンホセ","",3,"CR",2,""],
+["ブラジル","","ブラジリア","",4,"BR",1,"リオデジャネイロ,サンパウロ"],
+["アルゼンチン","","ブエノスアイレス","",4,"AR",1,""],
+["チリ","","サンティアゴ","",4,"CL",1,""],
+["ペルー","","リマ","",4,"PE",1,"クスコ"],
+["コロンビア","","ボゴタ","",4,"CO",2,"メデジン"],
+["ベネズエラ","","カラカス","",4,"VE",2,""],
+["エクアドル","","キト","",4,"EC",2,"グアヤキル"],
+["ウルグアイ","","モンテビデオ","",4,"UY",2,""],
+["パラグアイ","","アスンシオン","",4,"PY",2,""],
+["オーストラリア","","キャンベラ","",5,"AU",1,"シドニー,メルボルン"],
+["ニュージーランド","","ウェリントン","",5,"NZ",1,"オークランド"],
+["パプアニューギニア","","ポートモレスビー","",5,"PG",2,""],
+["フィジー","","スバ","",5,"FJ",2,""]
+];
+const N = P.length;
+const CODE = {}; P.forEach((p,i) => CODE[p[5]] = i);
+// 首都ではない有名な都市 [[名前, よみ], ...]
+const C = P.map(p => p[7] ? p[7].split(",").map(x => { const [n,y] = x.split(":"); return [n, y||""]; }) : []);
+// 世界地図タイルの位置 [行, 列]（太平洋が真ん中の、日本でよく見る世界地図の形）
+const TILE_POS = {
+  NO:[0,2],SE:[0,3],FI:[0,4],
+  IE:[1,0],GB:[1,1],DK:[1,2],RU:[1,5],
+  NL:[2,1],DE:[2,2],PL:[2,3],UA:[2,4],MN:[2,10],KP:[2,11],CA:[2,16],
+  FR:[3,0],BE:[3,1],CZ:[3,2],AT:[3,3],HU:[3,4],CN:[3,10],KR:[3,11],JP:[3,12],US:[3,16],
+  PT:[4,0],ES:[4,1],CH:[4,2],IT:[4,3],GR:[4,4],TR:[4,5],IQ:[4,6],IR:[4,7],PK:[4,8],NP:[4,9],MX:[4,15],CU:[4,16],
+  MA:[5,0],DZ:[5,1],EG:[5,4],SA:[5,6],QA:[5,7],IN:[5,8],BD:[5,9],LA:[5,10],JM:[5,16],
+  SN:[6,0],AE:[6,7],TH:[6,10],VN:[6,11],PH:[6,12],CR:[6,15],PA:[6,16],
+  GH:[7,1],NG:[7,2],ET:[7,4],KH:[7,10],CO:[7,16],VE:[7,17],
+  KE:[8,4],MY:[8,9],ID:[8,10],PG:[8,12],EC:[8,15],
+  MG:[9,5],AU:[9,11],FJ:[9,13],PE:[9,15],BR:[9,17],
+  ZA:[10,3],NZ:[10,13],PY:[10,16],
+  CL:[11,15],AR:[11,16],UY:[11,17]
+};
+const REG = ["アジア","ヨーロッパ","アフリカ","北アメリカ","南アメリカ","オセアニア"];
+const REG_COLOR = ["var(--r1)","var(--r2)","var(--r3)","var(--r4)","var(--r5)","var(--r6)"];
+// いちばん大きな都市や有名な都市が首都ではない、まちがえやすい国
+const TRICKY_MEMO = {
+  US:"ニューヨークはアメリカでいちばん人が多い都市だけど、首都はワシントンD.C.。",
+  CA:"いちばん大きな都市はトロント。首都はオタワ。",
+  BR:"リオデジャネイロはむかしの首都。1960年にブラジリアへうつりました。",
+  AU:"シドニーとメルボルンが首都をあらそったので、あいだに新しくキャンベラをつくりました。",
+  NZ:"いちばん大きな都市はオークランド。首都はウェリントン。",
+  TR:"いちばん大きな都市はイスタンブール。首都はアンカラ。",
+  CH:"チューリッヒやジュネーブが有名だけど、首都はベルン。",
+  IN:"いちばん大きな都市はムンバイ。首都はニューデリー。",
+  VN:"いちばん大きな都市はホーチミン。首都はハノイ。",
+  PK:"いちばん大きな都市はカラチ。首都はイスラマバード。",
+  ZA:"南アフリカには首都の役目をする都市が3つあります。政府があるのはプレトリア。",
+  NG:"いちばん大きな都市はラゴス。首都はアブジャ。",
+  MA:"いちばん大きな都市はカサブランカ。首都はラバト。",
+  AE:"ドバイが有名だけど、首都はアブダビ。",
+  CN:"いちばん人が多い都市はシャンハイ。首都は北京（ペキン）。"
+};
+const MEMO_CODE = Object.assign({
+  NL:"国会や王さまの住まいはハーグにあります。",
+  UA:"むかしは「キエフ」とよばれていました。",
+  ID:"新しい首都「ヌサンタラ」へうつす計画がすすんでいます。",
+  JP:"東京都の都庁は新宿区にあります。"
+}, TRICKY_MEMO);
+const MEMO = {}; Object.keys(MEMO_CODE).forEach(k => MEMO[CODE[k]] = MEMO_CODE[k]);
+const TRICKY = Object.keys(TRICKY_MEMO).map(k => CODE[k]);
+const LV_NAME = ["にがて","れんしゅう中","もうすこし","あと一歩","即答マスター"];
+const MASTER = 4;
+// ランクは全20段階。上に行くほど次までのポイントが多くなる
+const RANKS = [[0,"ちきゅうのたまご"],[100,"ちきゅうのひよこ"],[250,"パスポートゲット"],[450,"たびのみならい"],[700,"しゅとハンター"],
+  [1000,"ちずよみ名人"],[1350,"せかいたんてい"],[1750,"こっきはかせ"],[2200,"しゅとはかせ"],[2700,"せかい名人"],
+  [3300,"大陸チャンピオン"],[4000,"即答ファイター"],[4800,"即答エース"],[5700,"しゅとマスター"],[6700,"せかいマスター"],
+  [7800,"ちきゅうの大王"],[9000,"しゅと王"],[10500,"即答キング"],[12200,"でんせつのたんけん家"],[15000,"でんせつの即答王"]];
+const MISSIONS = [
+  {t:"20問こたえよう", need:20, v:d=>d.n},
+  {t:"即答を10回きめよう", need:10, v:d=>d.fast},
+  {t:"にがて特訓かタイムアタックを1回", need:1, v:d=>d.w||0}
+];
+const MISSION_XP = 30, TA_SEC = 60;
+
+// ---------- flags ----------
+const flagChar = iso => String.fromCodePoint(...[...iso].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+// 国旗の絵文字が色つきで出る端末かどうか（Windows などは文字だけになる）
+const FLAG_OK = (() => {
+  try {
+    const cv = document.createElement("canvas"); cv.width = cv.height = 32;
+    const x = cv.getContext("2d", {willReadFrequently:true}); x.textBaseline = "top"; x.font = "28px sans-serif"; x.fillStyle = "#000";
+    x.fillText(flagChar("JP"), 0, 0);
+    const d = x.getImageData(0,0,32,32).data;
+    for (let k=0;k<d.length;k+=4) if (d[k+3] > 0 && d[k] > 150 && d[k+1] < 110) return true;
+  } catch(e) {}
+  return false;
+})();
+const showFlags = () => FLAG_OK && S.settings.flags;
+const flag = i => showFlags() ? `<span class="fl" aria-hidden="true">${flagChar(P[i][5])}</span>` : "";
+
+// ---------- state ----------
+const KEY = "shuto-drill-v1";
+function fresh(){ return {v:1,total:0,updatedAt:0,xp:0,best:{ta:0},cards:{},days:{},log:[],settings:{fastSec:3,count:10,ruby:true,sound:true,flags:true,lv:1,regions:[]}}; }
+function normalize(o){
+  const s = Object.assign(fresh(), o || {});
+  s.settings = Object.assign(fresh().settings, (o && o.settings) || {});
+  s.best = Object.assign({ta:0}, s.best || {});
+  return s;
+}
+let S = fresh();
+try { const raw = localStorage.getItem(KEY); if (raw) S = normalize(JSON.parse(raw)); } catch(e) {}
+
+let db = null, syncState = "local", writing = false, pendingWrite = false, writeTimer = null;
+function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+function save(){
+  S.updatedAt = Date.now(); saveLocal();
+  if (!db) return;
+  clearTimeout(writeTimer); writeTimer = setTimeout(pushRemote, 1500);
+}
+async function pushRemote(){
+  if (!db) return;
+  if (writing) { pendingWrite = true; return; }
+  writing = true;
+  try { await db.doc("progress/main").set(JSON.parse(JSON.stringify(S))); syncState = "cloud"; }
+  catch(e){ syncState = (e && (e.code==="invalid_argument"||e.code==="not_granted")) ? "readonly" : "error"; }
+  writing = false;
+  if (pendingWrite) { pendingWrite = false; pushRemote(); }
+}
+(async function initCloud(){
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const d = await window.claude.use("db");
+    if (!d) return;
+    db = d;
+    const snap = await db.doc("progress/main").get();
+    const remote = snap.exists ? snap.data() : null;
+    if (remote && (remote.total > S.total || (remote.total === S.total && remote.updatedAt > S.updatedAt))) {
+      if (!quiz) { S = normalize(JSON.parse(JSON.stringify(remote))); saveLocal(); applySettings(); render(); }
+      syncState = "cloud";
+    } else if (S.total > 0) {
+      await pushRemote();
+    } else syncState = "cloud";
+    if (view === "settings") render();
+  } catch(e) { syncState = "error"; }
+})();
+
+// ---------- helpers ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rb = (k, y) => y ? `<ruby>${esc(k)}<rt>${esc(y)}</rt></ruby>` : esc(k);
+const cntR = i => rb(P[i][0], P[i][1]);
+const capR = i => rb(P[i][2], P[i][3]);
+const SHUTO = rb("首都","しゅと");
+const cid = (i, d) => i + d;           // d: "a" = 国→首都, "b" = 首都→国
+const card = id => S.cards[id] || {n:0,ok:0,ng:0,lv:0,fast:0,t:0,last:0,lastNg:0,h:""};
+const dkey = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today = () => dkey(new Date());
+const dayRec = () => S.days[today()] || {n:0,ok:0,fast:0};
+const inLevel = i => P[i][6] <= S.settings.lv;
+const levelIdx = () => P.map((p,i)=>i).filter(inLevel);
+function status(c){
+  if (!c.n) return -1;
+  if (c.lv >= MASTER) return 4;
+  if (c.lv === 0) return c.ng > 0 ? 0 : 1;
+  return c.lv;
+}
+const conquered = i => card(cid(i,"a")).lv >= MASTER && card(cid(i,"b")).lv >= MASTER;
+const conqCount = () => P.filter((p,i)=>conquered(i)).length;
+const LV_COLOR = ["var(--lv0)","var(--lv1)","var(--lv2)","var(--lv3)","var(--lv4)"];
+const stColor = s => s < 0 ? "var(--lv-none)" : LV_COLOR[s];
+function rankInfo(xp){
+  let k = 0; while (k+1 < RANKS.length && xp >= RANKS[k+1][0]) k++;
+  const next = RANKS[k+1];
+  return {k, name:RANKS[k][1], next, pct: next ? (xp-RANKS[k][0])/(next[0]-RANKS[k][0]) : 1};
+}
+function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,2000); }
+function streakDays(){
+  let n = 0; const d = new Date();
+  if (!S.days[dkey(d)]) d.setDate(d.getDate()-1);
+  while (S.days[dkey(d)]) { n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function weakScore(id){
+  const c = card(id);
+  if (!c.n) return 0;
+  const miss = (c.ng + 0.5) / (c.n + 1);
+  const recent = (c.h.slice(-4).match(/x/g) || []).length;
+  return (MASTER - c.lv) * 2 + miss * 6 + recent * 2 + (c.t > S.settings.fastSec*1000 ? 1 : 0);
+}
+function weakIds(){
+  const out = [];
+  for (let i=0;i<N;i++) for (const d of "ab") { const c = card(cid(i,d)); if (c.n && c.lv <= 1 && (c.ng > 0 || c.t > S.settings.fastSec*1000)) out.push(cid(i,d)); }
+  return out.sort((x,y)=>weakScore(y)-weakScore(x));
+}
+// ミッション達成チェック（達成した瞬間だけボーナス）
+function checkMissions(){
+  const d = S.days[today()]; if (!d) return [];
+  d.m = d.m || 0; const got = [];
+  MISSIONS.forEach((m,k) => { if (!(d.m & (1<<k)) && m.v(d) >= m.need) { d.m |= 1<<k; S.xp += MISSION_XP; got.push(m.t); } });
+  return got;
+}
+
+// ---------- sound & confetti ----------
+let ac = null;
+function tone(freqs, type="sine", gap=0.09, vol=0.16){
+  if (!S.settings.sound) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    freqs.forEach((f,k)=>{
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = type; o.frequency.value = f;
+      const t0 = ac.currentTime + k*gap;
+      g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.2);
+      o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0+0.22);
+    });
+  } catch(e) {}
+}
+function beep(kind, combo=0){
+  const up = Math.pow(2, Math.min(combo,12)/12);   // コンボが続くと音が上がっていく
+  if (kind==="fast") tone([880*up,1320*up]);
+  else if (kind==="ok") tone([660,880]);
+  else if (kind==="fanfare") tone([523,659,784,1047],"triangle",0.12,0.18);
+  else tone([220,180],"triangle");
+}
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let parts = [], confRaf = 0;
+function confetti(n=80){
+  if (reduceMotion) return;
+  const cv = $("#confetti"), ctx = cv.getContext("2d");
+  cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+  const cols = ["#E29A12","#2F4FA8","#CF4036","#2B8A55","#8B5CB8","#2A9A9A","#E07B39"];
+  for (let k=0;k<n;k++) parts.push({x:innerWidth*(0.2+Math.random()*0.6), y:innerHeight*0.35, vx:(Math.random()-0.5)*9, vy:-Math.random()*10-4, r:Math.random()*6+4, a:Math.random()*6, va:(Math.random()-0.5)*0.3, c:cols[k%cols.length], life:0});
+  if (confRaf) return;
+  const step = () => {
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    parts.forEach(p => { p.vy += 0.3; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.a += p.va; p.life++;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); ctx.restore(); });
+    parts = parts.filter(p => p.y < innerHeight + 20 && p.life < 240);
+    confRaf = parts.length ? requestAnimationFrame(step) : (ctx.clearRect(0,0,innerWidth,innerHeight), 0);
+  };
+  confRaf = requestAnimationFrame(step);
+}
+
+// ---------- question selection ----------
+function pool(mode){
+  const regs = S.settings.regions;
+  let idx = P.map((p,i)=>i).filter(i => !regs.length || regs.includes(P[i][4]));
+  // 「まちがえやすい首都」はレベルに関係なく全部出す
+  idx = mode === "diff" ? idx.filter(i => TRICKY.includes(i)) : idx.filter(inLevel);
+  const dirs = mode==="a" ? ["a"] : mode==="b" ? ["b"] : ["a","b"];
+  const ids = [];
+  idx.forEach(i => dirs.forEach(d => ids.push(cid(i,d))));
+  return ids;
+}
+function weight(id){
+  const c = card(id), now = Date.now();
+  if (!c.n) return 4;
+  let w = [9,6,4,2.5,0.6][Math.min(c.lv,MASTER)];
+  if (c.lastNg && now - c.lastNg < 864e5) w *= 1.6;
+  if (c.lv >= MASTER && now - c.last > 3*864e5) w = 2.5;      // しばらく出ていないマスターはおさらい
+  return w;
+}
+// 重みつきで、重複なしに1周ぶん並べる（にがてほど前に来やすい）
+function weightedOrder(ids){
+  const out = [], bag = ids.map(id => ({id, w:weight(id)}));
+  while (bag.length) {
+    const sum = bag.reduce((s,x)=>s+x.w,0); let r = Math.random()*sum, k = 0;
+    while (k < bag.length-1 && (r -= bag[k].w) > 0) k++;
+    out.push(bag[k].id); bag.splice(k,1);
+  }
+  return out;
+}
+// 出題範囲の問題数が設定より少ないときは、2周目・3周目をつなげて設定の問題数にする
+function fillRounds(ids, n){
+  const out = [];
+  while (out.length < n && ids.length) {
+    const round = weightedOrder(ids);
+    if (round.length > 1 && round[0] === out[out.length-1]) round.push(round.shift());  // 同じ問題が連続しないように
+    out.push(...round);
+  }
+  return out.slice(0, n);
+}
+function pickSession(mode, n){
+  if (mode === "weak") { const w = weakIds().slice(0, n); return fillRounds(w, Math.min(n, w.length*2)); }
+  return fillRounds(pool(mode === "ta" ? "mix" : mode), n);
+}
+// まちがいの選択肢にする国：同じ地域・いまのレベル → 同じ地域 → ほかの地域 の順にえらぶ
+function otherCountries(i){
+  const rest = P.map((p,j)=>j).filter(j => j!==i);
+  const a = shuffle(rest.filter(j => P[j][4]===P[i][4] && inLevel(j)));
+  const b = shuffle(rest.filter(j => P[j][4]===P[i][4] && !inLevel(j)));
+  const c = shuffle(rest.filter(j => P[j][4]!==P[i][4] && inLevel(j)));
+  return [...a, ...b, ...c];
+}
+// 選択肢: {html, name, correct, j?(ほかの国の番号), trap?(同じ国の都市)}
+function makeChoices(id){
+  const i = +id.slice(0,-1), d = id.slice(-1);
+  if (d === "a") {
+    // 国→首都：その国の有名な都市（最大2つ）と、近くの国の首都からえらぶ
+    const traps = shuffle(C[i].slice()).slice(0, Math.min(2, C[i].length)).map(([n,y]) => ({html:rb(n,y), name:n, correct:false, trap:true}));
+    const caps = otherCountries(i).slice(0, 3 - traps.length).map(j => ({html:capR(j), name:P[j][2], correct:false, j}));
+    return shuffle([{html:capR(i), name:P[i][2], correct:true}, ...traps, ...caps]);
+  }
+  // 首都→国：同じ地域の国からえらぶ
+  return shuffle([i, ...otherCountries(i).slice(0,3)]).map(j => ({html:flag(j)+cntR(j), name:P[j][0], j, correct:j===i}));
+}
+
+// ---------- quiz ----------
+let view = "home", quiz = null, result = null, selTile = null;
+function startQuiz(mode){
+  const ids = mode === "retry" ? shuffle(result.wrong.slice()) : pickSession(mode, mode==="ta" ? 40 : S.settings.count);
+  if (!ids.length) { toast("問題がありません"); return; }
+  quiz = {mode, queue: ids.map(id=>({id, again:false})), pos:0, answers:[], retried:new Set(), t0:0, locked:false,
+    timerRaf:0, advanceT:0, combo:0, maxCombo:0, xp0:S.xp, conq0:P.map((p,i)=>conquered(i)), newConq:[], missions:[], ta:null};
+  if (mode === "ta") {
+    quiz.ta = {end: performance.now() + TA_SEC*1000, iv:0, up:false};
+    quiz.ta.iv = setInterval(taTick, 200);
+  }
+  result = null; view = "quiz"; setTab(view); window.scrollTo(0,0); askCurrent();
+}
+function taTick(){
+  if (!quiz || !quiz.ta) return;
+  const left = Math.max(0, Math.ceil((quiz.ta.end - performance.now())/1000));
+  const el = $("#taLeft"); if (el) el.textContent = left;
+  if (left <= 0 && !quiz.ta.up) { quiz.ta.up = true; clearInterval(quiz.ta.iv); if (!quiz.locked) finish(); }
+}
+function askCurrent(){
+  const q = quiz.queue[quiz.pos];
+  q.choices = q.choices || makeChoices(q.id);
+  quiz.locked = false; renderQuiz();
+  quiz.t0 = performance.now();
+  const bar = $("#timer i"), wrap = $("#timer"), note = $("#timerNote"), lim = S.settings.fastSec*1000;
+  const tick = () => {
+    if (!quiz || quiz.locked) return;
+    const e = performance.now() - quiz.t0, f = Math.max(0, 1 - e/lim);
+    bar.style.transform = `scaleX(${f})`;
+    if (f === 0 && !wrap.classList.contains("slow")) { wrap.classList.add("slow"); note.textContent = "ゆっくりでもOK。思い出してみよう"; }
+    quiz.timerRaf = requestAnimationFrame(tick);
+  };
+  quiz.timerRaf = requestAnimationFrame(tick);
+}
+function answer(k){
+  if (!quiz || quiz.locked) return;
+  const q = quiz.queue[quiz.pos];
+  if (!q.choices[k]) return;
+  quiz.locked = true; cancelAnimationFrame(quiz.timerRaf);
+  const ms = Math.round(performance.now() - quiz.t0);
+  const i = +q.id.slice(0,-1), ch = q.choices[k];
+  const ok = ch.correct, fast = ok && ms <= S.settings.fastSec*1000;
+  // 記録
+  const c = Object.assign({}, card(q.id));
+  const before = status(c);
+  c.n++; c.last = Date.now(); c.t = c.t ? Math.round(c.t*0.6 + ms*0.4) : ms;
+  if (ok) { c.ok++; if (fast) { c.fast = (c.fast||0)+1; c.lv = Math.min(MASTER, c.lv+1); } else c.lv = c.lv < 2 ? c.lv+1 : c.lv; }
+  else { c.ng++; c.lv = 0; c.lastNg = Date.now(); }
+  c.h = (c.h + (fast ? "f" : ok ? "o" : "x")).slice(-8);
+  S.cards[q.id] = c; S.total++;
+  const day = dayRec();
+  day.n++; if (ok) day.ok++; if (fast) day.fast++; S.days[today()] = day;
+  S.log.push({id:q.id, pk:ch.name, ok:ok?1:0, ms, ts:Date.now()}); if (S.log.length > 300) S.log.splice(0, S.log.length-300);
+  // コンボとポイント
+  quiz.combo = fast ? quiz.combo + 1 : 0;
+  quiz.maxCombo = Math.max(quiz.maxCombo, quiz.combo);
+  S.xp += fast ? 10 + Math.min(quiz.combo-1, 10) : ok ? 5 : 1;
+  const nowConq = conquered(i) && !quiz.conq0[i] && !quiz.newConq.includes(i);
+  if (nowConq) quiz.newConq.push(i);
+  quiz.missions.push(...checkMissions());
+  save();
+  quiz.answers.push({id:q.id, pickHTML:ch.html, ok, fast, ms, again:q.again, before, after:status(c)});
+  // まちがえたら3問後にもう一度（1回だけ・タイムアタック以外）
+  if (!ok && !quiz.ta && !quiz.retried.has(q.id)) {
+    quiz.retried.add(q.id);
+    quiz.queue.splice(Math.min(quiz.pos+3, quiz.queue.length), 0, {id:q.id, again:true});
+  }
+  beep(fast ? "fast" : ok ? "ok" : "ng", quiz.combo);
+  renderFeedback(k, ok, fast, ms);
+  if (nowConq) { toast(`${P[i][0]} せいは！ 地図が金色になったよ`); confetti(70); beep("fanfare"); }
+  else if (quiz.combo && quiz.combo % 5 === 0) confetti(40);
+  if (quiz.ta) quiz.advanceT = setTimeout(next, ok ? (fast ? 350 : 550) : 1400);
+  else if (ok) quiz.advanceT = setTimeout(next, fast ? 700 : 1100);
+}
+function next(){
+  if (!quiz) return;
+  clearTimeout(quiz.advanceT);
+  if (quiz.ta && quiz.ta.up) return finish();
+  quiz.pos++;
+  if (quiz.ta && quiz.pos >= quiz.queue.length) quiz.queue.push(...pickSession("ta", 30).map(id=>({id, again:false})));
+  if (quiz.pos >= quiz.queue.length) return finish();
+  askCurrent();
+}
+function finish(){
+  cancelAnimationFrame(quiz.timerRaf); clearTimeout(quiz.advanceT);
+  if (quiz.ta) clearInterval(quiz.ta.iv);
+  const a = quiz.answers, firsts = a.filter(x => !x.again);
+  const r = {
+    mode: quiz.mode, answers: a,
+    n: firsts.length, ok: firsts.filter(x=>x.ok).length, fast: firsts.filter(x=>x.fast).length,
+    wrong: [...new Set(a.filter(x=>!x.ok).map(x=>x.id))],
+    mastered: [...new Set(a.filter(x=>x.after===4 && x.before!==4).map(x=>x.id))],
+    maxCombo: quiz.maxCombo, newConq: quiz.newConq, rank0: rankInfo(quiz.xp0).k, record:false
+  };
+  const full = !quiz.ta ? a.length && quiz.pos >= quiz.queue.length - 1 : true;
+  if (full && (quiz.mode === "weak" || quiz.mode === "ta")) { const d = dayRec(); d.w = (d.w||0) + 1; S.days[today()] = d; }
+  if (quiz.mode === "ta" && r.ok > S.best.ta) { r.prevBest = S.best.ta; S.best.ta = r.ok; r.record = true; }
+  r.missions = [...quiz.missions, ...checkMissions()];
+  r.xp = S.xp - quiz.xp0;
+  save();
+  result = r; quiz = null; view = "result"; render();
+  const rankUp = rankInfo(S.xp).k > r.rank0;
+  if (rankUp || r.record || r.newConq.length || (r.n >= 5 && r.fast === r.n)) { confetti(rankUp ? 140 : 90); beep("fanfare"); }
+  else if (r.missions.length) confetti(50);
+}
+function quitQuiz(){
+  if (!quiz) return;
+  cancelAnimationFrame(quiz.timerRaf); clearTimeout(quiz.advanceT); if (quiz.ta) clearInterval(quiz.ta.iv);
+  if (quiz.answers.length) finish(); else { quiz=null; view="home"; render(); }
+}
+
+// ---------- render ----------
+function applySettings(){ document.body.classList.toggle("no-ruby", !S.settings.ruby); }
+function setTab(v){ view = v; document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === (v==="quiz"||v==="result"?"home":v)))); }
+function render(){
+  setTab(view);
+  const app = $("#app");
+  if (view === "home") app.innerHTML = homeHTML();
+  else if (view === "stats") app.innerHTML = statsHTML();
+  else if (view === "settings") app.innerHTML = settingsHTML();
+  else if (view === "result") app.innerHTML = resultHTML();
+  else if (view === "quiz") renderQuiz();
+  window.scrollTo(0,0);
+}
+function counts(dir, idx){
+  const c = [0,0,0,0,0]; let none = 0;
+  for (const i of idx) for (const d of dir) { const s = status(card(cid(i,d))); if (s<0) none++; else c[s]++; }
+  return {c, none};
+}
+function stackHTML(dir, idx){
+  const {c} = counts(dir, idx), tot = idx.length*dir.length;
+  return `<div class="stack">${[4,3,2,1,0].map(s => c[s] ? `<i style="width:${c[s]/tot*100}%;background:${LV_COLOR[s]}" title="${LV_NAME[s]} ${c[s]}"></i>` : "").join("")}</div>`;
+}
+function mapHTML(){
+  const n = conqCount(), fl = showFlags();
+  const tiles = P.map((p,i) => {
+    const a = status(card(cid(i,"a"))), b = status(card(cid(i,"b")));
+    const cq = conquered(i), seen = a >= 0 || b >= 0, pos = TILE_POS[p[5]];
+    const bg = cq ? "" : seen ? `background:linear-gradient(90deg,${stColor(a)} 50%,${stColor(b)} 50%);` : "";
+    const cls = [cq?"conq":seen?"seen":"", fl?"":"fb2", !inLevel(i)&&!seen?"lv2":""].join(" ");
+    return `<button class="pt ${cls}" style="grid-row:${pos[0]+1};grid-column:${pos[1]+1};${bg}" data-tile="${i}" title="${esc(p[0])}・${esc(p[2])}" aria-label="${esc(p[0])}">${fl ? flagChar(p[5]) : esc(p[0].slice(0,2))}</button>`;
+  }).join("");
+  return `<div class="map">
+    <div class="mt"><b>せかい制覇マップ <span class="num" style="font-size:18px;color:var(--gold)">${n}</span><span style="font-size:13px"> / ${N}</span></b>
+    <span>両方向とも即答マスターで金色に！左はんぶん＝国→首都、右＝首都→国</span></div>
+    ${tiles}
+    <div class="ml legend"><span><i style="background:var(--lv0)"></i>にがて</span><span><i style="background:var(--lv2)"></i>れんしゅう</span><span><i style="background:var(--lv4)"></i>マスター</span></div>
+  </div>`;
+}
+function missionsHTML(){
+  const d = dayRec();
+  return `<div class="missions">${MISSIONS.map((m,k)=>{
+    const v = Math.min(m.v(d)||0, m.need), done = (d.m||0) & (1<<k);
+    return `<div class="mission ${done?"done":""}"><span class="chk">${done?"✓":k+1}</span><div><div class="mt">${m.t}</div><div class="mp"><i style="width:${v/m.need*100}%"></i></div></div><span class="rw num">${done?"クリア！":`${v}/${m.need}`}</span></div>`;
+  }).join("")}</div>`;
+}
+function homeHTML(){
+  const idx = levelIdx(), tot = idx.length*2, all = counts("ab", idx), m = all.c[4], pct = m/tot;
+  const td = dayRec(), weak = weakIds().length, rk = rankInfo(S.xp);
+  const R = 46, L = 2*Math.PI*R, regs = S.settings.regions, lv = S.settings.lv;
+  const nBasic = P.filter(p=>p[6]===1).length;
+  const modeBtn = (mode, tag, title, desc, cls="") => `<button class="mode ${cls}" data-mode="${mode}" ${mode==="weak"&&!weak?"disabled":""}>${tag?`<span class="tag">${tag}</span>`:""}<b>${title}</b><span>${desc}</span></button>`;
+  return `
+  <section class="hero">
+    <div class="ring" aria-label="即答マスター ${m} / ${tot}">
+      <svg viewBox="0 0 108 108"><circle cx="54" cy="54" r="${R}" fill="none" stroke="var(--lv-none)" stroke-width="10"/>
+      <circle cx="54" cy="54" r="${R}" fill="none" stroke="var(--gold)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${L*pct} ${L}"/></svg>
+      <div class="lbl"><b class="num">${m}</b><span>/ ${tot} マスター</span></div>
+    </div>
+    <div class="hero-stats">
+      <div class="rank"><span class="badge num">ランク ${rk.k+1} / ${RANKS.length}</span><span class="title">${rk.name}</span></div>
+      <div class="xpbar"><i style="width:${rk.pct*100}%"></i></div>
+      <div class="xpnote num">${S.xp} ポイント${rk.next ? `・あと ${rk.next[0]-S.xp} で「${rk.next[1]}」` : "・さいこうランク！"}</div>
+      <div class="row">
+        <div class="stat"><b class="num">${td.n}</b><span>きょうの問題</span></div>
+        <div class="stat"><b class="num">${td.fast}</b><span>きょうの即答</span></div>
+        <div class="stat"><b class="num">${streakDays()}<small style="font-size:13px">日</small></b><span>れんぞく</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-title">きょうのミッション（クリアで +${MISSION_XP}ポイント）</div>
+  ${missionsHTML()}
+
+  <div class="section-title">れんしゅうをえらぶ</div>
+  <div class="modes">
+    ${modeBtn("mix","","おまかせ","両方向からまぜて出題。にがてな問題とまだの問題が多めに出ます","primary")}
+    ${modeBtn("weak",weak?`${weak}問`:"まだなし","にがて特訓", weak ? "まちがえた・時間がかかった問題だけを集中練習" : "まちがえた問題がここにたまります","weak")}
+    ${modeBtn("ta",`さいこう ${S.best.ta}問`,"タイムアタック",`${TA_SEC}秒で何問せいかいできるかな？ 記録にちょうせん！`,"ta")}
+    ${modeBtn("diff",`${TRICKY.length}か国`,"まちがえやすい首都","アメリカ→ワシントンD.C.、オーストラリア→キャンベラ など、有名な都市が首都ではない国")}
+    ${modeBtn("a","",`国 → ${SHUTO}`,"「フランスの首都は？」")}
+    ${modeBtn("b","",`${SHUTO} → 国`,"「ローマはどこの国の首都？」")}
+  </div>
+
+  <div class="section-title">コレクション</div>
+  <section class="panel">${mapHTML()}</section>
+
+  <div class="section-title">はんい</div>
+  <div class="opts">
+    <div class="optrow"><label>国の数</label><div class="chips" id="lvChips">
+      <button class="chip" data-lv="1" aria-pressed="${lv===1}">きほん ${nBasic}か国</button>
+      <button class="chip" data-lv="2" aria-pressed="${lv===2}">ぜんぶ ${N}か国</button>
+    </div></div>
+    <div class="optrow"><label>地域</label><div class="chips" id="regChips">
+      <button class="chip" data-reg="all" aria-pressed="${!regs.length}">ぜんぶ</button>
+      ${REG.map((r,k)=>`<button class="chip" data-reg="${k}" aria-pressed="${regs.includes(k)}"><span class="dot" style="background:${REG_COLOR[k]}"></span>${r}</button>`).join("")}
+    </div></div>
+    <div class="optrow"><label>問題数</label><div class="chips" id="cntChips">
+      ${[5,10,20].map(n=>`<button class="chip" data-cnt="${n}" aria-pressed="${S.settings.count===n}">${n}問</button>`).join("")}
+    </div></div>
+  </div>
+  <p class="tip">${S.settings.fastSec}秒いないに正解すると「即答」で10ポイント。即答がつづくとコンボでもっとふえるよ。同じ問題で即答を${MASTER}回つづけると<b>即答マスター</b>。「きほん」をマスターしたら「ぜんぶ」にちょうせんしよう。キーボードの <b>1〜4</b> でもこたえられます。</p>`;
+}
+function renderQuiz(){
+  const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1);
+  const total = quiz.queue.length;
+  const qword = d==="a" ? cntR(i) : capR(i);
+  const ask = d==="a" ? `の${SHUTO}は？` : `はどこの国の${SHUTO}？`;
+  const lab = d==="a" ? "国 → 首都" : "首都 → 国";
+  const st = status(card(q.id));
+  const left = quiz.ta ? Math.max(0, Math.ceil((quiz.ta.end - performance.now())/1000)) : 0;
+  const head = quiz.ta
+    ? `<div class="tabox"><span>のこり <span class="left num" id="taLeft">${left}</span> 秒</span><span class="sc num">せいかい ${quiz.answers.filter(x=>x.ok).length}</span></div><div style="flex:1"></div>`
+    : `<div class="prog"><i style="width:${quiz.pos/total*100}%"></i></div><span class="qcount num">${quiz.pos+1} / ${total}</span>`;
+  $("#app").innerHTML = `
+  <div class="qtop"><button class="quit" id="quit">やめる</button>${head}</div>
+  <section class="card">
+    <div class="region" style="background:${REG_COLOR[P[i][4]]}"></div>
+    ${quiz.combo >= 2 ? `<span class="combo ${quiz.combo>=5?"big":""} num">${quiz.combo} コンボ</span>` : ""}
+    <div class="qlabel"><span>${lab}</span><span>・${REG[P[i][4]]}</span>${q.again?'<span class="again">もういちど</span>':""}${st===0&&!q.again?'<span class="again">にがて</span>':""}</div>
+    ${d==="a" && showFlags() ? `<div class="qflag pop" aria-hidden="true">${flagChar(P[i][5])}</div>` : ""}
+    <div class="qword pop">${qword}</div>
+    <div class="qsub">${ask}</div>
+    <div class="timer" id="timer"><i></i></div>
+    <div class="timer-note" id="timerNote">${S.settings.fastSec}秒いないなら即答！</div>
+  </section>
+  <div class="choices" id="choices">
+    ${q.choices.map((ch,k)=>`<button class="choice" data-k="${k}" aria-label="${k+1}番 ${esc(ch.name)}"><span class="key" aria-hidden="true">${k+1}</span>${ch.html}</button>`).join("")}
+  </div>
+  <div id="fb"><p class="keyhint">キーボードの 1・2・3・4 でもこたえられるよ</p></div>`;
+}
+function renderFeedback(k, ok, fast, ms){
+  const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1), ch = q.choices[k];
+  document.querySelectorAll(".choice").forEach((b,kk)=>{
+    b.disabled = true;
+    if (q.choices[kk].correct) b.classList.add("correct"); else if (kk === k) b.classList.add("wrong"); else b.classList.add("dim");
+  });
+  const sec = (ms/1000).toFixed(1), pair = `${flag(i)}${cntR(i)} ― ${capR(i)}`;
+  const combo = quiz.combo >= 2 ? `<span class="combo ${quiz.combo>=5?"big":""} num" style="position:static">${quiz.combo} コンボ！</span>` : "";
+  let html;
+  if (ok) {
+    html = `<div class="fb ${fast?"fast":"ok"} pop"><div class="head">${fast?"◎ 即答！":"○ せいかい"} <span class="num" style="font-size:14px;font-weight:700">${sec}秒</span> ${combo}</div>${!fast?`<div class="memo">つぎは${S.settings.fastSec}秒いないをめざそう</div>`:""}</div>`;
+  } else {
+    const note = ch.trap ? `${ch.html}も${cntR(i)}の都市だけど、首都は${capR(i)}。`
+      : d==="a" ? `${ch.html}は${cntR(ch.j)}の首都。`
+      : `${cntR(ch.j)}の首都は${capR(ch.j)}。`;
+    html = `<div class="fb ng pop"><div class="head">× ざんねん</div>
+      <div class="body">こたえ：<b>${pair}</b></div>
+      <div class="memo">${note}${MEMO[i]?` ${MEMO[i]}`:""}${quiz.ta ? "" : " この問題は少しあとにもう一度出ます。"}</div>
+      ${quiz.ta ? "" : `<button class="btn block" id="nextBtn">つぎへ（Enter）</button>`}</div>`;
+  }
+  $("#fb").innerHTML = html;
+  const nb = $("#nextBtn"); if (nb) nb.focus();
+}
+function resultHTML(){
+  const r = result, rate = r.n ? r.ok/r.n : 0, rk = rankInfo(S.xp), ta = r.mode === "ta";
+  const msg = ta ? (r.record ? "新記録！すごい！" : `さいこう記録は ${S.best.ta}問。もう一回ちょうせん！`)
+    : rate===1 && r.fast===r.n ? "パーフェクト即答！すごい！" : rate===1 ? "ぜんぶせいかい！つぎは即答をねらおう" : rate>=.8 ? "よくできました！" : rate>=.5 ? "あと少し！まちがえた所をもう一度" : "くりかえすと、ぜったい覚えられるよ";
+  const banners = [];
+  if (rk.k > r.rank0) banners.push(`<div class="banner pop"><b>ランクアップ！「${rk.name}」になった！</b><span>ランク ${rk.k+1} / ${RANKS.length} にあがりました</span></div>`);
+  if (r.record) banners.push(`<div class="banner pop"><b>タイムアタック新記録 ${r.ok}問！</b><span>まえの記録は ${r.prevBest}問</span></div>`);
+  if (r.newConq.length) banners.push(`<div class="banner pop"><b>${r.newConq.map(i=>esc(P[i][0])).join("・")} を制覇！</b><span>せかい制覇マップが金色になったよ（${conqCount()} / ${N}）</span></div>`);
+  r.missions.forEach(t => banners.push(`<div class="banner"><b>ミッションクリア！</b><span>${esc(t)}（+${MISSION_XP}ポイント）</span></div>`));
+  const items = r.answers.map(a => {
+    const i = +a.id.slice(0,-1), d = a.id.slice(-1);
+    const q = d==="a" ? `${flag(i)}${cntR(i)} → ${capR(i)}` : `${capR(i)} → ${flag(i)}${cntR(i)}`;
+    const sub = a.ok ? (a.again ? "もういちど：せいかい" : "") : `えらんだ：${a.pickHTML}`;
+    return `<div class="item"><span class="ic ${a.fast?"fast":a.ok?"ok":"ng"}">${a.fast?"◎":a.ok?"○":"×"}</span><div><div class="main">${q}</div>${sub?`<div class="sub">${sub}</div>`:""}</div><span class="ms num">${(a.ms/1000).toFixed(1)}秒</span></div>`;
+  }).join("");
+  return `<div class="result">
+    <section class="score">
+      ${ta ? `<div class="qsub">${TA_SEC}秒タイムアタック</div>` : ""}
+      <div class="big num">${r.ok}<small> / ${r.n}</small></div>
+      <div class="msg">${msg}</div>
+      <div class="row">
+        <div class="stat"><b class="num" style="color:var(--gold)">${r.fast}</b><span>即答</span></div>
+        <div class="stat"><b class="num">${r.maxCombo}</b><span>さいだいコンボ</span></div>
+        <div class="stat"><b class="num" style="color:var(--accent)">+${r.xp}</b><span>ポイント</span></div>
+        <div class="stat"><b class="num" style="color:var(--ng)">${r.wrong.length}</b><span>まちがい</span></div>
+      </div>
+    </section>
+    ${banners.join("")}
+    <div class="actions">
+      ${r.wrong.length ? `<button class="btn danger" data-act="retry">まちがえた${r.wrong.length}問をもう一度</button>` : ""}
+      <button class="btn" data-act="again">${ta ? "もう一回ちょうせん" : "つづけてれんしゅう"}</button>
+      <button class="btn ghost" data-act="home">もどる</button>
+    </div>
+    <div class="list">${items}</div>
+  </div>`;
+}
+function statsHTML(){
+  const allIdx = P.map((p,i)=>i), all = counts("ab", allIdx);
+  const legend = `<div class="legend"><span><i style="background:var(--lv-none)"></i>まだ</span>${[0,1,2,3,4].map(s=>`<span><i style="background:${LV_COLOR[s]}"></i>${LV_NAME[s]}</span>`).join("")}</div>`;
+  const tiles = REG.map((r,k)=>`<div class="reg"><h3><span class="dot" style="background:${REG_COLOR[k]}"></span>${r}</h3><div class="tiles">${
+    allIdx.filter(i=>P[i][4]===k).map(i=>{
+      const a = status(card(cid(i,"a"))), b = status(card(cid(i,"b")));
+      return `<button class="tile ${selTile===i?"sel":""}" data-tile="${i}"><span class="nm">${conquered(i)?"★ ":""}${flag(i)}${esc(P[i][0])}</span><span class="cp">${esc(P[i][2])}</span><span class="bars"><span>国→</span><i style="background:${stColor(a)}"></i><span>→国</span><i style="background:${stColor(b)}"></i></span></button>`;
+    }).join("")}</div>${selTile!==null && P[selTile][4]===k ? detailHTML(selTile) : ""}</div>`).join("");
+  const weak = weakIds().slice(0,10);
+  const weakList = weak.length ? `<div class="list">${weak.map(id=>{
+    const i = +id.slice(0,-1), d = id.slice(-1), c = card(id);
+    const q = d==="a" ? `${flag(i)}${cntR(i)} → ${capR(i)}` : `${capR(i)} → ${flag(i)}${cntR(i)}`;
+    return `<div class="item"><span class="ic ng">${c.ng}</span><div><div class="main">${q}</div><div class="sub">${c.n}回中 ${c.ng}回まちがい・へいきん ${(c.t/1000).toFixed(1)}秒・さいきん ${histIcons(c.h)}</div></div><span class="ms">${LV_NAME[Math.max(0,status(c))]}</span></div>`;
+  }).join("")}</div>` : `<div class="empty">まだにがてな問題はありません</div>`;
+  const recent = S.log.slice(-15).reverse();
+  const recentList = recent.length ? `<div class="list">${recent.map(l=>{
+    const i = +l.id.slice(0,-1), d = l.id.slice(-1), fast = l.ok && l.ms <= S.settings.fastSec*1000;
+    const q = d==="a" ? `${esc(P[i][0])} → ${esc(P[i][2])}` : `${esc(P[i][2])} → ${esc(P[i][0])}`;
+    const t = new Date(l.ts);
+    return `<div class="item"><span class="ic ${fast?"fast":l.ok?"ok":"ng"}">${fast?"◎":l.ok?"○":"×"}</span><div><div class="main">${q}</div><div class="sub">${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}${l.ok?"":`・えらんだ：${esc(l.pk)}`}</div></div><span class="ms num">${(l.ms/1000).toFixed(1)}秒</span></div>`;
+  }).join("")}</div>` : `<div class="empty">まだ記録がありません</div>`;
+  return `<div style="display:grid;gap:14px">
+    <section class="panel">
+      <h2>おぼえぐあい</h2>
+      <div class="dirbar">国 → 首都（${N}問）${stackHTML("a", allIdx)}</div>
+      <div class="dirbar">首都 → 国（${N}問）${stackHTML("b", allIdx)}</div>
+      ${legend}
+      <p class="note">ぜんぶで <b class="num">${S.total}</b> 回こたえました。即答マスター <b class="num">${all.c[4]}</b> / ${N*2}、制覇 <b class="num">${conqCount()}</b> / ${N}、タイムアタック最高 <b class="num">${S.best.ta}</b>問。</p>
+    </section>
+    <section class="panel"><h2>にがてランキング</h2><p class="note">まちがいが多い・時間がかかる順。「にがて特訓」でここを集中練習できます。</p>${weakList}</section>
+    <section class="panel"><h2>この2週間</h2>${chartHTML()}</section>
+    <section class="panel" id="prefs"><h2>国ごと</h2><p class="note">左のバー＝国→首都、右＝首都→国。タップするとくわしく見られます。</p>${legend}<div class="regions">${tiles}</div></section>
+    <section class="panel"><h2>さいきんの回答</h2>${recentList}</section>
+  </div>`;
+}
+function histIcons(h){ return (h||"").split("").map(c=>c==="f"?"◎":c==="o"?"○":"×").join(""); }
+function detailHTML(i){
+  const row = d => { const c = card(cid(i,d)); return `<tr><th>${d==="a"?"国→首都":"首都→国"}</th><td>${c.n?`${c.ok}/${c.n} せいかい`:"まだ"}</td><td>${c.n?`${(c.t/1000).toFixed(1)}秒`:""}</td><td>${histIcons(c.h)}</td></tr>`; };
+  return `<div class="detail" id="detail" style="margin-top:8px"><div>${flag(i)}<b>${cntR(i)}</b> の${SHUTO}は <b>${capR(i)}</b>${conquered(i)?"　★制覇":""}</div>${MEMO[i]?`<div>${MEMO[i]}</div>`:""}<div class="chart-wrap"><table>${row("a")}${row("b")}</table></div></div>`;
+}
+function chartHTML(){
+  const days = []; const d = new Date(); d.setDate(d.getDate()-13);
+  for (let k=0;k<14;k++){ days.push({m:d.getMonth()+1, dd:d.getDate(), ...(S.days[dkey(d)]||{n:0,ok:0,fast:0})}); d.setDate(d.getDate()+1); }
+  if (!days.some(x=>x.n)) return `<div class="empty">れんしゅうすると、ここに毎日のグラフが出ます</div>`;
+  const max = Math.max(10, ...days.map(x=>x.n)), top = Math.ceil(max/10)*10;
+  const W=560,H=240,l=40,r=8,t=20,b=30, cw=(W-l-r)/14, bw=cw*.62, y=v=>t+(H-t-b)*(1-v/top);
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="この2週間の問題数">`;
+  [0,top/2,top].forEach(v=>{ s+=`<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${l-6}" y="${y(v)+5}" text-anchor="end">${v}</text>`; });
+  days.forEach((x,k)=>{
+    const cx = l + cw*k + (cw-bw)/2;
+    if (x.n){
+      s += `<rect x="${cx}" y="${y(x.n)}" width="${bw}" height="${y(0)-y(x.n)}" rx="3" fill="var(--lv-none)"/>`;
+      s += `<rect x="${cx}" y="${y(x.ok)}" width="${bw}" height="${y(0)-y(x.ok)}" rx="3" fill="var(--ok)"/>`;
+      s += `<rect x="${cx}" y="${y(x.fast)}" width="${bw}" height="${y(0)-y(x.fast)}" rx="3" fill="var(--gold)"/>`;
+      s += `<text x="${cx+bw/2}" y="${y(x.n)-4}" text-anchor="middle">${Math.round(x.ok/x.n*100)}%</text>`;
+    }
+    if (k%2===0 || k===13) s += `<text x="${cx+bw/2}" y="${H-8}" text-anchor="middle">${x.m}/${x.dd}</text>`;
+  });
+  s += `</svg>`;
+  return `<div class="chart-wrap">${s}</div><div class="legend"><span><i style="background:var(--gold)"></i>即答</span><span><i style="background:var(--ok)"></i>せいかい</span><span><i style="background:var(--lv-none)"></i>まちがい</span><span>％＝せいかい率</span></div>`;
+}
+let resetArm = false;
+function settingsHTML(){
+  const st = S.settings;
+  const sync = {cloud:"記録はクラウドにも保存されています（ほかの端末で開いても続きから）。", readonly:"この画面からはクラウドに保存できないため、この端末だけに保存しています。", error:"クラウド保存に失敗したため、この端末に保存しています。", local:"記録はこの端末（ブラウザ）に保存されています。"}[syncState];
+  return `<div class="set">
+    <section class="panel">
+      <h2>練習のせってい</h2>
+      <div class="optrow"><label>即答の秒数</label><div class="chips" id="fastChips">${[2,3,4,5].map(n=>`<button class="chip" data-fast="${n}" aria-pressed="${st.fastSec===n}">${n}秒</button>`).join("")}</div></div>
+      <div class="optrow"><label>国旗</label><div class="chips">${FLAG_OK ? `<button class="chip" data-set="flags" aria-pressed="${st.flags}">${st.flags?"表示する":"表示しない"}</button>` : `<span class="status">この端末では国旗の絵文字が表示できません</span>`}</div></div>
+      <div class="optrow"><label>ふりがな</label><div class="chips"><button class="chip" data-set="ruby" aria-pressed="${st.ruby}">${st.ruby?"表示する":"表示しない"}</button></div></div>
+      <div class="optrow"><label>音</label><div class="chips"><button class="chip" data-set="sound" aria-pressed="${st.sound}">${st.sound?"ならす":"ならさない"}</button></div></div>
+    </section>
+    <section class="panel">
+      <h2>記録のほぞん</h2>
+      <p class="note">${sync}</p>
+      <p class="note">バックアップ：下の文字をコピーしておくと、あとで「読みこむ」で記録をもどせます。</p>
+      <textarea id="backup" spellcheck="false">${esc(JSON.stringify(S))}</textarea>
+      <div class="actions"><button class="btn ghost" id="copyBtn">コピー</button><button class="btn ghost" id="importBtn">読みこむ</button></div>
+    </section>
+    <section class="panel">
+      <h2>記録をリセット</h2>
+      <p class="note">すべての回答記録・ポイント・記録を消して、最初からやり直します。元にはもどせません。</p>
+      <button class="btn ${resetArm?"danger":"ghost"}" id="resetBtn">${resetArm?"本当に消す（もう一度おす）":"記録をリセットする"}</button>
+    </section>
+  </div>`;
+}
+
+// ---------- events ----------
+document.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.view) { if (quiz) quitQuiz(); resetArm=false; view = t.dataset.view; render(); return; }
+  if (t.dataset.mode) { startQuiz(t.dataset.mode); return; }
+  if (t.dataset.lv) { S.settings.lv = +t.dataset.lv; save(); render(); return; }
+  if (t.dataset.reg !== undefined) {
+    if (t.dataset.reg === "all") S.settings.regions = [];
+    else { const k = +t.dataset.reg, r = S.settings.regions; S.settings.regions = r.includes(k) ? r.filter(x=>x!==k) : [...r,k].sort(); if (S.settings.regions.length===REG.length) S.settings.regions=[]; }
+    save(); render(); return;
+  }
+  if (t.dataset.cnt) { S.settings.count = +t.dataset.cnt; save(); render(); return; }
+  if (t.dataset.k !== undefined) { answer(+t.dataset.k); return; }
+  if (t.id === "nextBtn") { next(); return; }
+  if (t.id === "quit") { quitQuiz(); return; }
+  if (t.dataset.act) { const a = t.dataset.act; if (a==="retry") startQuiz("retry"); else if (a==="again") startQuiz(result.mode==="retry"?"mix":result.mode); else { view="home"; render(); } return; }
+  if (t.dataset.tile !== undefined) {
+    const i = +t.dataset.tile;
+    if (view === "home") { selTile = i; view = "stats"; render(); const el = $("#detail"); if (el) el.scrollIntoView({block:"center"}); return; }
+    selTile = selTile===i ? null : i; const y = window.scrollY; render(); window.scrollTo(0,y); return;
+  }
+  if (t.dataset.fast) { S.settings.fastSec = +t.dataset.fast; save(); render(); return; }
+  if (t.dataset.set) { const k = t.dataset.set; S.settings[k] = !S.settings[k]; save(); applySettings(); render(); return; }
+  if (t.id === "copyBtn") {
+    const ta = $("#backup");
+    const fallback = () => { ta.focus(); ta.select(); toast("選択しました。コピーしてください"); };
+    try { navigator.clipboard.writeText(ta.value).then(()=>toast("コピーしました"), fallback); } catch(err) { fallback(); }
+    return;
+  }
+  if (t.id === "importBtn") {
+    try { const o = JSON.parse($("#backup").value); if (!o || typeof o.cards !== "object") throw 0; S = normalize(o); save(); if (db) pushRemote(); applySettings(); toast("読みこみました"); render(); }
+    catch(err) { toast("読みこめませんでした。文字がまちがっていないか確認してください"); }
+    return;
+  }
+  if (t.id === "resetBtn") {
+    if (!resetArm) { resetArm = true; render(); return; }
+    const keep = S.settings; S = fresh(); S.settings = keep; resetArm = false; save(); if (db) pushRemote(); toast("リセットしました"); render(); return;
+  }
+});
+document.addEventListener("keydown", e => {
+  if (view !== "quiz" || !quiz || e.repeat) return;
+  const n = "1234".indexOf(e.key);
+  if (!quiz.locked && n >= 0) { e.preventDefault(); answer(n); }
+  else if (quiz.locked && (e.key==="Enter"||e.key===" ") && $("#nextBtn")) { e.preventDefault(); next(); }
+});
+
+applySettings();
+render();
+</script>
