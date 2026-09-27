@@ -275,7 +275,11 @@ const DIFF = P.map((p,i)=>i).filter(i => i===0 || stem(P[i][0]) !== stem(P[i][2]
 const MEMO = {12:"東京都の都庁は新宿区にあります。", 10:"さいたま市はひらがなで書きます。", 23:"「津」は日本でいちばん短い名前の市。", 46:"沖縄市もあるけど、県庁所在地は那覇市。"};
 const LV_NAME = ["にがて","れんしゅう中","もうすこし","あと一歩","即答マスター"];
 const MASTER = 4;
-const RANKS = [[0,"ちずのたまご"],[150,"たんけんたい"],[400,"けんちょうハンター"],[800,"ちずはかせ"],[1500,"にっぽん名人"],[2500,"けんちょう王"],[4000,"でんせつの即答王"]];
+// ランクは全20段階。上に行くほど次までのポイントが多くなる
+const RANKS = [[0,"ちずのたまご"],[100,"ちずのひよこ"],[250,"たんけんたい"],[450,"たびのみならい"],[700,"けんちょうハンター"],
+  [1000,"ちずよみ名人"],[1350,"にっぽんたんてい"],[1750,"ちずはかせ"],[2200,"けんちょうはかせ"],[2700,"にっぽん名人"],
+  [3300,"地方チャンピオン"],[4000,"即答ファイター"],[4800,"即答エース"],[5700,"けんちょうマスター"],[6700,"にっぽんマスター"],
+  [7800,"ちずの大王"],[9000,"けんちょう王"],[10500,"即答キング"],[12200,"でんせつのちずはかせ"],[15000,"でんせつの即答王"]];
 const MISSIONS = [
   {t:"20問こたえよう", need:20, v:d=>d.n},
   {t:"即答を10回きめよう", need:10, v:d=>d.fast},
@@ -639,7 +643,7 @@ function homeHTML(){
       <div class="lbl"><b class="num">${m}</b><span>/ 94 マスター</span></div>
     </div>
     <div class="hero-stats">
-      <div class="rank"><span class="badge num">ランク ${rk.k+1}</span><span class="title">${rk.name}</span></div>
+      <div class="rank"><span class="badge num">ランク ${rk.k+1} / ${RANKS.length}</span><span class="title">${rk.name}</span></div>
       <div class="xpbar"><i style="width:${rk.pct*100}%"></i></div>
       <div class="xpnote num">${S.xp} ポイント${rk.next ? `・あと ${rk.next[0]-S.xp} で「${rk.next[1]}」` : "・さいこうランク！"}</div>
       <div class="row">
@@ -731,7 +735,7 @@ function resultHTML(){
   const msg = ta ? (r.record ? "新記録！すごい！" : `さいこう記録は ${S.best.ta}問。もう一回ちょうせん！`)
     : rate===1 && r.fast===r.n ? "パーフェクト即答！すごい！" : rate===1 ? "ぜんぶせいかい！つぎは即答をねらおう" : rate>=.8 ? "よくできました！" : rate>=.5 ? "あと少し！まちがえた所をもう一度" : "くりかえすと、ぜったい覚えられるよ";
   const banners = [];
-  if (rk.k > r.rank0) banners.push(`<div class="banner pop"><b>ランクアップ！「${rk.name}」になった！</b><span>ランク ${rk.k+1} にあがりました</span></div>`);
+  if (rk.k > r.rank0) banners.push(`<div class="banner pop"><b>ランクアップ！「${rk.name}」になった！</b><span>ランク ${rk.k+1} / ${RANKS.length} にあがりました</span></div>`);
   if (r.record) banners.push(`<div class="banner pop"><b>タイムアタック新記録 ${r.ok}問！</b><span>まえの記録は ${r.prevBest}問</span></div>`);
   if (r.newConq.length) banners.push(`<div class="banner pop"><b>${r.newConq.map(i=>esc(P[i][0])).join("・")} を制覇！</b><span>にっぽん制覇マップが金色になったよ（${conqCount()} / 47）</span></div>`);
   r.missions.forEach(t => banners.push(`<div class="banner"><b>ミッションクリア！</b><span>${esc(t)}（+${MISSION_XP}ポイント）</span></div>`));
