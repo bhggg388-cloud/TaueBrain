@@ -1,0 +1,707 @@
+<title>けんちょう即答ドリル</title>
+<meta name="description" content="47都道府県と県庁所在地を、両方向から即答できるようにする練習アプリ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<style>
+:root{
+  --bg:#EEF3F1; --surface:#FFFFFF; --surface-2:#F6F9F8; --ink:#1D2B36; --muted:#5E6E78; --line:#D3DDD9;
+  --accent:#2F4FA8; --accent-ink:#FFFFFF; --accent-soft:#E3E9F8;
+  --gold:#E29A12; --gold-soft:#FFF1D2; --ok:#2B8A55; --ok-soft:#DFF3E6; --ng:#CF4036; --ng-soft:#FBE3E0;
+  --lv-none:#DCE3E0; --lv0:#CF4036; --lv1:#EE9A4E; --lv2:#E4C53E; --lv3:#7CC06A; --lv4:#E29A12;
+  --r1:#4F7FC9; --r2:#E07B39; --r3:#3E9A63; --r4:#8B5CB8; --r5:#2A9A9A; --r6:#D0506E;
+  --shadow:0 1px 0 rgba(29,43,54,.06),0 6px 18px rgba(29,43,54,.07);
+  --font:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#11191E; --surface:#1A252C; --surface-2:#162026; --ink:#E6EEF0; --muted:#9AABB3; --line:#2C3A42;
+    --accent:#8EA7F0; --accent-ink:#0E1620; --accent-soft:#233154;
+    --gold:#F2B840; --gold-soft:#3B2F14; --ok:#5CC08A; --ok-soft:#173326; --ng:#F0736A; --ng-soft:#3A2224;
+    --lv-none:#2C3A42; --lv0:#F0736A; --lv1:#F0A45E; --lv2:#E6CD55; --lv3:#85C977; --lv4:#F2B840;
+    --r1:#7FA6E6; --r2:#F09A5F; --r3:#67C08A; --r4:#B38BE0; --r5:#5CC6C6; --r6:#EC7E98;
+    --shadow:0 1px 0 rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#11191E; --surface:#1A252C; --surface-2:#162026; --ink:#E6EEF0; --muted:#9AABB3; --line:#2C3A42;
+  --accent:#8EA7F0; --accent-ink:#0E1620; --accent-soft:#233154;
+  --gold:#F2B840; --gold-soft:#3B2F14; --ok:#5CC08A; --ok-soft:#173326; --ng:#F0736A; --ng-soft:#3A2224;
+  --lv-none:#2C3A42; --lv0:#F0736A; --lv1:#F0A45E; --lv2:#E6CD55; --lv3:#85C977; --lv4:#F2B840;
+  --r1:#7FA6E6; --r2:#F09A5F; --r3:#67C08A; --r4:#B38BE0; --r5:#5CC6C6; --r6:#EC7E98;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;font-weight:500;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:16px 48px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.3}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+rt{font-size:.42em;font-weight:700;color:var(--muted);letter-spacing:.02em}
+body.no-ruby rt{display:none}
+
+/* header / tabs */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;margin-bottom:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.brand h1{font-size:22px;font-weight:900;letter-spacing:.02em}
+.brand small{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+.tabs button{white-space:nowrap;border:0;background:transparent;border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+
+/* home */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:var(--surface);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.ring{width:108px;height:108px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .lbl{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1.1}
+.ring .lbl b{font-size:28px;font-weight:900}
+.ring .lbl span{font-size:11px;color:var(--muted)}
+.hero-stats{display:grid;gap:8px}
+.hero-stats .row{display:flex;gap:16px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column}
+.stat b{font-size:22px;font-weight:900;line-height:1.2}
+.stat span{font-size:12px;color:var(--muted)}
+.dirbar{display:grid;gap:4px;font-size:12px;color:var(--muted)}
+.stack{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--lv-none)}
+.stack i{display:block;height:100%}
+.section-title{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin:22px 4px 10px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:2px;min-height:92px;transition:transform .08s,border-color .15s}
+.mode:hover{border-color:var(--accent)}
+.mode:active{transform:scale(.98)}
+.mode b{font-size:17px;font-weight:900}
+.mode span{font-size:12.5px;color:var(--muted);line-height:1.45}
+.mode .tag{background:var(--accent-soft);color:var(--accent);align-self:flex-start;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-bottom:4px}
+.mode.primary{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.mode.primary span{color:inherit;opacity:.85}
+.mode.weak{border-color:var(--ng);background:var(--ng-soft)}
+.mode.weak .tag{background:var(--ng);color:#fff}
+.mode[disabled]{opacity:.5;cursor:not-allowed}
+.opts{display:grid;gap:12px;background:var(--surface);border-radius:16px;padding:14px;border:1px solid var(--line)}
+.optrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.optrow>label{font-size:13px;color:var(--muted);min-width:4.5em;font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--surface-2);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.tip{margin-top:16px;font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:10px 12px;border:1px dashed var(--line)}
+
+/* quiz */
+.qtop{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.qtop .quit{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
+.prog{flex:1;height:8px;border-radius:6px;background:var(--lv-none);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.qcount{font-size:13px;color:var(--muted);font-weight:700}
+.card{background:var(--surface);border-radius:22px;box-shadow:var(--shadow);padding:22px 18px 18px;text-align:center;position:relative;overflow:hidden}
+.card .region{position:absolute;top:0;left:0;right:0;height:6px}
+.qlabel{font-size:14px;color:var(--muted);font-weight:700;display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap}
+.qlabel .again{background:var(--ng);color:#fff;border-radius:999px;padding:0 8px;font-size:12px}
+.qword{font-size:clamp(40px,11vw,64px);font-weight:900;line-height:1.5;margin:6px 0 2px;letter-spacing:.04em}
+.qsub{font-size:15px;color:var(--muted)}
+.timer{height:10px;border-radius:6px;background:var(--lv-none);overflow:hidden;margin:16px 0 4px;position:relative}
+.timer i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);width:100%;transform-origin:left;border-radius:6px}
+.timer.slow i{background:var(--muted)}
+.timer-note{font-size:12px;color:var(--muted);height:18px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.choice{border:2.5px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 6px;font-size:clamp(20px,5.6vw,28px);font-weight:900;min-height:84px;line-height:1.6;transition:transform .06s}
+.choice:active{transform:scale(.97)}
+.choice.correct{border-color:var(--ok);background:var(--ok-soft)}
+.choice.wrong{border-color:var(--ng);background:var(--ng-soft)}
+.choice.dim{opacity:.45}
+.choice[disabled]{cursor:default}
+.fb{margin-top:14px;border-radius:16px;padding:12px 14px;text-align:left;display:grid;gap:6px}
+.fb.ok{background:var(--ok-soft)}
+.fb.fast{background:var(--gold-soft)}
+.fb.ng{background:var(--ng-soft)}
+.fb .head{font-size:20px;font-weight:900}
+.fb.ok .head{color:var(--ok)} .fb.fast .head{color:var(--gold)} .fb.ng .head{color:var(--ng)}
+.fb .body{font-size:16px}
+.fb .memo{font-size:13px;color:var(--muted)}
+.btn{border:0;border-radius:14px;padding:12px 18px;font-weight:900;font-size:17px;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+.btn.danger{background:var(--ng);color:#fff}
+.btn.block{width:100%}
+
+/* result */
+.result{display:grid;gap:14px}
+.score{background:var(--surface);border-radius:22px;box-shadow:var(--shadow);padding:20px;text-align:center;display:grid;gap:6px}
+.score .big{font-size:56px;font-weight:900;line-height:1.1}
+.score .big small{font-size:22px;color:var(--muted)}
+.score .msg{font-size:18px;font-weight:700}
+.score .row{display:flex;justify-content:center;gap:22px;flex-wrap:wrap}
+.list{background:var(--surface);border-radius:16px;border:1px solid var(--line);overflow:hidden}
+.list .item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid var(--line)}
+.list .item:first-child{border-top:0}
+.list .item .ic{width:26px;height:26px;border-radius:50%;display:grid;place-content:center;font-weight:900;font-size:14px}
+.ic.ok{background:var(--ok-soft);color:var(--ok)} .ic.ng{background:var(--ng-soft);color:var(--ng)} .ic.fast{background:var(--gold-soft);color:var(--gold)}
+.item .main{font-weight:700}
+.item .sub{font-size:12px;color:var(--muted)}
+.item .ms{font-size:13px;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.actions .btn{flex:1 1 180px}
+
+/* records */
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.panel{background:var(--surface);border-radius:18px;padding:16px;box-shadow:var(--shadow);display:grid;gap:12px}
+.panel h2{font-size:17px;font-weight:900}
+.panel p.note{margin:0;font-size:13px;color:var(--muted)}
+.regions{display:grid;gap:14px}
+.reg h3{font-size:13px;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.reg h3 .dot{width:10px;height:10px;border-radius:50%}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.tile{border:1.5px solid var(--line);background:var(--surface-2);border-radius:10px;padding:6px 8px;text-align:left;display:grid;gap:3px}
+.tile .nm{font-size:14px;font-weight:900;line-height:1.2}
+.tile .cp{font-size:11px;color:var(--muted);line-height:1.2}
+.tile .bars{display:grid;grid-template-columns:auto minmax(20px,1fr);white-space:nowrap;gap:2px 5px;align-items:center;font-size:10px;color:var(--muted)}
+.tile .bars i{height:6px;border-radius:3px;display:block}
+.tile.sel{border-color:var(--accent)}
+.detail{background:var(--accent-soft);border-radius:12px;padding:12px 14px;display:grid;gap:6px;font-size:14px}
+.detail b{font-size:18px}
+.detail table{border-collapse:collapse;font-size:13px}
+.detail td,.detail th{padding:3px 10px 3px 0;text-align:left}
+.detail th{color:var(--muted);font-weight:700}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-family:var(--font);font-size:15px}
+.chart-wrap{overflow-x:auto}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:10px}
+
+/* settings */
+.set{display:grid;gap:14px}
+.set .optrow{justify-content:space-between}
+textarea{width:100%;min-height:90px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);font:12px/1.4 ui-monospace,Menlo,monospace;padding:8px}
+.status{font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-weight:700;font-size:14px;z-index:9}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+.pop{animation:pop .25s ease-out}
+@media (max-width:420px){
+  .hero{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .hero-stats .row{justify-content:center}
+  .dirbar{width:100%;text-align:left}
+  .modes{grid-template-columns:1fr}
+  .mode{min-height:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>けんちょう即答ドリル</h1><small>47都道府県 × 2ほうこう</small></div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-view="home" aria-selected="true">れんしゅう</button>
+      <button role="tab" data-view="stats" aria-selected="false">きろく</button>
+      <button role="tab" data-view="settings" aria-selected="false">せってい</button>
+    </nav>
+  </header>
+  <main id="app"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+// ---------- data ----------
+// [都道府県, よみ, 県庁所在地, よみ, 地方]
+const P = [
+["北海道","ほっかいどう","札幌市","さっぽろし",0],["青森県","あおもりけん","青森市","あおもりし",0],["岩手県","いわてけん","盛岡市","もりおかし",0],["宮城県","みやぎけん","仙台市","せんだいし",0],["秋田県","あきたけん","秋田市","あきたし",0],["山形県","やまがたけん","山形市","やまがたし",0],["福島県","ふくしまけん","福島市","ふくしまし",0],
+["茨城県","いばらきけん","水戸市","みとし",1],["栃木県","とちぎけん","宇都宮市","うつのみやし",1],["群馬県","ぐんまけん","前橋市","まえばしし",1],["埼玉県","さいたまけん","さいたま市","さいたまし",1],["千葉県","ちばけん","千葉市","ちばし",1],["東京都","とうきょうと","東京","とうきょう",1],["神奈川県","かながわけん","横浜市","よこはまし",1],
+["新潟県","にいがたけん","新潟市","にいがたし",2],["富山県","とやまけん","富山市","とやまし",2],["石川県","いしかわけん","金沢市","かなざわし",2],["福井県","ふくいけん","福井市","ふくいし",2],["山梨県","やまなしけん","甲府市","こうふし",2],["長野県","ながのけん","長野市","ながのし",2],["岐阜県","ぎふけん","岐阜市","ぎふし",2],["静岡県","しずおかけん","静岡市","しずおかし",2],["愛知県","あいちけん","名古屋市","なごやし",2],
+["三重県","みえけん","津市","つし",3],["滋賀県","しがけん","大津市","おおつし",3],["京都府","きょうとふ","京都市","きょうとし",3],["大阪府","おおさかふ","大阪市","おおさかし",3],["兵庫県","ひょうごけん","神戸市","こうべし",3],["奈良県","ならけん","奈良市","ならし",3],["和歌山県","わかやまけん","和歌山市","わかやまし",3],
+["鳥取県","とっとりけん","鳥取市","とっとりし",4],["島根県","しまねけん","松江市","まつえし",4],["岡山県","おかやまけん","岡山市","おかやまし",4],["広島県","ひろしまけん","広島市","ひろしまし",4],["山口県","やまぐちけん","山口市","やまぐちし",4],["徳島県","とくしまけん","徳島市","とくしまし",4],["香川県","かがわけん","高松市","たかまつし",4],["愛媛県","えひめけん","松山市","まつやまし",4],["高知県","こうちけん","高知市","こうちし",4],
+["福岡県","ふくおかけん","福岡市","ふくおかし",5],["佐賀県","さがけん","佐賀市","さがし",5],["長崎県","ながさきけん","長崎市","ながさきし",5],["熊本県","くまもとけん","熊本市","くまもとし",5],["大分県","おおいたけん","大分市","おおいたし",5],["宮崎県","みやざきけん","宮崎市","みやざきし",5],["鹿児島県","かごしまけん","鹿児島市","かごしまし",5],["沖縄県","おきなわけん","那覇市","なはし",5]
+];
+const REG = ["北海道・東北","関東","中部","近畿","中国・四国","九州・沖縄"];
+const REG_COLOR = ["var(--r1)","var(--r2)","var(--r3)","var(--r4)","var(--r5)","var(--r6)"];
+const stem = s => s.replace(/(都|府|県|市)$/,"");
+// 都道府県名と県庁所在地名がちがうところ（北海道・東京都もふくむ）
+const DIFF = P.map((p,i)=>i).filter(i => i===0 || stem(P[i][0]) !== stem(P[i][2]));
+const MEMO = {12:"東京都の都庁は新宿区にあります。", 10:"さいたま市はひらがなで書きます。", 23:"「津」は日本でいちばん短い名前の市。"};
+const LV_NAME = ["にがて","れんしゅう中","もうすこし","あと一歩","即答マスター"];
+const MASTER = 4;
+
+// ---------- state ----------
+const KEY = "kencho-drill-v1";
+function fresh(){ return {v:1,total:0,updatedAt:0,cards:{},days:{},log:[],settings:{fastSec:3,count:10,ruby:true,sound:true,regions:[]}}; }
+let S = fresh();
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch(e) {}
+S.settings = Object.assign(fresh().settings, S.settings || {});
+
+let db = null, syncState = "local", writing = false, pendingWrite = false, writeTimer = null;
+function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+function save(){
+  S.updatedAt = Date.now(); saveLocal();
+  if (!db) return;
+  clearTimeout(writeTimer); writeTimer = setTimeout(pushRemote, 1500);
+}
+async function pushRemote(){
+  if (!db) return;
+  if (writing) { pendingWrite = true; return; }
+  writing = true;
+  try { await db.doc("progress/main").set(JSON.parse(JSON.stringify(S))); syncState = "cloud"; }
+  catch(e){ syncState = (e && (e.code==="invalid_argument"||e.code==="not_granted")) ? "readonly" : "error"; }
+  writing = false;
+  if (pendingWrite) { pendingWrite = false; pushRemote(); }
+}
+(async function initCloud(){
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const d = await window.claude.use("db");
+    if (!d) return;
+    db = d;
+    const snap = await db.doc("progress/main").get();
+    const remote = snap.exists ? snap.data() : null;
+    if (remote && (remote.total > S.total || (remote.total === S.total && remote.updatedAt > S.updatedAt))) {
+      if (!quiz) {
+        S = Object.assign(fresh(), JSON.parse(JSON.stringify(remote)));
+        S.settings = Object.assign(fresh().settings, S.settings || {});
+        saveLocal(); applySettings(); render();
+      }
+      syncState = "cloud";
+    } else if (S.total > 0) {
+      await pushRemote();
+    } else syncState = "cloud";
+    if (view === "settings") render();
+  } catch(e) { syncState = "error"; }
+})();
+
+// ---------- helpers ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rb = (k, y) => `<ruby>${esc(k)}<rt>${esc(y)}</rt></ruby>`;
+const prefR = i => rb(P[i][0], P[i][1]);
+const capR = i => rb(P[i][2], P[i][3]);
+const cid = (i, d) => i + d;           // d: "a" = 都道府県→県庁所在地, "b" = 県庁所在地→都道府県
+const card = id => S.cards[id] || {n:0,ok:0,ng:0,lv:0,fast:0,t:0,last:0,lastNg:0,h:""};
+const today = () => { const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+function status(c){
+  if (!c.n) return -1;
+  if (c.lv >= MASTER) return 4;
+  if (c.lv === 0) return c.ng > 0 ? 0 : 1;
+  return c.lv;
+}
+const LV_COLOR = ["var(--lv0)","var(--lv1)","var(--lv2)","var(--lv3)","var(--lv4)"];
+const stColor = s => s < 0 ? "var(--lv-none)" : LV_COLOR[s];
+function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,1800); }
+function streakDays(){
+  let n = 0; const d = new Date();
+  const k = x => x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
+  if (!S.days[k(d)]) d.setDate(d.getDate()-1);
+  while (S.days[k(d)]) { n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function weakScore(id){
+  const c = card(id);
+  if (!c.n) return 0;
+  const miss = (c.ng + 0.5) / (c.n + 1);
+  const recent = (c.h.slice(-4).match(/x/g) || []).length;
+  return (MASTER - c.lv) * 2 + miss * 6 + recent * 2 + (c.t > S.settings.fastSec*1000 ? 1 : 0);
+}
+function weakIds(){
+  const out = [];
+  for (let i=0;i<47;i++) for (const d of "ab") { const c = card(cid(i,d)); if (c.n && c.lv <= 1 && (c.ng > 0 || c.t > S.settings.fastSec*1000)) out.push(cid(i,d)); }
+  return out.sort((x,y)=>weakScore(y)-weakScore(x));
+}
+
+// ---------- sound ----------
+let ac = null;
+function beep(kind){
+  if (!S.settings.sound) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const notes = kind==="fast" ? [880,1320] : kind==="ok" ? [660,880] : [220,180];
+    notes.forEach((f,k)=>{
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = kind==="ng" ? "triangle" : "sine"; o.frequency.value = f;
+      const t0 = ac.currentTime + k*0.1;
+      g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.18,t0+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.18);
+      o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0+0.2);
+    });
+  } catch(e) {}
+}
+
+// ---------- question selection ----------
+function pool(mode){
+  const regs = S.settings.regions;
+  let idx = P.map((p,i)=>i).filter(i => !regs.length || regs.includes(P[i][4]));
+  if (mode === "diff") idx = idx.filter(i => DIFF.includes(i));
+  const dirs = mode==="a" ? ["a"] : mode==="b" ? ["b"] : ["a","b"];
+  const ids = [];
+  idx.forEach(i => dirs.forEach(d => ids.push(cid(i,d))));
+  return ids;
+}
+function weight(id){
+  const c = card(id), now = Date.now();
+  if (!c.n) return 4;
+  let w = [9,6,4,2.5,0.6][Math.min(c.lv,MASTER)];
+  if (c.lastNg && now - c.lastNg < 864e5) w *= 1.6;
+  if (c.lv >= MASTER && now - c.last > 3*864e5) w = 2.5;      // しばらく出ていないマスターはおさらい
+  return w;
+}
+function pickSession(mode, n){
+  let ids = mode === "weak" ? weakIds() : pool(mode);
+  if (mode === "weak") return shuffle(ids.slice(0, n));
+  const out = [], bag = ids.map(id => ({id, w:weight(id)}));
+  while (out.length < n && bag.length) {
+    const sum = bag.reduce((s,x)=>s+x.w,0); let r = Math.random()*sum, k = 0;
+    while (k < bag.length-1 && (r -= bag[k].w) > 0) k++;
+    out.push(bag[k].id); bag.splice(k,1);
+  }
+  return out;
+}
+function makeChoices(id){
+  const i = +id.slice(0,-1), d = id.slice(-1);
+  const same = shuffle(P.map((p,j)=>j).filter(j => j!==i && P[j][4]===P[i][4]));
+  const other = shuffle(P.map((p,j)=>j).filter(j => j!==i && P[j][4]!==P[i][4]));
+  // 同じ地方から2つ、ほかから1つ（まぎらわしくして、ちゃんと覚える）
+  const picks = [i, ...same.slice(0,2)];
+  for (const j of other) { if (picks.length >= 4) break; picks.push(j); }
+  for (const j of same.slice(2)) { if (picks.length >= 4) break; picks.push(j); }
+  return shuffle(picks).map(j => ({j, d}));
+}
+
+// ---------- quiz ----------
+let view = "home", quiz = null, result = null, selTile = null;
+function startQuiz(mode){
+  const n = mode === "retry" ? 0 : S.settings.count;
+  const ids = mode === "retry" ? shuffle(result.wrong.slice()) : pickSession(mode, n);
+  if (!ids.length) { toast("問題がありません"); return; }
+  quiz = {mode, queue: ids.map(id=>({id, again:false})), pos:0, base: ids.length, answers:[], retried:new Set(), t0:0, locked:false, timerRaf:0, advanceT:0};
+  result = null; view = "quiz"; setTab(view); window.scrollTo(0,0); askCurrent();
+}
+function askCurrent(){
+  const q = quiz.queue[quiz.pos];
+  q.choices = q.choices || makeChoices(q.id);
+  quiz.locked = false; renderQuiz();
+  quiz.t0 = performance.now();
+  const bar = $("#timer i"), wrap = $("#timer"), note = $("#timerNote"), lim = S.settings.fastSec*1000;
+  const tick = () => {
+    if (!quiz || quiz.locked) return;
+    const e = performance.now() - quiz.t0, f = Math.max(0, 1 - e/lim);
+    bar.style.transform = `scaleX(${f})`;
+    if (f === 0 && !wrap.classList.contains("slow")) { wrap.classList.add("slow"); note.textContent = "ゆっくりでもOK。思い出してみよう"; }
+    quiz.timerRaf = requestAnimationFrame(tick);
+  };
+  quiz.timerRaf = requestAnimationFrame(tick);
+}
+function answer(k){
+  if (!quiz || quiz.locked) return;
+  quiz.locked = true; cancelAnimationFrame(quiz.timerRaf);
+  const ms = Math.round(performance.now() - quiz.t0);
+  const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1);
+  const pick = q.choices[k].j, ok = pick === i, fast = ok && ms <= S.settings.fastSec*1000;
+  // 記録
+  const c = Object.assign({}, card(q.id));
+  const before = status(c);
+  c.n++; c.last = Date.now(); c.t = c.t ? Math.round(c.t*0.6 + ms*0.4) : ms;
+  if (ok) { c.ok++; if (fast) { c.fast = (c.fast||0)+1; c.lv = Math.min(MASTER, c.lv+1); } else c.lv = c.lv < 2 ? c.lv+1 : c.lv; }
+  else { c.ng++; c.lv = 0; c.lastNg = Date.now(); }
+  c.h = (c.h + (fast ? "f" : ok ? "o" : "x")).slice(-8);
+  S.cards[q.id] = c; S.total++;
+  const day = S.days[today()] || {n:0,ok:0,fast:0};
+  day.n++; if (ok) day.ok++; if (fast) day.fast++; S.days[today()] = day;
+  S.log.push({id:q.id, pick, ok:ok?1:0, ms, ts:Date.now()}); if (S.log.length > 300) S.log.splice(0, S.log.length-300);
+  save();
+  quiz.answers.push({id:q.id, pick, ok, fast, ms, again:q.again, before, after:status(c)});
+  // まちがえたら3問後にもう一度（1回だけ）
+  if (!ok && !quiz.retried.has(q.id)) {
+    quiz.retried.add(q.id);
+    quiz.queue.splice(Math.min(quiz.pos+3, quiz.queue.length), 0, {id:q.id, again:true});
+  }
+  beep(fast ? "fast" : ok ? "ok" : "ng");
+  renderFeedback(k, ok, fast, ms);
+  if (ok) quiz.advanceT = setTimeout(next, fast ? 700 : 1100);
+}
+function next(){
+  if (!quiz) return;
+  clearTimeout(quiz.advanceT);
+  quiz.pos++;
+  if (quiz.pos >= quiz.queue.length) return finish();
+  askCurrent();
+}
+function finish(){
+  const a = quiz.answers;
+  const firsts = a.filter(x => !x.again);
+  result = {
+    mode: quiz.mode, answers: a,
+    n: firsts.length, ok: firsts.filter(x=>x.ok).length, fast: firsts.filter(x=>x.fast).length,
+    wrong: [...new Set(a.filter(x=>!x.ok).map(x=>x.id))],
+    mastered: [...new Set(a.filter(x=>x.after===4 && x.before!==4).map(x=>x.id))]
+  };
+  quiz = null; view = "result"; render();
+}
+function quitQuiz(){ if (quiz){ cancelAnimationFrame(quiz.timerRaf); clearTimeout(quiz.advanceT); } if (quiz && quiz.answers.length) finish(); else { quiz=null; view="home"; render(); } }
+
+// ---------- render ----------
+function applySettings(){ document.body.classList.toggle("no-ruby", !S.settings.ruby); }
+function setTab(v){ view = v; document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === (v==="quiz"||v==="result"?"home":v)))); }
+function render(){
+  setTab(view);
+  const app = $("#app");
+  if (view === "home") app.innerHTML = homeHTML();
+  else if (view === "stats") app.innerHTML = statsHTML();
+  else if (view === "settings") app.innerHTML = settingsHTML();
+  else if (view === "result") app.innerHTML = resultHTML();
+  else if (view === "quiz") renderQuiz();
+  window.scrollTo(0,0);
+}
+function counts(dir){
+  const c = [0,0,0,0,0], none = {v:0};
+  for (let i=0;i<47;i++) for (const d of dir) { const s = status(card(cid(i,d))); if (s<0) none.v++; else c[s]++; }
+  return {c, none:none.v};
+}
+function stackHTML(dir){
+  const {c, none} = counts(dir), tot = 47*dir.length;
+  return `<div class="stack">${[4,3,2,1,0].map(s => c[s] ? `<i style="width:${c[s]/tot*100}%;background:${LV_COLOR[s]}" title="${LV_NAME[s]} ${c[s]}"></i>` : "").join("")}</div>`;
+}
+function homeHTML(){
+  const all = counts("ab"), m = all.c[4], pct = m/94;
+  const td = S.days[today()] || {n:0,ok:0,fast:0};
+  const weak = weakIds().length;
+  const R = 46, L = 2*Math.PI*R;
+  const regs = S.settings.regions;
+  const modeBtn = (mode, tag, title, desc, cls="") => `<button class="mode ${cls}" data-mode="${mode}" ${mode==="weak"&&!weak?"disabled":""}>${tag?`<span class="tag">${tag}</span>`:""}<b>${title}</b><span>${desc}</span></button>`;
+  return `
+  <section class="hero">
+    <div class="ring" aria-label="即答マスター ${m} / 94">
+      <svg viewBox="0 0 108 108"><circle cx="54" cy="54" r="${R}" fill="none" stroke="var(--lv-none)" stroke-width="10"/>
+      <circle cx="54" cy="54" r="${R}" fill="none" stroke="var(--gold)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${L*pct} ${L}"/></svg>
+      <div class="lbl"><b class="num">${m}</b><span>/ 94 マスター</span></div>
+    </div>
+    <div class="hero-stats">
+      <div class="row">
+        <div class="stat"><b class="num">${td.n}</b><span>きょうの問題</span></div>
+        <div class="stat"><b class="num">${td.fast}</b><span>きょうの即答</span></div>
+        <div class="stat"><b class="num">${streakDays()}<small style="font-size:13px">日</small></b><span>れんぞく</span></div>
+      </div>
+      <div class="dirbar">都道府県 → 県庁所在地 ${stackHTML("a")}</div>
+      <div class="dirbar">県庁所在地 → 都道府県 ${stackHTML("b")}</div>
+    </div>
+  </section>
+
+  <div class="section-title">れんしゅうをえらぶ</div>
+  <div class="modes">
+    ${modeBtn("mix","","おまかせ","両方向からまぜて出題。にがてな問題とまだの問題が多めに出ます","primary")}
+    ${modeBtn("weak",weak?`${weak}問`:"まだなし","にがて特訓", weak ? "まちがえた・時間がかかった問題だけを集中練習" : "まちがえた問題がここにたまります","weak")}
+    ${modeBtn("diff","18","名前がちがう県","北海道→札幌市、愛知県→名古屋市 など、まちがえやすいところ")}
+    ${modeBtn("a","","都道府県 → 県庁所在地","「宮城県の県庁所在地は？」")}
+    ${modeBtn("b","","県庁所在地 → 都道府県","「仙台市があるのは何県？」")}
+  </div>
+
+  <div class="section-title">はんい</div>
+  <div class="opts">
+    <div class="optrow"><label>地方</label><div class="chips" id="regChips">
+      <button class="chip" data-reg="all" aria-pressed="${!regs.length}">ぜんぶ</button>
+      ${REG.map((r,k)=>`<button class="chip" data-reg="${k}" aria-pressed="${regs.includes(k)}"><span class="dot" style="background:${REG_COLOR[k]}"></span>${r}</button>`).join("")}
+    </div></div>
+    <div class="optrow"><label>問題数</label><div class="chips" id="cntChips">
+      ${[5,10,20].map(n=>`<button class="chip" data-cnt="${n}" aria-pressed="${S.settings.count===n}">${n}問</button>`).join("")}
+    </div></div>
+  </div>
+  <p class="tip">⏱ ${S.settings.fastSec}秒いないに正解すると「即答」。同じ問題で即答を${MASTER}回つづけると<b>即答マスター</b>になります。まちがえた問題は3問あとにもう一度出ます。</p>`;
+}
+function renderQuiz(){
+  const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1);
+  const total = quiz.queue.length;
+  const qword = d==="a" ? prefR(i) : capR(i);
+  const ask = d==="a" ? "の県庁所在地は？" : "がある都道府県は？";
+  const lab = d==="a" ? "都道府県 → 県庁所在地" : "県庁所在地 → 都道府県";
+  const c = card(q.id), st = status(c);
+  $("#app").innerHTML = `
+  <div class="qtop">
+    <button class="quit" id="quit">やめる</button>
+    <div class="prog"><i style="width:${quiz.pos/total*100}%"></i></div>
+    <span class="qcount num">${quiz.pos+1} / ${total}</span>
+  </div>
+  <section class="card">
+    <div class="region" style="background:${REG_COLOR[P[i][4]]}"></div>
+    <div class="qlabel"><span>${lab}</span><span>・${REG[P[i][4]]}</span>${q.again?'<span class="again">もういちど</span>':""}${st===0&&!q.again?'<span class="again">にがて</span>':""}</div>
+    <div class="qword pop">${qword}</div>
+    <div class="qsub">${ask}</div>
+    <div class="timer" id="timer"><i></i></div>
+    <div class="timer-note" id="timerNote">${S.settings.fastSec}秒いないなら即答！</div>
+  </section>
+  <div class="choices" id="choices">
+    ${q.choices.map((ch,k)=>`<button class="choice" data-k="${k}">${d==="a" ? capR(ch.j) : prefR(ch.j)}</button>`).join("")}
+  </div>
+  <div id="fb"></div>`;
+}
+function renderFeedback(k, ok, fast, ms){
+  const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1);
+  document.querySelectorAll(".choice").forEach((b,kk)=>{
+    b.disabled = true;
+    const j = q.choices[kk].j;
+    if (j === i) b.classList.add("correct"); else if (kk === k) b.classList.add("wrong"); else b.classList.add("dim");
+  });
+  const sec = (ms/1000).toFixed(1);
+  const pair = `${prefR(i)} ― ${capR(i)}`;
+  const wrongPick = q.choices[k].j;
+  let html;
+  if (ok) {
+    html = `<div class="fb ${fast?"fast":"ok"} pop"><div class="head">${fast?"◎ 即答！":"○ せいかい"} <span class="num" style="font-size:14px;font-weight:700">${sec}秒</span></div>${!fast?`<div class="memo">つぎは${S.settings.fastSec}秒いないをめざそう</div>`:""}</div>`;
+  } else {
+    const wrongNote = d==="a" ? `${capR(wrongPick)}は${prefR(wrongPick)}の県庁所在地` : `${prefR(wrongPick)}の県庁所在地は${capR(wrongPick)}`;
+    html = `<div class="fb ng pop"><div class="head">× ざんねん</div>
+      <div class="body">こたえ：<b>${pair}</b></div>
+      <div class="memo">${wrongNote}${MEMO[i]?`／${MEMO[i]}`:""}　この問題は少しあとにもう一度出ます。</div>
+      <button class="btn block" id="nextBtn">つぎへ</button></div>`;
+  }
+  $("#fb").innerHTML = html;
+  const nb = $("#nextBtn"); if (nb) nb.focus();
+}
+function resultHTML(){
+  const r = result, rate = r.n ? r.ok/r.n : 0;
+  const msg = rate===1 && r.fast===r.n ? "パーフェクト即答！すごい！" : rate===1 ? "ぜんぶせいかい！つぎは即答をねらおう" : rate>=.8 ? "よくできました！" : rate>=.5 ? "あと少し！まちがえた所をもう一度" : "くりかえすと、ぜったい覚えられるよ";
+  const items = r.answers.map(a => {
+    const i = +a.id.slice(0,-1), d = a.id.slice(-1);
+    const q = d==="a" ? `${prefR(i)} → ${capR(i)}` : `${capR(i)} → ${prefR(i)}`;
+    const sub = a.ok ? (a.again ? "もういちど：せいかい" : "") : `えらんだ：${d==="a" ? capR(a.pick) : prefR(a.pick)}`;
+    return `<div class="item"><span class="ic ${a.fast?"fast":a.ok?"ok":"ng"}">${a.fast?"◎":a.ok?"○":"×"}</span><div><div class="main">${q}</div>${sub?`<div class="sub">${sub}</div>`:""}</div><span class="ms num">${(a.ms/1000).toFixed(1)}秒</span></div>`;
+  }).join("");
+  return `<div class="result">
+    <section class="score">
+      <div class="big num">${r.ok}<small> / ${r.n}</small></div>
+      <div class="msg">${msg}</div>
+      <div class="row"><div class="stat"><b class="num" style="color:var(--gold)">${r.fast}</b><span>即答</span></div><div class="stat"><b class="num" style="color:var(--ng)">${r.wrong.length}</b><span>まちがい</span></div><div class="stat"><b class="num">${r.mastered.length}</b><span>あたらしくマスター</span></div></div>
+    </section>
+    <div class="actions">
+      ${r.wrong.length ? `<button class="btn danger" data-act="retry">まちがえた${r.wrong.length}問をもう一度</button>` : ""}
+      <button class="btn" data-act="again">つづけてれんしゅう</button>
+      <button class="btn ghost" data-act="home">もどる</button>
+    </div>
+    <div class="list">${items}</div>
+  </div>`;
+}
+function statsHTML(){
+  const all = counts("ab");
+  const legend = `<div class="legend"><span><i style="background:var(--lv-none)"></i>まだ</span>${[0,1,2,3,4].map(s=>`<span><i style="background:${LV_COLOR[s]}"></i>${LV_NAME[s]}</span>`).join("")}</div>`;
+  const tiles = REG.map((r,k)=>`<div class="reg"><h3><span class="dot" style="background:${REG_COLOR[k]}"></span>${r}</h3><div class="tiles">${
+    P.map((p,i)=>i).filter(i=>P[i][4]===k).map(i=>{
+      const a = status(card(cid(i,"a"))), b = status(card(cid(i,"b")));
+      return `<button class="tile ${selTile===i?"sel":""}" data-tile="${i}"><span class="nm">${esc(P[i][0])}</span><span class="cp">${esc(P[i][2])}</span><span class="bars"><span>県→</span><i style="background:${stColor(a)}"></i><span>→県</span><i style="background:${stColor(b)}"></i></span></button>`;
+    }).join("")}</div>${selTile!==null && P[selTile][4]===k ? detailHTML(selTile) : ""}</div>`).join("");
+  const weak = weakIds().slice(0,10);
+  const weakList = weak.length ? `<div class="list">${weak.map(id=>{
+    const i = +id.slice(0,-1), d = id.slice(-1), c = card(id);
+    const q = d==="a" ? `${prefR(i)} → ${capR(i)}` : `${capR(i)} → ${prefR(i)}`;
+    return `<div class="item"><span class="ic ng">${c.ng}</span><div><div class="main">${q}</div><div class="sub">${c.n}回中 ${c.ng}回まちがい・へいきん ${(c.t/1000).toFixed(1)}秒・さいきん ${histIcons(c.h)}</div></div><span class="ms">${LV_NAME[Math.max(0,status(c))]}</span></div>`;
+  }).join("")}</div>` : `<div class="empty">まだにがてな問題はありません</div>`;
+  const recent = S.log.slice(-15).reverse();
+  const recentList = recent.length ? `<div class="list">${recent.map(l=>{
+    const i = +l.id.slice(0,-1), d = l.id.slice(-1), fast = l.ok && l.ms <= S.settings.fastSec*1000;
+    const q = d==="a" ? `${esc(P[i][0])} → ${esc(P[i][2])}` : `${esc(P[i][2])} → ${esc(P[i][0])}`;
+    const t = new Date(l.ts);
+    return `<div class="item"><span class="ic ${fast?"fast":l.ok?"ok":"ng"}">${fast?"◎":l.ok?"○":"×"}</span><div><div class="main">${q}</div><div class="sub">${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}${l.ok?"":`・えらんだ：${esc(d==="a"?P[l.pick][2]:P[l.pick][0])}`}</div></div><span class="ms num">${(l.ms/1000).toFixed(1)}秒</span></div>`;
+  }).join("")}</div>` : `<div class="empty">まだ記録がありません</div>`;
+  return `<div style="display:grid;gap:14px">
+    <section class="panel">
+      <h2>おぼえぐあい</h2>
+      <div class="dirbar">都道府県 → 県庁所在地（47問）${stackHTML("a")}</div>
+      <div class="dirbar">県庁所在地 → 都道府県（47問）${stackHTML("b")}</div>
+      ${legend}
+      <p class="note">ぜんぶで <b class="num">${S.total}</b> 回こたえました。即答マスター <b class="num">${all.c[4]}</b> / 94。</p>
+    </section>
+    <section class="panel"><h2>にがてランキング</h2><p class="note">まちがいが多い・時間がかかる順。「にがて特訓」でここを集中練習できます。</p>${weakList}</section>
+    <section class="panel"><h2>この2週間</h2>${chartHTML()}</section>
+    <section class="panel"><h2>都道府県ごと</h2><p class="note">左のバー＝都道府県→県庁所在地、右＝県庁所在地→都道府県。タップするとくわしく見られます。</p>${legend}<div class="regions">${tiles}</div></section>
+    <section class="panel"><h2>さいきんの回答</h2>${recentList}</section>
+  </div>`;
+}
+function histIcons(h){ return (h||"").split("").map(c=>c==="f"?"◎":c==="o"?"○":"×").join(""); }
+function detailHTML(i){
+  const row = d => { const c = card(cid(i,d)); return `<tr><th>${d==="a"?"県→県庁所在地":"県庁所在地→県"}</th><td>${c.n?`${c.ok}/${c.n} せいかい`:"まだ"}</td><td>${c.n?`${(c.t/1000).toFixed(1)}秒`:""}</td><td>${histIcons(c.h)}</td></tr>`; };
+  return `<div class="detail" style="margin-top:8px"><div><b>${prefR(i)}</b> の県庁所在地は <b>${capR(i)}</b></div>${MEMO[i]?`<div>${MEMO[i]}</div>`:""}<div class="chart-wrap"><table>${row("a")}${row("b")}</table></div></div>`;
+}
+function chartHTML(){
+  const days = []; const d = new Date(); d.setDate(d.getDate()-13);
+  for (let k=0;k<14;k++){ const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); days.push({key, m:d.getMonth()+1, dd:d.getDate(), ...(S.days[key]||{n:0,ok:0,fast:0})}); d.setDate(d.getDate()+1); }
+  if (!days.some(x=>x.n)) return `<div class="empty">れんしゅうすると、ここに毎日のグラフが出ます</div>`;
+  const max = Math.max(10, ...days.map(x=>x.n)), top = Math.ceil(max/10)*10;
+  const W=560,H=240,l=40,r=8,t=20,b=30, cw=(W-l-r)/14, bw=cw*.62, y=v=>t+(H-t-b)*(1-v/top);
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="この2週間の問題数">`;
+  [0,top/2,top].forEach(v=>{ s+=`<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${l-6}" y="${y(v)+5}" text-anchor="end">${v}</text>`; });
+  days.forEach((x,k)=>{
+    const cx = l + cw*k + (cw-bw)/2;
+    if (x.n){
+      s += `<rect x="${cx}" y="${y(x.n)}" width="${bw}" height="${y(0)-y(x.n)}" rx="3" fill="var(--lv-none)"/>`;
+      s += `<rect x="${cx}" y="${y(x.ok)}" width="${bw}" height="${y(0)-y(x.ok)}" rx="3" fill="var(--ok)"/>`;
+      s += `<rect x="${cx}" y="${y(x.fast)}" width="${bw}" height="${y(0)-y(x.fast)}" rx="3" fill="var(--gold)"/>`;
+      s += `<text x="${cx+bw/2}" y="${y(x.n)-3}" text-anchor="middle">${Math.round(x.ok/x.n*100)}%</text>`;
+    }
+    if (k%2===0 || k===13) s += `<text x="${cx+bw/2}" y="${H-8}" text-anchor="middle">${x.m}/${x.dd}</text>`;
+  });
+  s += `</svg>`;
+  return `<div class="chart-wrap">${s}</div><div class="legend"><span><i style="background:var(--gold)"></i>即答</span><span><i style="background:var(--ok)"></i>せいかい</span><span><i style="background:var(--lv-none)"></i>まちがい</span><span>％＝せいかい率</span></div>`;
+}
+let resetArm = false;
+function settingsHTML(){
+  const st = S.settings;
+  const sync = {cloud:"記録はクラウドにも保存されています（ほかの端末で開いても続きから）。", readonly:"この画面からはクラウドに保存できないため、この端末だけに保存しています。", error:"クラウド保存に失敗したため、この端末に保存しています。", local:"記録はこの端末（ブラウザ）に保存されています。"}[syncState];
+  return `<div class="set">
+    <section class="panel">
+      <h2>練習のせってい</h2>
+      <div class="optrow"><label>即答の秒数</label><div class="chips" id="fastChips">${[2,3,4,5].map(n=>`<button class="chip" data-fast="${n}" aria-pressed="${st.fastSec===n}">${n}秒</button>`).join("")}</div></div>
+      <div class="optrow"><label>ふりがな</label><div class="chips"><button class="chip" data-set="ruby" aria-pressed="${st.ruby}">${st.ruby?"表示する":"表示しない"}</button></div></div>
+      <div class="optrow"><label>音</label><div class="chips"><button class="chip" data-set="sound" aria-pressed="${st.sound}">${st.sound?"ならす":"ならさない"}</button></div></div>
+    </section>
+    <section class="panel">
+      <h2>記録のほぞん</h2>
+      <p class="note">${sync}</p>
+      <p class="note">バックアップ：下の文字をコピーしておくと、あとで「読みこむ」で記録をもどせます。</p>
+      <textarea id="backup" spellcheck="false">${esc(JSON.stringify(S))}</textarea>
+      <div class="actions"><button class="btn ghost" id="copyBtn">コピー</button><button class="btn ghost" id="importBtn">読みこむ</button></div>
+    </section>
+    <section class="panel">
+      <h2>記録をリセット</h2>
+      <p class="note">すべての回答記録を消して、最初からやり直します。元にはもどせません。</p>
+      <button class="btn ${resetArm?"danger":"ghost"}" id="resetBtn">${resetArm?"本当に消す（もう一度おす）":"記録をリセットする"}</button>
+    </section>
+  </div>`;
+}
+
+// ---------- events ----------
+document.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.view) { if (quiz) quitQuiz(); resetArm=false; view = t.dataset.view; render(); return; }
+  if (t.dataset.mode) { startQuiz(t.dataset.mode); return; }
+  if (t.dataset.reg !== undefined) {
+    if (t.dataset.reg === "all") S.settings.regions = [];
+    else { const k = +t.dataset.reg, r = S.settings.regions; S.settings.regions = r.includes(k) ? r.filter(x=>x!==k) : [...r,k].sort(); if (S.settings.regions.length===6) S.settings.regions=[]; }
+    save(); render(); return;
+  }
+  if (t.dataset.cnt) { S.settings.count = +t.dataset.cnt; save(); render(); return; }
+  if (t.dataset.k !== undefined) { answer(+t.dataset.k); return; }
+  if (t.id === "nextBtn") { next(); return; }
+  if (t.id === "quit") { quitQuiz(); return; }
+  if (t.dataset.act) { const a = t.dataset.act; if (a==="retry") startQuiz("retry"); else if (a==="again") startQuiz(result.mode==="retry"?"mix":result.mode); else { view="home"; render(); } return; }
+  if (t.dataset.tile !== undefined) { const i = +t.dataset.tile; selTile = selTile===i ? null : i; const y = window.scrollY; render(); window.scrollTo(0,y); return; }
+  if (t.dataset.fast) { S.settings.fastSec = +t.dataset.fast; save(); render(); return; }
+  if (t.dataset.set) { const k = t.dataset.set; S.settings[k] = !S.settings[k]; save(); applySettings(); render(); return; }
+  if (t.id === "copyBtn") {
+    const ta = $("#backup");
+    const fallback = () => { ta.focus(); ta.select(); toast("選択しました。コピーしてください"); };
+    try { navigator.clipboard.writeText(ta.value).then(()=>toast("コピーしました"), fallback); } catch(err) { fallback(); }
+    return;
+  }
+  if (t.id === "importBtn") {
+    try { const o = JSON.parse($("#backup").value); if (!o || typeof o.cards !== "object") throw 0; S = Object.assign(fresh(), o); S.settings = Object.assign(fresh().settings, S.settings||{}); S.total = Math.max(S.total||0, 0); save(); if (db) pushRemote(); applySettings(); toast("読みこみました"); render(); }
+    catch(err) { toast("読みこめませんでした。文字がまちがっていないか確認してください"); }
+    return;
+  }
+  if (t.id === "resetBtn") {
+    if (!resetArm) { resetArm = true; render(); return; }
+    const keep = S.settings; S = fresh(); S.settings = keep; resetArm = false; save(); if (db) pushRemote(); toast("リセットしました"); render(); return;
+  }
+});
+document.addEventListener("keydown", e => {
+  if (view !== "quiz" || !quiz) return;
+  if (!quiz.locked && ["1","2","3","4"].includes(e.key)) answer(+e.key-1);
+  else if (quiz.locked && (e.key==="Enter"||e.key===" ")) { e.preventDefault(); next(); }
+});
+
+applySettings();
+render();
+</script>
