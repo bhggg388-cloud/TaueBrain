@@ -138,7 +138,8 @@ body.no-ruby rt{display:none}
 .list .item:first-child{border-top:0}
 .list .item .ic{width:26px;height:26px;border-radius:50%;display:grid;place-content:center;font-weight:900;font-size:14px}
 .ic.ok{background:var(--ok-soft);color:var(--ok)} .ic.ng{background:var(--ng-soft);color:var(--ng)} .ic.fast{background:var(--gold-soft);color:var(--gold)}
-.item .main{font-weight:700}
+.item .main{font-weight:700;line-height:1.9}
+.item .sub{line-height:1.9}
 .item .sub{font-size:12px;color:var(--muted)}
 .item .ms{font-size:13px;color:var(--muted)}
 .actions{display:flex;gap:10px;flex-wrap:wrap}
@@ -178,6 +179,47 @@ textarea{width:100%;min-height:90px;border-radius:10px;border:1.5px solid var(--
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-weight:700;font-size:14px;z-index:9}
 @keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
 .pop{animation:pop .25s ease-out}
+/* v2: rank, missions, map, combo, time attack */
+.rank{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rank .badge{background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:900}
+.rank .title{font-size:17px;font-weight:900}
+.xpbar{height:8px;border-radius:6px;background:var(--lv-none);overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold))}
+.xpnote{font-size:11px;color:var(--muted)}
+.missions{display:grid;gap:8px}
+.mission{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:10px 12px}
+.mission .chk{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-content:center;font-weight:900;font-size:15px;color:var(--muted)}
+.mission.done{border-color:var(--gold);background:var(--gold-soft)}
+.mission.done .chk{background:var(--gold);border-color:var(--gold);color:#fff}
+.mission .mt{font-weight:700;font-size:14px}
+.mission .mp{height:5px;border-radius:3px;background:var(--lv-none);overflow:hidden;margin-top:4px}
+.mission .mp i{display:block;height:100%;background:var(--gold)}
+.mission .rw{font-size:12px;font-weight:900;color:var(--gold)}
+.mode.ta{border-color:var(--gold);background:var(--gold-soft)}
+.mode.ta .tag{background:var(--gold);color:#fff}
+.map{display:grid;grid-template-columns:repeat(13,1fr);grid-template-rows:repeat(12,auto);gap:3px;max-width:560px;margin:0 auto}
+.map .mt{grid-column:1/9;grid-row:1/4;align-self:start;display:grid;gap:4px}
+.map .mt b{font-size:17px;font-weight:900;line-height:1.2;white-space:nowrap}
+.map .mt span{font-size:11.5px;color:var(--muted);line-height:1.4}
+.map .ml{grid-column:6/14;grid-row:10/13;align-self:end;justify-self:end}
+.pt{aspect-ratio:1;border-radius:5px;border:1px solid var(--line);background:var(--surface-2);display:grid;place-content:center;font-size:clamp(7px,2.1vw,12px);font-weight:900;line-height:1;letter-spacing:-.08em;white-space:nowrap;color:var(--ink);padding:0;min-width:0;overflow:hidden;position:relative}
+.pt.seen{color:#1D2B36;border-color:transparent}
+.pt.conq{background:var(--gold);color:#1D2B36;border-color:transparent;box-shadow:0 0 0 2px var(--gold-soft) inset}
+.pt.conq::after{content:"★";position:absolute;top:0;right:1px;font-size:.8em;color:#fff}
+.pt:hover{outline:2px solid var(--accent)}
+.combo{position:absolute;top:12px;right:12px;background:var(--gold);color:#fff;border-radius:999px;padding:1px 10px;font-weight:900;font-size:14px}
+.combo.big{font-size:17px;background:var(--ng)}
+.choice{position:relative}
+.choice .key{position:absolute;top:6px;left:8px;width:22px;height:22px;border-radius:6px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:900;line-height:22px;text-align:center;font-family:var(--font)}
+.choice.correct .key{background:var(--ok)} .choice.wrong .key{background:var(--ng)}
+.keyhint{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+.tabox{display:flex;gap:10px;align-items:center;font-weight:900}
+.tabox .left{font-size:18px;color:var(--ng)}
+.tabox .sc{font-size:14px;color:var(--muted)}
+.banner{border-radius:16px;padding:14px 16px;display:grid;gap:4px;background:var(--gold-soft);border:2px solid var(--gold)}
+.banner b{font-size:19px;font-weight:900}
+.banner span{font-size:14px}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:8}
 @media (max-width:420px){
   .hero{grid-template-columns:1fr;justify-items:center;text-align:center}
   .hero-stats .row{justify-content:center}
@@ -200,6 +242,7 @@ textarea{width:100%;min-height:90px;border-radius:10px;border:1.5px solid var(--
   <main id="app"></main>
 </div>
 <div class="toast" id="toast" hidden></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
 
 <script>
 "use strict";
@@ -213,21 +256,46 @@ const P = [
 ["鳥取県","とっとりけん","鳥取市","とっとりし",4],["島根県","しまねけん","松江市","まつえし",4],["岡山県","おかやまけん","岡山市","おかやまし",4],["広島県","ひろしまけん","広島市","ひろしまし",4],["山口県","やまぐちけん","山口市","やまぐちし",4],["徳島県","とくしまけん","徳島市","とくしまし",4],["香川県","かがわけん","高松市","たかまつし",4],["愛媛県","えひめけん","松山市","まつやまし",4],["高知県","こうちけん","高知市","こうちし",4],
 ["福岡県","ふくおかけん","福岡市","ふくおかし",5],["佐賀県","さがけん","佐賀市","さがし",5],["長崎県","ながさきけん","長崎市","ながさきし",5],["熊本県","くまもとけん","熊本市","くまもとし",5],["大分県","おおいたけん","大分市","おおいたし",5],["宮崎県","みやざきけん","宮崎市","みやざきし",5],["鹿児島県","かごしまけん","鹿児島市","かごしまし",5],["沖縄県","おきなわけん","那覇市","なはし",5]
 ];
+// 同じ都道府県にある、県庁所在地ではない市（まちがいの選択肢）
+const C = [
+"旭川市:あさひかわし,函館市:はこだてし,小樽市:おたるし,釧路市:くしろし","八戸市:はちのへし,弘前市:ひろさきし,十和田市:とわだし,三沢市:みさわし","花巻市:はなまきし,一関市:いちのせきし,奥州市:おうしゅうし,宮古市:みやこし","石巻市:いしのまきし,気仙沼市:けせんぬまし,大崎市:おおさきし,名取市:なとりし","大館市:おおだてし,横手市:よこてし,能代市:のしろし,男鹿市:おがし","米沢市:よねざわし,酒田市:さかたし,鶴岡市:つるおかし,天童市:てんどうし","郡山市:こおりやまし,いわき市:いわきし,会津若松市:あいづわかまつし,白河市:しらかわし",
+"つくば市:つくばし,日立市:ひたちし,土浦市:つちうらし,古河市:こがし","小山市:おやまし,足利市:あしかがし,日光市:にっこうし,那須塩原市:なすしおばらし","高崎市:たかさきし,桐生市:きりゅうし,太田市:おおたし,伊勢崎市:いせさきし","川越市:かわごえし,川口市:かわぐちし,所沢市:ところざわし,越谷市:こしがやし","船橋市:ふなばしし,松戸市:まつどし,柏市:かしわし,成田市:なりたし","八王子市:はちおうじし,町田市:まちだし,立川市:たちかわし,府中市:ふちゅうし","川崎市:かわさきし,相模原市:さがみはらし,横須賀市:よこすかし,藤沢市:ふじさわし",
+"長岡市:ながおかし,上越市:じょうえつし,佐渡市:さどし,柏崎市:かしわざきし","高岡市:たかおかし,魚津市:うおづし,黒部市:くろべし,砺波市:となみし","小松市:こまつし,加賀市:かがし,七尾市:ななおし,輪島市:わじまし","敦賀市:つるがし,坂井市:さかいし,小浜市:おばまし,鯖江市:さばえし","富士吉田市:ふじよしだし,甲斐市:かいし,都留市:つるし,北杜市:ほくとし","松本市:まつもとし,上田市:うえだし,飯田市:いいだし,諏訪市:すわし","大垣市:おおがきし,高山市:たかやまし,多治見市:たじみし,各務原市:かかみがはらし","浜松市:はままつし,沼津市:ぬまづし,富士市:ふじし,熱海市:あたみし","豊田市:とよたし,岡崎市:おかざきし,豊橋市:とよはしし,一宮市:いちのみやし",
+"四日市市:よっかいちし,伊勢市:いせし,鈴鹿市:すずかし,松阪市:まつさかし","彦根市:ひこねし,草津市:くさつし,長浜市:ながはまし,近江八幡市:おうみはちまんし","舞鶴市:まいづるし,宇治市:うじし,福知山市:ふくちやまし,亀岡市:かめおかし","堺市:さかいし,東大阪市:ひがしおおさかし,豊中市:とよなかし,枚方市:ひらかたし","姫路市:ひめじし,西宮市:にしのみやし,尼崎市:あまがさきし,明石市:あかしし","橿原市:かしはらし,生駒市:いこまし,天理市:てんりし,大和郡山市:やまとこおりやまし","田辺市:たなべし,新宮市:しんぐうし,橋本市:はしもとし,海南市:かいなんし",
+"米子市:よなごし,倉吉市:くらよしし,境港市:さかいみなとし","出雲市:いずもし,浜田市:はまだし,益田市:ますだし,安来市:やすぎし","倉敷市:くらしきし,津山市:つやまし,玉野市:たまのし,総社市:そうじゃし","福山市:ふくやまし,呉市:くれし,尾道市:おのみちし,廿日市市:はつかいちし","下関市:しものせきし,宇部市:うべし,岩国市:いわくにし,周南市:しゅうなんし","鳴門市:なるとし,阿南市:あなんし,小松島市:こまつしまし,吉野川市:よしのがわし","丸亀市:まるがめし,坂出市:さかいでし,観音寺市:かんおんじし,善通寺市:ぜんつうじし","今治市:いまばりし,新居浜市:にいはまし,宇和島市:うわじまし,西条市:さいじょうし","南国市:なんこくし,四万十市:しまんとし,室戸市:むろとし,土佐市:とさし",
+"北九州市:きたきゅうしゅうし,久留米市:くるめし,大牟田市:おおむたし,飯塚市:いいづかし","唐津市:からつし,鳥栖市:とすし,伊万里市:いまりし,武雄市:たけおし","佐世保市:させぼし,諫早市:いさはやし,大村市:おおむらし,島原市:しまばらし","八代市:やつしろし,天草市:あまくさし,玉名市:たまなし,人吉市:ひとよしし","別府市:べっぷし,中津市:なかつし,佐伯市:さいきし,日田市:ひたし","都城市:みやこのじょうし,延岡市:のべおかし,日向市:ひゅうがし,日南市:にちなんし","霧島市:きりしまし,鹿屋市:かのやし,薩摩川内市:さつませんだいし,指宿市:いぶすきし","沖縄市:おきなわし,うるま市:うるまし,浦添市:うらそえし,宜野湾市:ぎのわんし,名護市:なごし"
+].map(s => s.split(",").map(x => x.split(":")));
+// 日本地図タイルの位置 [行, 列]
+const TILE = [[0,12],[1,11],[2,11],[3,11],[2,10],[3,10],[4,10],[6,11],[5,11],[5,10],[6,10],[7,11],[7,10],[7,9],[4,9],[4,8],[4,7],[5,7],[6,9],[5,9],[5,8],[7,8],[6,8],[7,7],[6,7],[6,6],[7,5],[6,5],[7,6],[8,5],[6,4],[6,3],[7,4],[7,3],[7,2],[9,4],[8,4],[8,3],[9,3],[7,1],[8,1],[8,0],[9,1],[8,2],[9,2],[10,1],[11,0]];
 const REG = ["北海道・東北","関東","中部","近畿","中国・四国","九州・沖縄"];
 const REG_COLOR = ["var(--r1)","var(--r2)","var(--r3)","var(--r4)","var(--r5)","var(--r6)"];
 const stem = s => s.replace(/(都|府|県|市)$/,"");
-// 都道府県名と県庁所在地名がちがうところ（北海道・東京都もふくむ）
+// 都道府県名と県庁所在地名がちがうところ（北海道もふくむ）
 const DIFF = P.map((p,i)=>i).filter(i => i===0 || stem(P[i][0]) !== stem(P[i][2]));
-const MEMO = {12:"東京都の都庁は新宿区にあります。", 10:"さいたま市はひらがなで書きます。", 23:"「津」は日本でいちばん短い名前の市。"};
+const MEMO = {12:"東京都の都庁は新宿区にあります。", 10:"さいたま市はひらがなで書きます。", 23:"「津」は日本でいちばん短い名前の市。", 46:"沖縄市もあるけど、県庁所在地は那覇市。"};
 const LV_NAME = ["にがて","れんしゅう中","もうすこし","あと一歩","即答マスター"];
 const MASTER = 4;
+const RANKS = [[0,"ちずのたまご"],[150,"たんけんたい"],[400,"けんちょうハンター"],[800,"ちずはかせ"],[1500,"にっぽん名人"],[2500,"けんちょう王"],[4000,"でんせつの即答王"]];
+const MISSIONS = [
+  {t:"20問こたえよう", need:20, v:d=>d.n},
+  {t:"即答を10回きめよう", need:10, v:d=>d.fast},
+  {t:"にがて特訓かタイムアタックを1回", need:1, v:d=>d.w||0}
+];
+const MISSION_XP = 30, TA_SEC = 60;
 
 // ---------- state ----------
 const KEY = "kencho-drill-v1";
-function fresh(){ return {v:1,total:0,updatedAt:0,cards:{},days:{},log:[],settings:{fastSec:3,count:10,ruby:true,sound:true,regions:[]}}; }
+function fresh(){ return {v:2,total:0,updatedAt:0,xp:0,best:{ta:0},cards:{},days:{},log:[],settings:{fastSec:2,count:10,ruby:true,sound:true,regions:[],v2:true}}; }
+function normalize(o){
+  const s = Object.assign(fresh(), o || {});
+  s.settings = Object.assign(fresh().settings, (o && o.settings) || {});
+  s.best = Object.assign({ta:0}, s.best || {});
+  if (!s.settings.v2) { s.settings.fastSec = 2; s.settings.v2 = true; }
+  if (o && o.xp == null) s.xp = Object.values(s.cards).reduce((a,c)=>a + (c.fast||0)*10 + (c.ok-(c.fast||0))*5 + c.ng, 0);
+  return s;
+}
 let S = fresh();
-try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch(e) {}
-S.settings = Object.assign(fresh().settings, S.settings || {});
+try { const raw = localStorage.getItem(KEY); if (raw) S = normalize(JSON.parse(raw)); } catch(e) {}
 
 let db = null, syncState = "local", writing = false, pendingWrite = false, writeTimer = null;
 function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
@@ -254,11 +322,7 @@ async function pushRemote(){
     const snap = await db.doc("progress/main").get();
     const remote = snap.exists ? snap.data() : null;
     if (remote && (remote.total > S.total || (remote.total === S.total && remote.updatedAt > S.updatedAt))) {
-      if (!quiz) {
-        S = Object.assign(fresh(), JSON.parse(JSON.stringify(remote)));
-        S.settings = Object.assign(fresh().settings, S.settings || {});
-        saveLocal(); applySettings(); render();
-      }
+      if (!quiz) { S = normalize(JSON.parse(JSON.stringify(remote))); saveLocal(); applySettings(); render(); }
       syncState = "cloud";
     } else if (S.total > 0) {
       await pushRemote();
@@ -275,22 +339,30 @@ const prefR = i => rb(P[i][0], P[i][1]);
 const capR = i => rb(P[i][2], P[i][3]);
 const cid = (i, d) => i + d;           // d: "a" = 都道府県→県庁所在地, "b" = 県庁所在地→都道府県
 const card = id => S.cards[id] || {n:0,ok:0,ng:0,lv:0,fast:0,t:0,last:0,lastNg:0,h:""};
-const today = () => { const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const dkey = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today = () => dkey(new Date());
+const dayRec = () => S.days[today()] || {n:0,ok:0,fast:0};
 function status(c){
   if (!c.n) return -1;
   if (c.lv >= MASTER) return 4;
   if (c.lv === 0) return c.ng > 0 ? 0 : 1;
   return c.lv;
 }
+const conquered = i => card(cid(i,"a")).lv >= MASTER && card(cid(i,"b")).lv >= MASTER;
+const conqCount = () => P.filter((p,i)=>conquered(i)).length;
 const LV_COLOR = ["var(--lv0)","var(--lv1)","var(--lv2)","var(--lv3)","var(--lv4)"];
 const stColor = s => s < 0 ? "var(--lv-none)" : LV_COLOR[s];
+function rankInfo(xp){
+  let k = 0; while (k+1 < RANKS.length && xp >= RANKS[k+1][0]) k++;
+  const next = RANKS[k+1];
+  return {k, name:RANKS[k][1], next, pct: next ? (xp-RANKS[k][0])/(next[0]-RANKS[k][0]) : 1};
+}
 function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
-function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,1800); }
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,2000); }
 function streakDays(){
   let n = 0; const d = new Date();
-  const k = x => x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
-  if (!S.days[k(d)]) d.setDate(d.getDate()-1);
-  while (S.days[k(d)]) { n++; d.setDate(d.getDate()-1); }
+  if (!S.days[dkey(d)]) d.setDate(d.getDate()-1);
+  while (S.days[dkey(d)]) { n++; d.setDate(d.getDate()-1); }
   return n;
 }
 function weakScore(id){
@@ -305,22 +377,54 @@ function weakIds(){
   for (let i=0;i<47;i++) for (const d of "ab") { const c = card(cid(i,d)); if (c.n && c.lv <= 1 && (c.ng > 0 || c.t > S.settings.fastSec*1000)) out.push(cid(i,d)); }
   return out.sort((x,y)=>weakScore(y)-weakScore(x));
 }
+// ミッション達成チェック（達成した瞬間だけボーナス）
+function checkMissions(){
+  const d = S.days[today()]; if (!d) return [];
+  d.m = d.m || 0; const got = [];
+  MISSIONS.forEach((m,k) => { if (!(d.m & (1<<k)) && m.v(d) >= m.need) { d.m |= 1<<k; S.xp += MISSION_XP; got.push(m.t); } });
+  return got;
+}
 
-// ---------- sound ----------
+// ---------- sound & confetti ----------
 let ac = null;
-function beep(kind){
+function tone(freqs, type="sine", gap=0.09, vol=0.16){
   if (!S.settings.sound) return;
   try {
     ac = ac || new (window.AudioContext || window.webkitAudioContext)();
-    const notes = kind==="fast" ? [880,1320] : kind==="ok" ? [660,880] : [220,180];
-    notes.forEach((f,k)=>{
+    freqs.forEach((f,k)=>{
       const o = ac.createOscillator(), g = ac.createGain();
-      o.type = kind==="ng" ? "triangle" : "sine"; o.frequency.value = f;
-      const t0 = ac.currentTime + k*0.1;
-      g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.18,t0+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.18);
-      o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0+0.2);
+      o.type = type; o.frequency.value = f;
+      const t0 = ac.currentTime + k*gap;
+      g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.2);
+      o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0+0.22);
     });
   } catch(e) {}
+}
+function beep(kind, combo=0){
+  const up = Math.pow(2, Math.min(combo,12)/12);   // コンボが続くと音が上がっていく
+  if (kind==="fast") tone([880*up,1320*up]);
+  else if (kind==="ok") tone([660,880]);
+  else if (kind==="fanfare") tone([523,659,784,1047],"triangle",0.12,0.18);
+  else tone([220,180],"triangle");
+}
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let parts = [], confRaf = 0;
+function confetti(n=80){
+  if (reduceMotion) return;
+  const cv = $("#confetti"), ctx = cv.getContext("2d");
+  cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+  const cols = ["#E29A12","#2F4FA8","#CF4036","#2B8A55","#8B5CB8","#2A9A9A","#E07B39"];
+  for (let k=0;k<n;k++) parts.push({x:innerWidth*(0.2+Math.random()*0.6), y:innerHeight*0.35, vx:(Math.random()-0.5)*9, vy:-Math.random()*10-4, r:Math.random()*6+4, a:Math.random()*6, va:(Math.random()-0.5)*0.3, c:cols[k%cols.length], life:0});
+  if (confRaf) return;
+  const step = () => {
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    parts.forEach(p => { p.vy += 0.3; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.a += p.va; p.life++;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); ctx.restore(); });
+    parts = parts.filter(p => p.y < innerHeight + 20 && p.life < 240);
+    confRaf = parts.length ? requestAnimationFrame(step) : (ctx.clearRect(0,0,innerWidth,innerHeight), 0);
+  };
+  confRaf = requestAnimationFrame(step);
 }
 
 // ---------- question selection ----------
@@ -342,8 +446,8 @@ function weight(id){
   return w;
 }
 function pickSession(mode, n){
-  let ids = mode === "weak" ? weakIds() : pool(mode);
-  if (mode === "weak") return shuffle(ids.slice(0, n));
+  if (mode === "weak") return shuffle(weakIds().slice(0, n));
+  const ids = pool(mode === "ta" ? "mix" : mode);
   const out = [], bag = ids.map(id => ({id, w:weight(id)}));
   while (out.length < n && bag.length) {
     const sum = bag.reduce((s,x)=>s+x.w,0); let r = Math.random()*sum, k = 0;
@@ -352,25 +456,39 @@ function pickSession(mode, n){
   }
   return out;
 }
+// 選択肢: {html, name, correct}
 function makeChoices(id){
   const i = +id.slice(0,-1), d = id.slice(-1);
+  if (d === "a") {
+    // 都道府県→県庁所在地：同じ都道府県の、ほかの市からえらぶ
+    const others = shuffle(C[i].slice()).slice(0,3).map(([n,y]) => ({html:rb(n,y), name:n, correct:false}));
+    return shuffle([{html:capR(i), name:P[i][2], correct:true}, ...others]);
+  }
+  // 県庁所在地→都道府県：同じ地方の都道府県からえらぶ
   const same = shuffle(P.map((p,j)=>j).filter(j => j!==i && P[j][4]===P[i][4]));
   const other = shuffle(P.map((p,j)=>j).filter(j => j!==i && P[j][4]!==P[i][4]));
-  // 同じ地方から2つ、ほかから1つ（まぎらわしくして、ちゃんと覚える）
-  const picks = [i, ...same.slice(0,2)];
-  for (const j of other) { if (picks.length >= 4) break; picks.push(j); }
-  for (const j of same.slice(2)) { if (picks.length >= 4) break; picks.push(j); }
-  return shuffle(picks).map(j => ({j, d}));
+  const picks = [...same, ...other].slice(0,3);
+  return shuffle([i, ...picks]).map(j => ({html:prefR(j), name:P[j][0], j, correct:j===i}));
 }
 
 // ---------- quiz ----------
 let view = "home", quiz = null, result = null, selTile = null;
 function startQuiz(mode){
-  const n = mode === "retry" ? 0 : S.settings.count;
-  const ids = mode === "retry" ? shuffle(result.wrong.slice()) : pickSession(mode, n);
+  const ids = mode === "retry" ? shuffle(result.wrong.slice()) : pickSession(mode, mode==="ta" ? 40 : S.settings.count);
   if (!ids.length) { toast("問題がありません"); return; }
-  quiz = {mode, queue: ids.map(id=>({id, again:false})), pos:0, base: ids.length, answers:[], retried:new Set(), t0:0, locked:false, timerRaf:0, advanceT:0};
+  quiz = {mode, queue: ids.map(id=>({id, again:false})), pos:0, answers:[], retried:new Set(), t0:0, locked:false,
+    timerRaf:0, advanceT:0, combo:0, maxCombo:0, xp0:S.xp, conq0:P.map((p,i)=>conquered(i)), newConq:[], missions:[], ta:null};
+  if (mode === "ta") {
+    quiz.ta = {end: performance.now() + TA_SEC*1000, iv:0, up:false};
+    quiz.ta.iv = setInterval(taTick, 200);
+  }
   result = null; view = "quiz"; setTab(view); window.scrollTo(0,0); askCurrent();
+}
+function taTick(){
+  if (!quiz || !quiz.ta) return;
+  const left = Math.max(0, Math.ceil((quiz.ta.end - performance.now())/1000));
+  const el = $("#taLeft"); if (el) el.textContent = left;
+  if (left <= 0 && !quiz.ta.up) { quiz.ta.up = true; clearInterval(quiz.ta.iv); if (!quiz.locked) finish(); }
 }
 function askCurrent(){
   const q = quiz.queue[quiz.pos];
@@ -389,10 +507,12 @@ function askCurrent(){
 }
 function answer(k){
   if (!quiz || quiz.locked) return;
+  const q = quiz.queue[quiz.pos];
+  if (!q.choices[k]) return;
   quiz.locked = true; cancelAnimationFrame(quiz.timerRaf);
   const ms = Math.round(performance.now() - quiz.t0);
-  const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1);
-  const pick = q.choices[k].j, ok = pick === i, fast = ok && ms <= S.settings.fastSec*1000;
+  const i = +q.id.slice(0,-1), ch = q.choices[k];
+  const ok = ch.correct, fast = ok && ms <= S.settings.fastSec*1000;
   // 記録
   const c = Object.assign({}, card(q.id));
   const before = status(c);
@@ -401,39 +521,66 @@ function answer(k){
   else { c.ng++; c.lv = 0; c.lastNg = Date.now(); }
   c.h = (c.h + (fast ? "f" : ok ? "o" : "x")).slice(-8);
   S.cards[q.id] = c; S.total++;
-  const day = S.days[today()] || {n:0,ok:0,fast:0};
+  const day = dayRec();
   day.n++; if (ok) day.ok++; if (fast) day.fast++; S.days[today()] = day;
-  S.log.push({id:q.id, pick, ok:ok?1:0, ms, ts:Date.now()}); if (S.log.length > 300) S.log.splice(0, S.log.length-300);
+  S.log.push({id:q.id, pk:ch.name, ok:ok?1:0, ms, ts:Date.now()}); if (S.log.length > 300) S.log.splice(0, S.log.length-300);
+  // コンボとポイント
+  quiz.combo = fast ? quiz.combo + 1 : 0;
+  quiz.maxCombo = Math.max(quiz.maxCombo, quiz.combo);
+  S.xp += fast ? 10 + Math.min(quiz.combo-1, 10) : ok ? 5 : 1;
+  const nowConq = conquered(i) && !quiz.conq0[i] && !quiz.newConq.includes(i);
+  if (nowConq) quiz.newConq.push(i);
+  quiz.missions.push(...checkMissions());
   save();
-  quiz.answers.push({id:q.id, pick, ok, fast, ms, again:q.again, before, after:status(c)});
-  // まちがえたら3問後にもう一度（1回だけ）
-  if (!ok && !quiz.retried.has(q.id)) {
+  quiz.answers.push({id:q.id, pickHTML:ch.html, ok, fast, ms, again:q.again, before, after:status(c)});
+  // まちがえたら3問後にもう一度（1回だけ・タイムアタック以外）
+  if (!ok && !quiz.ta && !quiz.retried.has(q.id)) {
     quiz.retried.add(q.id);
     quiz.queue.splice(Math.min(quiz.pos+3, quiz.queue.length), 0, {id:q.id, again:true});
   }
-  beep(fast ? "fast" : ok ? "ok" : "ng");
+  beep(fast ? "fast" : ok ? "ok" : "ng", quiz.combo);
   renderFeedback(k, ok, fast, ms);
-  if (ok) quiz.advanceT = setTimeout(next, fast ? 700 : 1100);
+  if (nowConq) { toast(`${P[i][0]} せいは！ 地図が金色になったよ`); confetti(70); beep("fanfare"); }
+  else if (quiz.combo && quiz.combo % 5 === 0) confetti(40);
+  if (quiz.ta) quiz.advanceT = setTimeout(next, ok ? (fast ? 350 : 550) : 1400);
+  else if (ok) quiz.advanceT = setTimeout(next, fast ? 700 : 1100);
 }
 function next(){
   if (!quiz) return;
   clearTimeout(quiz.advanceT);
+  if (quiz.ta && quiz.ta.up) return finish();
   quiz.pos++;
+  if (quiz.ta && quiz.pos >= quiz.queue.length) quiz.queue.push(...pickSession("ta", 30).map(id=>({id, again:false})));
   if (quiz.pos >= quiz.queue.length) return finish();
   askCurrent();
 }
 function finish(){
-  const a = quiz.answers;
-  const firsts = a.filter(x => !x.again);
-  result = {
+  cancelAnimationFrame(quiz.timerRaf); clearTimeout(quiz.advanceT);
+  if (quiz.ta) clearInterval(quiz.ta.iv);
+  const a = quiz.answers, firsts = a.filter(x => !x.again);
+  const r = {
     mode: quiz.mode, answers: a,
     n: firsts.length, ok: firsts.filter(x=>x.ok).length, fast: firsts.filter(x=>x.fast).length,
     wrong: [...new Set(a.filter(x=>!x.ok).map(x=>x.id))],
-    mastered: [...new Set(a.filter(x=>x.after===4 && x.before!==4).map(x=>x.id))]
+    mastered: [...new Set(a.filter(x=>x.after===4 && x.before!==4).map(x=>x.id))],
+    maxCombo: quiz.maxCombo, newConq: quiz.newConq, rank0: rankInfo(quiz.xp0).k, record:false
   };
-  quiz = null; view = "result"; render();
+  const full = !quiz.ta ? a.length && quiz.pos >= quiz.queue.length - 1 : true;
+  if (full && (quiz.mode === "weak" || quiz.mode === "ta")) { const d = dayRec(); d.w = (d.w||0) + 1; S.days[today()] = d; }
+  if (quiz.mode === "ta" && r.ok > S.best.ta) { r.prevBest = S.best.ta; S.best.ta = r.ok; r.record = true; }
+  r.missions = [...quiz.missions, ...checkMissions()];
+  r.xp = S.xp - quiz.xp0;
+  save();
+  result = r; quiz = null; view = "result"; render();
+  const rankUp = rankInfo(S.xp).k > r.rank0;
+  if (rankUp || r.record || r.newConq.length || (r.n >= 5 && r.fast === r.n)) { confetti(rankUp ? 140 : 90); beep("fanfare"); }
+  else if (r.missions.length) confetti(50);
 }
-function quitQuiz(){ if (quiz){ cancelAnimationFrame(quiz.timerRaf); clearTimeout(quiz.advanceT); } if (quiz && quiz.answers.length) finish(); else { quiz=null; view="home"; render(); } }
+function quitQuiz(){
+  if (!quiz) return;
+  cancelAnimationFrame(quiz.timerRaf); clearTimeout(quiz.advanceT); if (quiz.ta) clearInterval(quiz.ta.iv);
+  if (quiz.answers.length) finish(); else { quiz=null; view="home"; render(); }
+}
 
 // ---------- render ----------
 function applySettings(){ document.body.classList.toggle("no-ruby", !S.settings.ruby); }
@@ -449,20 +596,40 @@ function render(){
   window.scrollTo(0,0);
 }
 function counts(dir){
-  const c = [0,0,0,0,0], none = {v:0};
-  for (let i=0;i<47;i++) for (const d of dir) { const s = status(card(cid(i,d))); if (s<0) none.v++; else c[s]++; }
-  return {c, none:none.v};
+  const c = [0,0,0,0,0]; let none = 0;
+  for (let i=0;i<47;i++) for (const d of dir) { const s = status(card(cid(i,d))); if (s<0) none++; else c[s]++; }
+  return {c, none};
 }
 function stackHTML(dir){
-  const {c, none} = counts(dir), tot = 47*dir.length;
+  const {c} = counts(dir), tot = 47*dir.length;
   return `<div class="stack">${[4,3,2,1,0].map(s => c[s] ? `<i style="width:${c[s]/tot*100}%;background:${LV_COLOR[s]}" title="${LV_NAME[s]} ${c[s]}"></i>` : "").join("")}</div>`;
+}
+function mapHTML(){
+  const n = conqCount();
+  const tiles = P.map((p,i) => {
+    const a = status(card(cid(i,"a"))), b = status(card(cid(i,"b")));
+    const cq = conquered(i), seen = a >= 0 || b >= 0;
+    const bg = cq ? "" : seen ? `background:linear-gradient(90deg,${stColor(a)} 50%,${stColor(b)} 50%);` : "";
+    return `<button class="pt ${cq?"conq":seen?"seen":""}" style="grid-row:${TILE[i][0]+1};grid-column:${TILE[i][1]+1};${bg}" data-tile="${i}" title="${esc(p[0])}・${esc(p[2])}" aria-label="${esc(p[0])}">${esc(stem(p[0]))}</button>`;
+  }).join("");
+  return `<div class="map">
+    <div class="mt"><b>にっぽん制覇マップ <span class="num" style="font-size:18px;color:var(--gold)">${n}</span><span style="font-size:13px"> / 47</span></b>
+    <span>両方向とも即答マスターで金色に！左はんぶん＝県→県庁所在地、右＝県庁所在地→県</span></div>
+    ${tiles}
+    <div class="ml legend"><span><i style="background:var(--lv0)"></i>にがて</span><span><i style="background:var(--lv2)"></i>れんしゅう</span><span><i style="background:var(--lv4)"></i>マスター</span></div>
+  </div>`;
+}
+function missionsHTML(){
+  const d = dayRec();
+  return `<div class="missions">${MISSIONS.map((m,k)=>{
+    const v = Math.min(m.v(d)||0, m.need), done = (d.m||0) & (1<<k);
+    return `<div class="mission ${done?"done":""}"><span class="chk">${done?"✓":k+1}</span><div><div class="mt">${m.t}</div><div class="mp"><i style="width:${v/m.need*100}%"></i></div></div><span class="rw num">${done?"クリア！":`${v}/${m.need}`}</span></div>`;
+  }).join("")}</div>`;
 }
 function homeHTML(){
   const all = counts("ab"), m = all.c[4], pct = m/94;
-  const td = S.days[today()] || {n:0,ok:0,fast:0};
-  const weak = weakIds().length;
-  const R = 46, L = 2*Math.PI*R;
-  const regs = S.settings.regions;
+  const td = dayRec(), weak = weakIds().length, rk = rankInfo(S.xp);
+  const R = 46, L = 2*Math.PI*R, regs = S.settings.regions;
   const modeBtn = (mode, tag, title, desc, cls="") => `<button class="mode ${cls}" data-mode="${mode}" ${mode==="weak"&&!weak?"disabled":""}>${tag?`<span class="tag">${tag}</span>`:""}<b>${title}</b><span>${desc}</span></button>`;
   return `
   <section class="hero">
@@ -472,24 +639,32 @@ function homeHTML(){
       <div class="lbl"><b class="num">${m}</b><span>/ 94 マスター</span></div>
     </div>
     <div class="hero-stats">
+      <div class="rank"><span class="badge num">ランク ${rk.k+1}</span><span class="title">${rk.name}</span></div>
+      <div class="xpbar"><i style="width:${rk.pct*100}%"></i></div>
+      <div class="xpnote num">${S.xp} ポイント${rk.next ? `・あと ${rk.next[0]-S.xp} で「${rk.next[1]}」` : "・さいこうランク！"}</div>
       <div class="row">
         <div class="stat"><b class="num">${td.n}</b><span>きょうの問題</span></div>
         <div class="stat"><b class="num">${td.fast}</b><span>きょうの即答</span></div>
         <div class="stat"><b class="num">${streakDays()}<small style="font-size:13px">日</small></b><span>れんぞく</span></div>
       </div>
-      <div class="dirbar">都道府県 → 県庁所在地 ${stackHTML("a")}</div>
-      <div class="dirbar">県庁所在地 → 都道府県 ${stackHTML("b")}</div>
     </div>
   </section>
+
+  <div class="section-title">きょうのミッション（クリアで +${MISSION_XP}ポイント）</div>
+  ${missionsHTML()}
 
   <div class="section-title">れんしゅうをえらぶ</div>
   <div class="modes">
     ${modeBtn("mix","","おまかせ","両方向からまぜて出題。にがてな問題とまだの問題が多めに出ます","primary")}
     ${modeBtn("weak",weak?`${weak}問`:"まだなし","にがて特訓", weak ? "まちがえた・時間がかかった問題だけを集中練習" : "まちがえた問題がここにたまります","weak")}
+    ${modeBtn("ta",`さいこう ${S.best.ta}問`,"タイムアタック",`${TA_SEC}秒で何問せいかいできるかな？ 記録にちょうせん！`,"ta")}
     ${modeBtn("diff","18","名前がちがう県","北海道→札幌市、愛知県→名古屋市 など、まちがえやすいところ")}
     ${modeBtn("a","","都道府県 → 県庁所在地","「宮城県の県庁所在地は？」")}
     ${modeBtn("b","","県庁所在地 → 都道府県","「仙台市があるのは何県？」")}
   </div>
+
+  <div class="section-title">コレクション</div>
+  <section class="panel">${mapHTML()}</section>
 
   <div class="section-title">はんい</div>
   <div class="opts">
@@ -501,7 +676,7 @@ function homeHTML(){
       ${[5,10,20].map(n=>`<button class="chip" data-cnt="${n}" aria-pressed="${S.settings.count===n}">${n}問</button>`).join("")}
     </div></div>
   </div>
-  <p class="tip">⏱ ${S.settings.fastSec}秒いないに正解すると「即答」。同じ問題で即答を${MASTER}回つづけると<b>即答マスター</b>になります。まちがえた問題は3問あとにもう一度出ます。</p>`;
+  <p class="tip">${S.settings.fastSec}秒いないに正解すると「即答」で10ポイント。即答がつづくとコンボでもっとふえるよ。同じ問題で即答を${MASTER}回つづけると<b>即答マスター</b>。キーボードの <b>1〜4</b> でもこたえられます。</p>`;
 }
 function renderQuiz(){
   const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1);
@@ -509,15 +684,16 @@ function renderQuiz(){
   const qword = d==="a" ? prefR(i) : capR(i);
   const ask = d==="a" ? "の県庁所在地は？" : "がある都道府県は？";
   const lab = d==="a" ? "都道府県 → 県庁所在地" : "県庁所在地 → 都道府県";
-  const c = card(q.id), st = status(c);
+  const st = status(card(q.id));
+  const left = quiz.ta ? Math.max(0, Math.ceil((quiz.ta.end - performance.now())/1000)) : 0;
+  const head = quiz.ta
+    ? `<div class="tabox"><span>のこり <span class="left num" id="taLeft">${left}</span> 秒</span><span class="sc num">せいかい ${quiz.answers.filter(x=>x.ok).length}</span></div><div style="flex:1"></div>`
+    : `<div class="prog"><i style="width:${quiz.pos/total*100}%"></i></div><span class="qcount num">${quiz.pos+1} / ${total}</span>`;
   $("#app").innerHTML = `
-  <div class="qtop">
-    <button class="quit" id="quit">やめる</button>
-    <div class="prog"><i style="width:${quiz.pos/total*100}%"></i></div>
-    <span class="qcount num">${quiz.pos+1} / ${total}</span>
-  </div>
+  <div class="qtop"><button class="quit" id="quit">やめる</button>${head}</div>
   <section class="card">
     <div class="region" style="background:${REG_COLOR[P[i][4]]}"></div>
+    ${quiz.combo >= 2 ? `<span class="combo ${quiz.combo>=5?"big":""} num">${quiz.combo} コンボ</span>` : ""}
     <div class="qlabel"><span>${lab}</span><span>・${REG[P[i][4]]}</span>${q.again?'<span class="again">もういちど</span>':""}${st===0&&!q.again?'<span class="again">にがて</span>':""}</div>
     <div class="qword pop">${qword}</div>
     <div class="qsub">${ask}</div>
@@ -525,51 +701,62 @@ function renderQuiz(){
     <div class="timer-note" id="timerNote">${S.settings.fastSec}秒いないなら即答！</div>
   </section>
   <div class="choices" id="choices">
-    ${q.choices.map((ch,k)=>`<button class="choice" data-k="${k}">${d==="a" ? capR(ch.j) : prefR(ch.j)}</button>`).join("")}
+    ${q.choices.map((ch,k)=>`<button class="choice" data-k="${k}" aria-label="${k+1}番 ${esc(ch.name)}"><span class="key" aria-hidden="true">${k+1}</span>${ch.html}</button>`).join("")}
   </div>
-  <div id="fb"></div>`;
+  <div id="fb"><p class="keyhint">キーボードの 1・2・3・4 でもこたえられるよ</p></div>`;
 }
 function renderFeedback(k, ok, fast, ms){
-  const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1);
+  const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1), ch = q.choices[k];
   document.querySelectorAll(".choice").forEach((b,kk)=>{
     b.disabled = true;
-    const j = q.choices[kk].j;
-    if (j === i) b.classList.add("correct"); else if (kk === k) b.classList.add("wrong"); else b.classList.add("dim");
+    if (q.choices[kk].correct) b.classList.add("correct"); else if (kk === k) b.classList.add("wrong"); else b.classList.add("dim");
   });
-  const sec = (ms/1000).toFixed(1);
-  const pair = `${prefR(i)} ― ${capR(i)}`;
-  const wrongPick = q.choices[k].j;
+  const sec = (ms/1000).toFixed(1), pair = `${prefR(i)} ― ${capR(i)}`;
+  const combo = quiz.combo >= 2 ? `<span class="combo ${quiz.combo>=5?"big":""} num" style="position:static">${quiz.combo} コンボ！</span>` : "";
   let html;
   if (ok) {
-    html = `<div class="fb ${fast?"fast":"ok"} pop"><div class="head">${fast?"◎ 即答！":"○ せいかい"} <span class="num" style="font-size:14px;font-weight:700">${sec}秒</span></div>${!fast?`<div class="memo">つぎは${S.settings.fastSec}秒いないをめざそう</div>`:""}</div>`;
+    html = `<div class="fb ${fast?"fast":"ok"} pop"><div class="head">${fast?"◎ 即答！":"○ せいかい"} <span class="num" style="font-size:14px;font-weight:700">${sec}秒</span> ${combo}</div>${!fast?`<div class="memo">つぎは${S.settings.fastSec}秒いないをめざそう</div>`:""}</div>`;
   } else {
-    const wrongNote = d==="a" ? `${capR(wrongPick)}は${prefR(wrongPick)}の県庁所在地` : `${prefR(wrongPick)}の県庁所在地は${capR(wrongPick)}`;
+    const note = d==="a" ? `${ch.html}も${prefR(i)}の市だけど、県庁所在地は${capR(i)}。` : `${ch.html}の県庁所在地は${capR(ch.j)}。`;
     html = `<div class="fb ng pop"><div class="head">× ざんねん</div>
       <div class="body">こたえ：<b>${pair}</b></div>
-      <div class="memo">${wrongNote}${MEMO[i]?`／${MEMO[i]}`:""}　この問題は少しあとにもう一度出ます。</div>
-      <button class="btn block" id="nextBtn">つぎへ</button></div>`;
+      <div class="memo">${note}${MEMO[i]?` ${MEMO[i]}`:""}${quiz.ta ? "" : " この問題は少しあとにもう一度出ます。"}</div>
+      ${quiz.ta ? "" : `<button class="btn block" id="nextBtn">つぎへ（Enter）</button>`}</div>`;
   }
   $("#fb").innerHTML = html;
   const nb = $("#nextBtn"); if (nb) nb.focus();
 }
 function resultHTML(){
-  const r = result, rate = r.n ? r.ok/r.n : 0;
-  const msg = rate===1 && r.fast===r.n ? "パーフェクト即答！すごい！" : rate===1 ? "ぜんぶせいかい！つぎは即答をねらおう" : rate>=.8 ? "よくできました！" : rate>=.5 ? "あと少し！まちがえた所をもう一度" : "くりかえすと、ぜったい覚えられるよ";
+  const r = result, rate = r.n ? r.ok/r.n : 0, rk = rankInfo(S.xp), ta = r.mode === "ta";
+  const msg = ta ? (r.record ? "新記録！すごい！" : `さいこう記録は ${S.best.ta}問。もう一回ちょうせん！`)
+    : rate===1 && r.fast===r.n ? "パーフェクト即答！すごい！" : rate===1 ? "ぜんぶせいかい！つぎは即答をねらおう" : rate>=.8 ? "よくできました！" : rate>=.5 ? "あと少し！まちがえた所をもう一度" : "くりかえすと、ぜったい覚えられるよ";
+  const banners = [];
+  if (rk.k > r.rank0) banners.push(`<div class="banner pop"><b>ランクアップ！「${rk.name}」になった！</b><span>ランク ${rk.k+1} にあがりました</span></div>`);
+  if (r.record) banners.push(`<div class="banner pop"><b>タイムアタック新記録 ${r.ok}問！</b><span>まえの記録は ${r.prevBest}問</span></div>`);
+  if (r.newConq.length) banners.push(`<div class="banner pop"><b>${r.newConq.map(i=>esc(P[i][0])).join("・")} を制覇！</b><span>にっぽん制覇マップが金色になったよ（${conqCount()} / 47）</span></div>`);
+  r.missions.forEach(t => banners.push(`<div class="banner"><b>ミッションクリア！</b><span>${esc(t)}（+${MISSION_XP}ポイント）</span></div>`));
   const items = r.answers.map(a => {
     const i = +a.id.slice(0,-1), d = a.id.slice(-1);
     const q = d==="a" ? `${prefR(i)} → ${capR(i)}` : `${capR(i)} → ${prefR(i)}`;
-    const sub = a.ok ? (a.again ? "もういちど：せいかい" : "") : `えらんだ：${d==="a" ? capR(a.pick) : prefR(a.pick)}`;
+    const sub = a.ok ? (a.again ? "もういちど：せいかい" : "") : `えらんだ：${a.pickHTML}`;
     return `<div class="item"><span class="ic ${a.fast?"fast":a.ok?"ok":"ng"}">${a.fast?"◎":a.ok?"○":"×"}</span><div><div class="main">${q}</div>${sub?`<div class="sub">${sub}</div>`:""}</div><span class="ms num">${(a.ms/1000).toFixed(1)}秒</span></div>`;
   }).join("");
   return `<div class="result">
     <section class="score">
+      ${ta ? `<div class="qsub">${TA_SEC}秒タイムアタック</div>` : ""}
       <div class="big num">${r.ok}<small> / ${r.n}</small></div>
       <div class="msg">${msg}</div>
-      <div class="row"><div class="stat"><b class="num" style="color:var(--gold)">${r.fast}</b><span>即答</span></div><div class="stat"><b class="num" style="color:var(--ng)">${r.wrong.length}</b><span>まちがい</span></div><div class="stat"><b class="num">${r.mastered.length}</b><span>あたらしくマスター</span></div></div>
+      <div class="row">
+        <div class="stat"><b class="num" style="color:var(--gold)">${r.fast}</b><span>即答</span></div>
+        <div class="stat"><b class="num">${r.maxCombo}</b><span>さいだいコンボ</span></div>
+        <div class="stat"><b class="num" style="color:var(--accent)">+${r.xp}</b><span>ポイント</span></div>
+        <div class="stat"><b class="num" style="color:var(--ng)">${r.wrong.length}</b><span>まちがい</span></div>
+      </div>
     </section>
+    ${banners.join("")}
     <div class="actions">
       ${r.wrong.length ? `<button class="btn danger" data-act="retry">まちがえた${r.wrong.length}問をもう一度</button>` : ""}
-      <button class="btn" data-act="again">つづけてれんしゅう</button>
+      <button class="btn" data-act="again">${ta ? "もう一回ちょうせん" : "つづけてれんしゅう"}</button>
       <button class="btn ghost" data-act="home">もどる</button>
     </div>
     <div class="list">${items}</div>
@@ -581,7 +768,7 @@ function statsHTML(){
   const tiles = REG.map((r,k)=>`<div class="reg"><h3><span class="dot" style="background:${REG_COLOR[k]}"></span>${r}</h3><div class="tiles">${
     P.map((p,i)=>i).filter(i=>P[i][4]===k).map(i=>{
       const a = status(card(cid(i,"a"))), b = status(card(cid(i,"b")));
-      return `<button class="tile ${selTile===i?"sel":""}" data-tile="${i}"><span class="nm">${esc(P[i][0])}</span><span class="cp">${esc(P[i][2])}</span><span class="bars"><span>県→</span><i style="background:${stColor(a)}"></i><span>→県</span><i style="background:${stColor(b)}"></i></span></button>`;
+      return `<button class="tile ${selTile===i?"sel":""}" data-tile="${i}"><span class="nm">${conquered(i)?"★ ":""}${esc(P[i][0])}</span><span class="cp">${esc(P[i][2])}</span><span class="bars"><span>県→</span><i style="background:${stColor(a)}"></i><span>→県</span><i style="background:${stColor(b)}"></i></span></button>`;
     }).join("")}</div>${selTile!==null && P[selTile][4]===k ? detailHTML(selTile) : ""}</div>`).join("");
   const weak = weakIds().slice(0,10);
   const weakList = weak.length ? `<div class="list">${weak.map(id=>{
@@ -593,8 +780,9 @@ function statsHTML(){
   const recentList = recent.length ? `<div class="list">${recent.map(l=>{
     const i = +l.id.slice(0,-1), d = l.id.slice(-1), fast = l.ok && l.ms <= S.settings.fastSec*1000;
     const q = d==="a" ? `${esc(P[i][0])} → ${esc(P[i][2])}` : `${esc(P[i][2])} → ${esc(P[i][0])}`;
+    const picked = l.pk || (l.pick != null ? (d==="a" ? P[l.pick][2] : P[l.pick][0]) : "");
     const t = new Date(l.ts);
-    return `<div class="item"><span class="ic ${fast?"fast":l.ok?"ok":"ng"}">${fast?"◎":l.ok?"○":"×"}</span><div><div class="main">${q}</div><div class="sub">${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}${l.ok?"":`・えらんだ：${esc(d==="a"?P[l.pick][2]:P[l.pick][0])}`}</div></div><span class="ms num">${(l.ms/1000).toFixed(1)}秒</span></div>`;
+    return `<div class="item"><span class="ic ${fast?"fast":l.ok?"ok":"ng"}">${fast?"◎":l.ok?"○":"×"}</span><div><div class="main">${q}</div><div class="sub">${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}${l.ok?"":`・えらんだ：${esc(picked)}`}</div></div><span class="ms num">${(l.ms/1000).toFixed(1)}秒</span></div>`;
   }).join("")}</div>` : `<div class="empty">まだ記録がありません</div>`;
   return `<div style="display:grid;gap:14px">
     <section class="panel">
@@ -602,22 +790,22 @@ function statsHTML(){
       <div class="dirbar">都道府県 → 県庁所在地（47問）${stackHTML("a")}</div>
       <div class="dirbar">県庁所在地 → 都道府県（47問）${stackHTML("b")}</div>
       ${legend}
-      <p class="note">ぜんぶで <b class="num">${S.total}</b> 回こたえました。即答マスター <b class="num">${all.c[4]}</b> / 94。</p>
+      <p class="note">ぜんぶで <b class="num">${S.total}</b> 回こたえました。即答マスター <b class="num">${all.c[4]}</b> / 94、制覇 <b class="num">${conqCount()}</b> / 47、タイムアタック最高 <b class="num">${S.best.ta}</b>問。</p>
     </section>
     <section class="panel"><h2>にがてランキング</h2><p class="note">まちがいが多い・時間がかかる順。「にがて特訓」でここを集中練習できます。</p>${weakList}</section>
     <section class="panel"><h2>この2週間</h2>${chartHTML()}</section>
-    <section class="panel"><h2>都道府県ごと</h2><p class="note">左のバー＝都道府県→県庁所在地、右＝県庁所在地→都道府県。タップするとくわしく見られます。</p>${legend}<div class="regions">${tiles}</div></section>
+    <section class="panel" id="prefs"><h2>都道府県ごと</h2><p class="note">左のバー＝都道府県→県庁所在地、右＝県庁所在地→都道府県。タップするとくわしく見られます。</p>${legend}<div class="regions">${tiles}</div></section>
     <section class="panel"><h2>さいきんの回答</h2>${recentList}</section>
   </div>`;
 }
 function histIcons(h){ return (h||"").split("").map(c=>c==="f"?"◎":c==="o"?"○":"×").join(""); }
 function detailHTML(i){
   const row = d => { const c = card(cid(i,d)); return `<tr><th>${d==="a"?"県→県庁所在地":"県庁所在地→県"}</th><td>${c.n?`${c.ok}/${c.n} せいかい`:"まだ"}</td><td>${c.n?`${(c.t/1000).toFixed(1)}秒`:""}</td><td>${histIcons(c.h)}</td></tr>`; };
-  return `<div class="detail" style="margin-top:8px"><div><b>${prefR(i)}</b> の県庁所在地は <b>${capR(i)}</b></div>${MEMO[i]?`<div>${MEMO[i]}</div>`:""}<div class="chart-wrap"><table>${row("a")}${row("b")}</table></div></div>`;
+  return `<div class="detail" id="detail" style="margin-top:8px"><div><b>${prefR(i)}</b> の県庁所在地は <b>${capR(i)}</b>${conquered(i)?"　★制覇":""}</div>${MEMO[i]?`<div>${MEMO[i]}</div>`:""}<div class="chart-wrap"><table>${row("a")}${row("b")}</table></div></div>`;
 }
 function chartHTML(){
   const days = []; const d = new Date(); d.setDate(d.getDate()-13);
-  for (let k=0;k<14;k++){ const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); days.push({key, m:d.getMonth()+1, dd:d.getDate(), ...(S.days[key]||{n:0,ok:0,fast:0})}); d.setDate(d.getDate()+1); }
+  for (let k=0;k<14;k++){ days.push({m:d.getMonth()+1, dd:d.getDate(), ...(S.days[dkey(d)]||{n:0,ok:0,fast:0})}); d.setDate(d.getDate()+1); }
   if (!days.some(x=>x.n)) return `<div class="empty">れんしゅうすると、ここに毎日のグラフが出ます</div>`;
   const max = Math.max(10, ...days.map(x=>x.n)), top = Math.ceil(max/10)*10;
   const W=560,H=240,l=40,r=8,t=20,b=30, cw=(W-l-r)/14, bw=cw*.62, y=v=>t+(H-t-b)*(1-v/top);
@@ -629,7 +817,7 @@ function chartHTML(){
       s += `<rect x="${cx}" y="${y(x.n)}" width="${bw}" height="${y(0)-y(x.n)}" rx="3" fill="var(--lv-none)"/>`;
       s += `<rect x="${cx}" y="${y(x.ok)}" width="${bw}" height="${y(0)-y(x.ok)}" rx="3" fill="var(--ok)"/>`;
       s += `<rect x="${cx}" y="${y(x.fast)}" width="${bw}" height="${y(0)-y(x.fast)}" rx="3" fill="var(--gold)"/>`;
-      s += `<text x="${cx+bw/2}" y="${y(x.n)-3}" text-anchor="middle">${Math.round(x.ok/x.n*100)}%</text>`;
+      s += `<text x="${cx+bw/2}" y="${y(x.n)-4}" text-anchor="middle">${Math.round(x.ok/x.n*100)}%</text>`;
     }
     if (k%2===0 || k===13) s += `<text x="${cx+bw/2}" y="${H-8}" text-anchor="middle">${x.m}/${x.dd}</text>`;
   });
@@ -656,7 +844,7 @@ function settingsHTML(){
     </section>
     <section class="panel">
       <h2>記録をリセット</h2>
-      <p class="note">すべての回答記録を消して、最初からやり直します。元にはもどせません。</p>
+      <p class="note">すべての回答記録・ポイント・記録を消して、最初からやり直します。元にはもどせません。</p>
       <button class="btn ${resetArm?"danger":"ghost"}" id="resetBtn">${resetArm?"本当に消す（もう一度おす）":"記録をリセットする"}</button>
     </section>
   </div>`;
@@ -677,7 +865,11 @@ document.addEventListener("click", e => {
   if (t.id === "nextBtn") { next(); return; }
   if (t.id === "quit") { quitQuiz(); return; }
   if (t.dataset.act) { const a = t.dataset.act; if (a==="retry") startQuiz("retry"); else if (a==="again") startQuiz(result.mode==="retry"?"mix":result.mode); else { view="home"; render(); } return; }
-  if (t.dataset.tile !== undefined) { const i = +t.dataset.tile; selTile = selTile===i ? null : i; const y = window.scrollY; render(); window.scrollTo(0,y); return; }
+  if (t.dataset.tile !== undefined) {
+    const i = +t.dataset.tile;
+    if (view === "home") { selTile = i; view = "stats"; render(); const el = $("#detail"); if (el) el.scrollIntoView({block:"center"}); return; }
+    selTile = selTile===i ? null : i; const y = window.scrollY; render(); window.scrollTo(0,y); return;
+  }
   if (t.dataset.fast) { S.settings.fastSec = +t.dataset.fast; save(); render(); return; }
   if (t.dataset.set) { const k = t.dataset.set; S.settings[k] = !S.settings[k]; save(); applySettings(); render(); return; }
   if (t.id === "copyBtn") {
@@ -687,7 +879,7 @@ document.addEventListener("click", e => {
     return;
   }
   if (t.id === "importBtn") {
-    try { const o = JSON.parse($("#backup").value); if (!o || typeof o.cards !== "object") throw 0; S = Object.assign(fresh(), o); S.settings = Object.assign(fresh().settings, S.settings||{}); S.total = Math.max(S.total||0, 0); save(); if (db) pushRemote(); applySettings(); toast("読みこみました"); render(); }
+    try { const o = JSON.parse($("#backup").value); if (!o || typeof o.cards !== "object") throw 0; S = normalize(o); save(); if (db) pushRemote(); applySettings(); toast("読みこみました"); render(); }
     catch(err) { toast("読みこめませんでした。文字がまちがっていないか確認してください"); }
     return;
   }
@@ -697,9 +889,10 @@ document.addEventListener("click", e => {
   }
 });
 document.addEventListener("keydown", e => {
-  if (view !== "quiz" || !quiz) return;
-  if (!quiz.locked && ["1","2","3","4"].includes(e.key)) answer(+e.key-1);
-  else if (quiz.locked && (e.key==="Enter"||e.key===" ")) { e.preventDefault(); next(); }
+  if (view !== "quiz" || !quiz || e.repeat) return;
+  const n = "1234".indexOf(e.key);
+  if (!quiz.locked && n >= 0) { e.preventDefault(); answer(n); }
+  else if (quiz.locked && (e.key==="Enter"||e.key===" ") && $("#nextBtn")) { e.preventDefault(); next(); }
 });
 
 applySettings();
