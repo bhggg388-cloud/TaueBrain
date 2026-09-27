@@ -449,16 +449,29 @@ function weight(id){
   if (c.lv >= MASTER && now - c.last > 3*864e5) w = 2.5;      // しばらく出ていないマスターはおさらい
   return w;
 }
-function pickSession(mode, n){
-  if (mode === "weak") return shuffle(weakIds().slice(0, n));
-  const ids = pool(mode === "ta" ? "mix" : mode);
+// 重みつきで、重複なしに1周ぶん並べる（にがてほど前に来やすい）
+function weightedOrder(ids){
   const out = [], bag = ids.map(id => ({id, w:weight(id)}));
-  while (out.length < n && bag.length) {
+  while (bag.length) {
     const sum = bag.reduce((s,x)=>s+x.w,0); let r = Math.random()*sum, k = 0;
     while (k < bag.length-1 && (r -= bag[k].w) > 0) k++;
     out.push(bag[k].id); bag.splice(k,1);
   }
   return out;
+}
+// 出題範囲の問題数が設定より少ないときは、2周目・3周目をつなげて設定の問題数にする
+function fillRounds(ids, n){
+  const out = [];
+  while (out.length < n && ids.length) {
+    const round = weightedOrder(ids);
+    if (round.length > 1 && round[0] === out[out.length-1]) round.push(round.shift());  // 同じ問題が連続しないように
+    out.push(...round);
+  }
+  return out.slice(0, n);
+}
+function pickSession(mode, n){
+  if (mode === "weak") { const w = weakIds().slice(0, n); return fillRounds(w, Math.min(n, w.length*2)); }
+  return fillRounds(pool(mode === "ta" ? "mix" : mode), n);
 }
 // 選択肢: {html, name, correct}
 function makeChoices(id){
