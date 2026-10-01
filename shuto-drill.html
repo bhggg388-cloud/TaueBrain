@@ -828,7 +828,7 @@ function homeHTML(){
       ${[5,10,20].map(n=>`<button class="chip" data-cnt="${n}" aria-pressed="${S.settings.count===n}">${n}問</button>`).join("")}
     </div></div>
   </div>
-  <p class="tip">${S.settings.fastSec}秒いないに正解すると「即答」で10ポイント。即答がつづくとコンボでもっとふえるよ。同じ問題で即答を${MASTER}回つづけると<b>即答マスター</b>。「きほん」をマスターしたら「ぜんぶ」にちょうせんしよう。キーボードの <b>1〜4</b> でもこたえられます。</p>`;
+  <p class="tip">${S.settings.fastSec}秒いないに正解すると「即答」で10ポイント。即答がつづくとコンボでもっとふえるよ。同じ問題で即答を${MASTER}回つづけると<b>即答マスター</b>。「きほん」をマスターしたら「ぜんぶ」にちょうせんしよう。キーボードなら <b>1〜4</b> でこたえる・<b>Enter</b> でつぎへ・<b>Esc</b> でやめる。この画面で <b>Enter</b> をおすと「おまかせ」がはじまります。</p>`;
 }
 function renderQuiz(){
   const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1);
@@ -856,7 +856,7 @@ function renderQuiz(){
   <div class="choices" id="choices">
     ${q.choices.map((ch,k)=>`<button class="choice" data-k="${k}" aria-label="${k+1}番 ${esc(ch.name)}"><span class="key" aria-hidden="true">${k+1}</span>${ch.html}</button>`).join("")}
   </div>
-  <div id="fb"><p class="keyhint">キーボードの 1・2・3・4 でもこたえられるよ</p></div>`;
+  <div id="fb"><p class="keyhint">キーボード：<b>1・2・3・4</b> でこたえる ／ <b>Enter</b> でつぎへ ／ <b>Esc</b> でやめる</p></div>`;
 }
 function renderFeedback(k, ok, fast, ms){
   const q = quiz.queue[quiz.pos], i = +q.id.slice(0,-1), d = q.id.slice(-1), ch = q.choices[k];
@@ -910,9 +910,9 @@ function resultHTML(){
     </section>
     ${banners.join("")}
     <div class="actions">
-      ${r.wrong.length ? `<button class="btn danger" data-act="retry">まちがえた${r.wrong.length}問をもう一度</button>` : ""}
-      <button class="btn" data-act="again">${ta ? "もう一回ちょうせん" : "つづけてれんしゅう"}</button>
-      <button class="btn ghost" data-act="home">もどる</button>
+      ${r.wrong.length ? `<button class="btn danger" data-act="retry">まちがえた${r.wrong.length}問をもう一度（R）</button>` : ""}
+      <button class="btn" data-act="again">${ta ? "もう一回ちょうせん" : "つづけてれんしゅう"}（Enter）</button>
+      <button class="btn ghost" data-act="home">もどる（Esc）</button>
     </div>
     <div class="list">${items}</div>
   </div>`;
@@ -1044,11 +1044,24 @@ document.addEventListener("click", e => {
     const keep = S.settings; S = fresh(); S.settings = keep; resetArm = false; save(); if (db) pushRemote(); toast("リセットしました"); render(); return;
   }
 });
+// ショートカットキー。e.code（キーの場所）で見るので、日本語入力がオンでも、テンキーでも反応する
+const ANSWER_KEYS = {Digit1:0,Digit2:1,Digit3:2,Digit4:3,Numpad1:0,Numpad2:1,Numpad3:2,Numpad4:3};
+const isGo = e => e.code==="Enter" || e.code==="NumpadEnter" || e.code==="Space";
 document.addEventListener("keydown", e => {
-  if (view !== "quiz" || !quiz || e.repeat) return;
-  const n = "1234".indexOf(e.key);
-  if (!quiz.locked && n >= 0) { e.preventDefault(); answer(n); }
-  else if (quiz.locked && (e.key==="Enter"||e.key===" ") && $("#nextBtn")) { e.preventDefault(); next(); }
+  if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.target.closest && e.target.closest("textarea,input")) return;
+  if (view === "quiz" && quiz) {
+    const n = ANSWER_KEYS[e.code];
+    if (!quiz.locked && n !== undefined) { e.preventDefault(); answer(n); }
+    else if (quiz.locked && isGo(e)) { e.preventDefault(); next(); }        // せいかいのあとも待たずにつぎへ
+    else if (e.code === "Escape") { e.preventDefault(); quitQuiz(); }
+  } else if (view === "result" && result) {
+    if (isGo(e)) { e.preventDefault(); startQuiz(result.mode==="retry"?"mix":result.mode); }
+    else if (e.code === "KeyR" && result.wrong.length) { e.preventDefault(); startQuiz("retry"); }
+    else if (e.code === "Escape") { e.preventDefault(); view="home"; render(); }
+  } else if (view === "home" && isGo(e) && !(e.target.closest && e.target.closest("button"))) {
+    e.preventDefault(); startQuiz("mix");
+  }
 });
 
 applySettings();
